@@ -1,0 +1,3 @@
+model,temperature,n_rows,n_ok,n_fail,success_rate
+qwen/qwen3.5-9b,0.01,611,452,159,0.7397708674304418
+z-ai/glm-4.6,0.01,2,2,0,1.0

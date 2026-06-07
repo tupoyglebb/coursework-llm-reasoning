@@ -1,0 +1,39 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+
+# Raw datasets (large, not uploaded)
+input_for_gpt_analysis.csv
+missing_rows_for_additional_run.csv
+missing_rows_for_additional_run.parquet
+missing_rows_stats_by_exp_treatment_incentive_model.csv
+
+# attitude/ — raw model runs and large tables
+attitude/runs/
+attitude/master_table.parquet
+attitude/twin2k_sample_100_with_demographics.parquet
+
+# reasoning_review_package — raw LLM outputs
+reasoning_review_package/
+reasoning_review_package.zip
+
+# hidden_states — raw model outputs
+hidden_states/outputs_qwen3_8b_instruct/
+
+# markup-1 — raw annotation data
+markup-1/data/
+
+# additional rerun — raw per-model outputs (summaries kept)
+additional_rerun_20260425T201559Z/additional_rerun_full_results.csv
+additional_rerun_20260425T201559Z/additional_rerun_full_results.parquet
+additional_rerun_20260425T201559Z/group_model=*.csv
+additional_rerun_20260425T201559Z/group_model=*.parquet
+
+# Notebook backups
+*.ipynb.bak_before_*
+
+# Claude internal config
+.claude/

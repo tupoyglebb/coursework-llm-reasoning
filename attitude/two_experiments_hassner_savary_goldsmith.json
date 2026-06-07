@@ -1,0 +1,67 @@
+[
+  {
+    "experiment_name": "Hassner_2023_Persuasive_and_Unpersuasive_Critiques_of_Torture",
+    "wording_status_summary": [
+      "near_verbatim_from_article_appendix"
+    ],
+    "groups": {
+      "control_base_case": {
+        "vignette": "Imagine that the CIA has been collecting information about a future terror attack in the U.S. They have now detained a suspect who has some information about this attack. The suspect refuses to cooperate. If he is denied sleep during the interrogation, he is more likely to cooperate.",
+        "question": "Would you be in favor of preventing the suspect from sleeping during the interrogation?",
+        "wording_status": "near_verbatim_from_article_appendix",
+        "response_options_text": "1. Yes\n2. No",
+        "open_rationale_question": "Consider how a plausible respondent would evaluate this situation. Focus on the judgment itself and the considerations that shape it. Do not provide a final answer yet."
+      },
+      "treatment_modest_intelligence": {
+        "vignette": "Imagine that the CIA has been collecting information about a future terror attack in the U.S. They have now detained a suspect who has some information about this attack. The suspect refuses to cooperate. If he is denied sleep during the interrogation, he is more likely to cooperate. He probably will not reveal new information, but he could help the CIA confirm their suspicions about the attack.",
+        "question": "Would you be in favor of preventing the suspect from sleeping during the interrogation?",
+        "wording_status": "near_verbatim_from_article_appendix",
+        "response_options_text": "1. Yes\n2. No",
+        "open_rationale_question": "Consider how a plausible respondent would evaluate this situation. Focus on the judgment itself and the considerations that shape it. Do not provide a final answer yet."
+      },
+      "treatment_protracted_duration": {
+        "vignette": "Imagine that the CIA has been collecting information about a future terror attack in the U.S. They have now detained a suspect who has some information about this attack. The suspect refuses to cooperate. If he is denied sleep during the interrogation, he is more likely to cooperate. The interrogation might last a month.",
+        "question": "Would you be in favor of preventing the suspect from sleeping during the interrogation?",
+        "wording_status": "near_verbatim_from_article_appendix",
+        "response_options_text": "1. Yes\n2. No",
+        "open_rationale_question": "Consider how a plausible respondent would evaluate this situation. Focus on the judgment itself and the considerations that shape it. Do not provide a final answer yet."
+      },
+      "treatment_duration_plus_modest_intelligence": {
+        "vignette": "Imagine that the CIA has been collecting information about a future terror attack in the U.S. They have now detained a suspect who has some information about this attack. The suspect refuses to cooperate. If he is denied sleep during the interrogation, he is more likely to cooperate. The interrogation might last a month. He probably will not reveal new information, but he could help the CIA confirm their suspicions about the attack.",
+        "question": "Would you be in favor of preventing the suspect from sleeping during the interrogation?",
+        "wording_status": "near_verbatim_from_article_appendix",
+        "response_options_text": "1. Yes\n2. No",
+        "open_rationale_question": "Consider how a plausible respondent would evaluate this situation. Focus on the judgment itself and the considerations that shape it. Do not provide a final answer yet."
+      }
+    }
+  },
+  {
+    "experiment_name": "Savary_Goldsmith_2020_Unobserved_Altruism_Willingness_to_Donate",
+    "wording_status_summary": [
+      "design_level_reconstruction_from_article_abstract_and_theory"
+    ],
+    "groups": {
+      "private_donation_control": {
+        "vignette": "A local charity is raising money for families in need. You are asked whether you would like to make a small donation of $5. Your response and donation decision will remain private and will not be shared with anyone else.",
+        "question": "How willing would you be to make the $5 donation?",
+        "wording_status": "design_level_reconstruction_from_article_abstract_and_theory",
+        "response_options_text": "1. Not at all willing\n2. Slightly willing\n3. Moderately willing\n4. Very willing\n5. Extremely willing",
+        "open_rationale_question": "Consider how a plausible respondent would evaluate this situation. Focus on the judgment itself and the considerations that shape it. Do not provide a final answer yet."
+      },
+      "public_recognition_treatment": {
+        "vignette": "A local charity is raising money for families in need. You are asked whether you would like to make a small donation of $5. If you donate, your name will be publicly recognized as a donor.",
+        "question": "How willing would you be to make the $5 donation?",
+        "wording_status": "design_level_reconstruction_from_article_abstract_and_theory",
+        "response_options_text": "1. Not at all willing\n2. Slightly willing\n3. Moderately willing\n4. Very willing\n5. Extremely willing",
+        "open_rationale_question": "Consider how a plausible respondent would evaluate this situation. Focus on the judgment itself and the considerations that shape it. Do not provide a final answer yet."
+      },
+      "public_recognition_with_social_benefit": {
+        "vignette": "A local charity is raising money for families in need. You are asked whether you would like to make a small donation of $5. If you donate, your name will be publicly recognized as a donor in a way that is likely to bring meaningful social benefits, such as positive visibility and appreciation from others.",
+        "question": "How willing would you be to make the $5 donation?",
+        "wording_status": "design_level_reconstruction_from_article_abstract_and_theory",
+        "response_options_text": "1. Not at all willing\n2. Slightly willing\n3. Moderately willing\n4. Very willing\n5. Extremely willing",
+        "open_rationale_question": "Consider how a plausible respondent would evaluate this situation. Focus on the judgment itself and the considerations that shape it. Do not provide a final answer yet."
+      }
+    }
+  }
+]
