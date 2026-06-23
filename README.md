@@ -25,7 +25,8 @@
 ├── annotation/         ← оценка LLM-кодера + результаты
 ├── paper/              ← черновик статьи (LaTeX + PDF) и фигуры
 ├── docs/               ← интерпретация результатов
-└── scripts/            ← служебные скрипты
+├── scripts/            ← служебные скрипты
+└── local_labeler/      ← локальный QLoRA-разметчик reasoning (Qwen3-8B): MLX + CUDA
 ```
 
 ---
@@ -90,6 +91,17 @@
 - `goldenset.csv` — золотой стандарт (ручная разметка)
 - `evaluate_openai_coders.py` — скрипт сравнения моделей-кодеров
 - `results/` — метрики по полям и моделям, предсказания
+
+---
+
+## Локальный разметчик ([`local_labeler/`](local_labeler/))
+
+Дообучение **Qwen3-8B (QLoRA)** для воспроизведения разметки reasoning traces локально — альтернатива GPT-кодеру из [`04_markup_labeling.ipynb`](notebooks/04_markup_labeling.ipynb). Модель выдаёт один JSON-объект из 37 полей таксономии (19 causality `0/1/2`, 3 binary `0/1`, 15 direction `-1/0/1`).
+
+- Два стека: **MLX** (Apple Silicon) и **CUDA** (NVIDIA, `transformers`+`peft`+`bitsandbytes`).
+- План экспериментов **E0–E5** (по одному фактору за прогон: lr → rank → данные → глубина адаптера).
+- Метрика отбора — mean per-field macro-F1 (база 0.667), а не flat (0.81).
+- С чего начать: [`local_labeler/README.md`](local_labeler/README.md) → хэндофы `qwen_mps_taxonomy_lora/experiments/HANDOFF.md` (MLX) и `qwen_cuda_taxonomy_lora/HANDOFF_CUDA.md` (NVIDIA).
 
 ---
 

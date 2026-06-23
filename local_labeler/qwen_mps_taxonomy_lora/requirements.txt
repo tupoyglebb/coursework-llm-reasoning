@@ -1,0 +1,6 @@
+mlx-lm[train]>=0.31.0
+pandas>=2.2.0
+pyarrow>=15.0.0
+scikit-learn>=1.4.0
+tqdm>=4.66.0
+PyYAML>=6.0.0

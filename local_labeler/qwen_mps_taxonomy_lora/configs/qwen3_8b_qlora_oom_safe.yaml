@@ -1,0 +1,26 @@
+# More conservative config if qwen3_8b_qlora_32gb.yaml runs out of memory.
+model: ./models/qwen3-8b-4bit
+train: true
+test: true
+data: ./data_mlx
+fine_tune_type: lora
+optimizer: adamw
+num_layers: 2
+batch_size: 1
+grad_accumulation_steps: 16
+iters: 600
+learning_rate: 0.00005
+max_seq_length: 3072
+val_batches: 10
+test_batches: 100
+steps_per_report: 10
+steps_per_eval: 100
+save_every: 100
+adapter_path: ./adapters/taxonomy_qwen3_8b
+mask_prompt: true
+grad_checkpoint: true
+seed: 42
+lora_parameters:
+  rank: 4
+  dropout: 0.05
+  scale: 10.0

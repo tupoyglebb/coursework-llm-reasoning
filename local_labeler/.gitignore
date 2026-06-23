@@ -1,0 +1,32 @@
+# --- Виртуальные окружения ---
+.venv/
+**/.venv/
+
+# --- Базовая модель (несколько ГБ; качается с HuggingFace) ---
+**/models/
+
+# --- Артефакты прогонов ---
+**/adapters/
+**/predictions/
+**/experiments/results.csv
+**/*.safetensors
+
+# --- Данные (большие; у владельца проекта уже есть локально) ---
+# Раскомментируй, если решишь всё-таки версионировать данные в ПРИВАТНОМ репозитории.
+**/teacher_labeled_*.csv
+**/data_mlx/
+**/data/
+**/data_balanced/
+
+# --- Python / OS мусор ---
+__pycache__/
+*.pyc
+.DS_Store
+**/.DS_Store
+
+# --- Локальные настройки Claude Code ---
+.claude/
+
+# --- Авто-сгенерированные PDF-копии markdown (рендерятся на GitHub из .md) ---
+*.pdf
+**/*.pdf

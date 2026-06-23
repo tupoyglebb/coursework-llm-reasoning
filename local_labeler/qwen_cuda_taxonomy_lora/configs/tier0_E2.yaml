@@ -1,0 +1,28 @@
+# CUDA / Tier 0 / E2 — RANK 8 -> 32. Отличие от E1: только rank. scale держим = 20.
+# alpha = 20 * 32 = 640.
+model_id: Qwen/Qwen3-8B
+data_dir: ./data
+
+learning_rate: 1.0e-4          # от E1
+lr_scheduler: cosine
+warmup_steps: 50
+
+# --- ИЗУЧАЕМЫЙ ФАКТОР: rank 8 -> 32 ---
+lora:
+  rank: 32
+  dropout: 0.05
+  scale: 20.0                  # НЕ меняем (изолируем эффект ранга)
+
+num_layers: 4
+batch_size: 1
+grad_accumulation_steps: 8
+iters: 1700
+max_seq_length: 3072
+grad_checkpoint: true
+mask_prompt: true
+optim: paged_adamw_8bit
+seed: 42
+steps_per_report: 10
+save_every: 100
+save_total_limit: 6
+adapter_path: ./adapters/tier0_E2
