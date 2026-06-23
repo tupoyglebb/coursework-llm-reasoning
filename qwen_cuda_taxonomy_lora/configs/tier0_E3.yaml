@@ -1,0 +1,27 @@
+# CUDA / Tier 0 / E3 — OVERSAMPLING редких классов. Отличие от победителя E1/E2: только данные.
+# Собран в предположении, что победитель = E2 (rank 32). Если победил E1 — поставь rank 8.
+# Данные: ./data_balanced создаётся скриптом scripts/oversample_train.py из ./data.
+model_id: Qwen/Qwen3-8B
+data_dir: ./data_balanced       # <-- ИЗУЧАЕМЫЙ ФАКТОР: перебалансированный train
+
+learning_rate: 1.0e-4
+lr_scheduler: cosine
+warmup_steps: 50
+lora:
+  rank: 32                      # от победителя (E2). Если победил E1 -> 8.
+  dropout: 0.05
+  scale: 20.0
+
+num_layers: 4
+batch_size: 1
+grad_accumulation_steps: 8
+iters: 2500                     # ~2 эпохи раздутого набора (~10150 строк при inflate=1.5)
+max_seq_length: 3072
+grad_checkpoint: true
+mask_prompt: true
+optim: paged_adamw_8bit
+seed: 42
+steps_per_report: 10
+save_every: 100
+save_total_limit: 6
+adapter_path: ./adapters/tier0_E3

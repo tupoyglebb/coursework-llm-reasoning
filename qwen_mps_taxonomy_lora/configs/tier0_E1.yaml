@@ -1,0 +1,34 @@
+# Tier 0 / E1 — LEARNING RATE + COSINE. Отличие от E0: только lr и расписание.
+model: ./models/qwen3-8b-4bit
+train: true
+test: true
+data: ./data_mlx
+fine_tune_type: lora
+optimizer: adamw
+
+# --- ИЗУЧАЕМЫЙ ФАКТОР: lr 1e-5 -> 1e-4 + cosine ---
+learning_rate: 1.0e-4
+lr_schedule:
+  name: cosine_decay
+  warmup: 50
+  arguments: [1.0e-4, 1650, 1.0e-6]   # [init_lr, decay_steps(=iters-warmup), end_lr]
+lora_parameters:
+  rank: 8                    # как в E0 (rank меняем только в E2)
+  dropout: 0.05
+  scale: 20.0
+
+# --- ФИКСИРОВАННЫЕ КОНСТАНТЫ ---
+num_layers: 4
+batch_size: 1
+grad_accumulation_steps: 8
+iters: 1700
+max_seq_length: 3072
+grad_checkpoint: true
+mask_prompt: true
+seed: 42
+steps_per_report: 10
+steps_per_eval: 50
+save_every: 100
+val_batches: 50
+test_batches: 25
+adapter_path: ./adapters/tier0_E1

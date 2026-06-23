@@ -1,0 +1,28 @@
+# CUDA / Tier 0 / E0 — КОНТРОЛЬ. Старые гиперпараметры обучения на новой инфраструктуре.
+# alpha = scale * rank = 20 * 8 = 160 (вычисляется в train_qlora_cuda.py).
+model_id: Qwen/Qwen3-8B
+data_dir: ./data
+
+# --- ИЗУЧАЕМЫЕ ФАКТОРЫ (в E0 = как у прод-модели) ---
+learning_rate: 1.0e-5
+lr_scheduler: constant         # E0: без расписания
+warmup_steps: 0
+lora:
+  rank: 8                      # E0/E1: 8 ; E2: 32
+  dropout: 0.05
+  scale: 20.0                  # -> lora_alpha = scale * rank
+
+# --- ФИКСИРОВАННЫЕ КОНСТАНТЫ (одинаковы во всех Tier 0) ---
+num_layers: 4                  # последние 4 из 36 -> layers_to_transform=[32,33,34,35]
+batch_size: 1
+grad_accumulation_steps: 8
+iters: 1700                    # ~2 эпохи для 6767 train. Для 5544 -> 1400.
+max_seq_length: 3072
+grad_checkpoint: true
+mask_prompt: true
+optim: paged_adamw_8bit
+seed: 42
+steps_per_report: 10
+save_every: 100
+save_total_limit: 6
+adapter_path: ./adapters/tier0_E0

@@ -1,0 +1,26 @@
+# CUDA / Tier 0 / E1 — LEARNING RATE + COSINE. Отличие от E0: только lr и расписание.
+model_id: Qwen/Qwen3-8B
+data_dir: ./data
+
+# --- ИЗУЧАЕМЫЙ ФАКТОР: lr 1e-5 -> 1e-4 + cosine ---
+learning_rate: 1.0e-4
+lr_scheduler: cosine
+warmup_steps: 50
+lora:
+  rank: 8
+  dropout: 0.05
+  scale: 20.0
+
+num_layers: 4
+batch_size: 1
+grad_accumulation_steps: 8
+iters: 1700
+max_seq_length: 3072
+grad_checkpoint: true
+mask_prompt: true
+optim: paged_adamw_8bit
+seed: 42
+steps_per_report: 10
+save_every: 100
+save_total_limit: 6
+adapter_path: ./adapters/tier0_E1
