@@ -1,35 +1,47 @@
 #!/usr/bin/env bash
-# CUDA: один эксперимент целиком — обучение -> инференс на замороженном тесте -> метрики -> сводка.
-# Использование:  bash run_experiment.sh E1     (E0..E3 -> Tier 0, E4..E5 -> Tier 1)
+# Один эксперимент целиком: обучение (лучший чекпойнт по eval_loss внутри) ->
+# генеративная оценка лучшего адаптера на замороженном тесте -> строка в results.csv.
+#
+# Лучший чекпойнт выбирается ВНУТРИ обучения по eval_loss (load_best_model_at_end).
+# Генеративная оценка по полям вынесена в отдельный scripts/evaluate_model.py — его можно
+# запускать и независимо (на любом чекпойнте/выборке).
+#
+# Использование:
+#   CUDA_VISIBLE_DEVICES=1 bash run_experiment.sh E0      # E0..E3 -> Tier 0, E4..E5 -> Tier 1
 set -euo pipefail
+IFS=$'\n\t'
 
-EXP=${1:?"usage: bash run_experiment.sh <E0|E1|E2|E3|E4|E5>"}
+usage() { echo "usage: [CUDA_VISIBLE_DEVICES=N] bash run_experiment.sh <E0|E1|E2|E3|E4|E5>"; }
+[ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ] && { usage; exit 0; }
+
+EXP=${1:?"$(usage)"}
 case "$EXP" in
   E0|E1|E2|E3) TIER=tier0 ;;
-  E4|E5)       TIER=tier1 ;;
-  *) echo "Неизвестный эксперимент: $EXP"; exit 1 ;;
+  E4|E5)       TIER=tier0 ;;
+  *) echo "Неизвестный эксперимент: $EXP"; usage; exit 1 ;;
 esac
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$ROOT"
 
 CONFIG="./configs/${TIER}_${EXP}.yaml"
 ADAPTER="./adapters/${TIER}_${EXP}"
 TESTCSV="./data/test_source.csv"
-PRED="./predictions/test_pred_${EXP}.csv"
-MET="./predictions/metrics_${EXP}.json"
 
 [ -f "$CONFIG" ]  || { echo "Нет конфига: $CONFIG"; exit 1; }
-[ -f "$TESTCSV" ] || { echo "Нет теста: $TESTCSV (скопируй data_mlx/test_source.csv в ./data/)"; exit 1; }
+[ -f "$TESTCSV" ] || { echo "Нет теста: $TESTCSV"; exit 1; }
 
-echo ">>> [$EXP] ОБУЧЕНИЕ ($CONFIG)"
+mkdir -p adapters predictions experiments logs
+
+log() { printf '>>> [%s] %s | %s\n' "$EXP" "$(date '+%H:%M:%S')" "$*"; }
+trap 'echo "!!! [$EXP] ОШИБКА на строке $LINENO"; exit 1' ERR
+
+log "конфиг=$CONFIG  адаптер=$ADAPTER  GPU=${CUDA_VISIBLE_DEVICES:-all}"
+
+log "ОБУЧЕНИЕ (лучший чекпойнт по eval_loss внутри)"
 python scripts/train_qlora_cuda.py --config "$CONFIG"
 
-echo ">>> [$EXP] ИНФЕРЕНС на замороженном тесте ($TESTCSV)"
-python scripts/infer_cuda.py --input "$TESTCSV" --output "$PRED" \
-  --adapter-path "$ADAPTER" --prompt-style compact --max-tokens 900
+log "ГЕНЕРАТИВНАЯ ОЦЕНКА лучшего адаптера на замороженном тесте ($TESTCSV)"
+python scripts/evaluate_model.py --config "$CONFIG" --label "$EXP" --input "$TESTCSV"
 
-echo ">>> [$EXP] МЕТРИКИ"
-python scripts/evaluate_predictions.py --predictions "$PRED" --out-json "$MET"
-
-echo ">>> [$EXP] СВОДКА"
-python scripts/aggregate_metrics.py --metrics "$MET" --label "$EXP"
-
-echo ">>> [$EXP] ГОТОВО. Адаптер: $ADAPTER ; метрики: $MET"
+log "ГОТОВО. Адаптер: $ADAPTER ; результаты: experiments/results.csv ; TensorBoard: tensorboard --logdir $ADAPTER/runs"

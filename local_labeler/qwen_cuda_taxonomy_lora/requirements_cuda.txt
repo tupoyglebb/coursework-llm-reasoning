@@ -13,5 +13,11 @@ scikit-learn>=1.4.0
 PyYAML>=6.0.0
 tqdm>=4.66.0
 pyarrow>=15.0.0
-# Опциональное ускорение (нужна сборка под вашу CUDA/torch):
+tensorboard>=2.16.0
+# setuptools 81+ выпилил pkg_resources, который импортит tensorboard -> ModuleNotFoundError.
+setuptools<81
+# Опциональное ускорение (нужна сборка под вашу CUDA/torch; иначе attn_implementation=sdpa).
+# ВАЖНО: сборка flash-attn запускает по одному nvcc-джобу на ядро и съедает всю память —
+# ограничьте число потоков через MAX_JOBS, иначе машина уйдёт в своп/OOM:
+#   MAX_JOBS=32 pip install flash-attn --no-build-isolation
 # flash-attn>=2.5.0
