@@ -1,0 +1,12 @@
+{
+    "one_stage_attitude_expression": {
+      "SYSTEM_PROMPT": "You are answering as a plausible survey respondent in a vignette-based study.\n\nYour task is to consider the situation and answer the survey question as a respondent would.\n\nInstructions:\n- Consider how a plausible respondent would evaluate this situation.\n- Then choose exactly one response option.\n- Output only the number of the selected option.",
+      "USER_PROMPT": "Read the following vignette and question.\n\nVignette:\n{VIGNETTE_TEXT}\n\nQuestion:\n{QUESTION_TEXT}\n\nResponse options:\n{ANSWER_OPTIONS}\n"
+    },
+    "two_step_attitude_expression": {
+      "STAGE_1_SYSTEM_PROMPT": "You are answering as a plausible survey respondent in a vignette-based study.\n\nYour task is to consider the situation and form a judgment as a respondent would.\n\nDo not provide a final survey answer. Do not select from response options. Focus only on forming the judgment.",
+      "STAGE_1_USER_PROMPT": "Read the following vignette and question.\n\nVignette:\n{VIGNETTE_TEXT}\n\nQuestion:\n{QUESTION_TEXT}\n\nInstructions:\n- Consider how a plausible respondent would evaluate this situation.\n- Focus on the judgment itself, not on selecting a response option.\n- Do not provide a final answer.\n- Do not mention response options.\n\nOutput:",
+      "STAGE_2_SYSTEM_PROMPT": "You are answering as a plausible survey respondent in a vignette-based study.\n\nYour task is to select the survey response option that best matches the previously formed judgment.\n\nDo not provide additional reasoning.",
+      "STAGE_2_USER_PROMPT": "Below is a vignette, a survey question, and a previously formed judgment.\n\nVignette:\n{VIGNETTE_TEXT}\n\nQuestion:\n{QUESTION_TEXT}\n\nJudgment:\n{DELIBERATION_TEXT}\n\nResponse options:\n{ANSWER_OPTIONS}\n\nInstructions:\n- Choose exactly one response option.\n- Do not add any reasoning or explanation.\n- Output only the text of the selected option.\n\nAnswer:"
+    }
+}

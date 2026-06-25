@@ -1,33 +1,110 @@
-# MoralLens — LLM-разметчик reasoning-трейсов
+# Thinking Exposition in LLMs — Coursework Analysis
 
-Дообучение Qwen3-8B (QLoRA) для автоматической разметки reasoning-трейсов по таксономии
-из социально-научного эксперимента: **37 полей** (19 causality `0/1/2`, 3 binary `0/1`, 15 direction `-1/0/1`).
-Модель имитирует разметку «учителя» — выдаёт один JSON-объект на трейс.
+Курсовая работа (ВШЭ, 2025–2026). Исследование того, как reasoning-модели реагируют на социально-психологические виньетки и как prompt-based стимулы влияют на ответы и процесс рассуждения.
 
-## Две ветки стека
+## Что измеряется
 
-| Папка | Железо | Стек | С чего начать |
-|---|---|---|---|
-| `qwen_mps_taxonomy_lora/` | Apple Silicon (Mac) | MLX / `mlx_lm` | `experiments/HANDOFF.md` |
-| `qwen_cuda_taxonomy_lora/` | NVIDIA GPU | `transformers`+`peft`+`bitsandbytes` | `HANDOFF_CUDA.md` |
+Модели симулируют «правдоподобного респондента опроса» в двух репликациях классических социальных экспериментов:
 
-CUDA-папка — самодостаточный порт MLX-версии (то же ядро: промпты, нормализация, метрики; переписан только движок
-обучения/инференса). Маппинг гиперпараметров MLX↔CUDA — в `qwen_cuda_taxonomy_lora/HANDOFF_CUDA.md`.
+| Эксперимент | Тема |
+|---|---|
+| Hassner 2023 | Поддержка sleep deprivation при допросе (4 тритмента) |
+| Savary & Goldsmith 2020 | Готовность пожертвовать $5 (3 тритмента) |
 
-## План экспериментов
-`qwen_mps_taxonomy_lora/experiments/TIER0_PLAN.md` и `TIER1_PLAN.md`.
-Серия контролируемых прогонов **по одному фактору за раз**: lr (E1) → rank (E2) → данные/oversampling (E3) → глубина адаптера `num_layers` (E4, E5).
+Манипуляция — **incentive**: дополнительный абзац в system prompt, варьирующий условия реализма/целей опроса (ключи A, C, H, I, J, K, L, M, X, `no_incentive`).
 
-**Метрика отбора:** mean per-field macro-F1 (база prod = **0.667**) при guardrail на «хороших» полях.
-`flat_macro_f1` (0.813) для сравнения не используется — он завышен и маскирует то, что 14 из 37 полей
-схлопнулись в мажоритарный класс.
+**Модели:** `moonshotai/kimi-k2-thinking`, `z-ai/glm-4.6`, `qwen/qwen3.5-9b`, `minimax/minimax-m2.5` (через OpenRouter API) + `Qwen3-8B` локально (скрытые состояния).
 
-## Запуск (кратко)
-```bash
-bash run_experiment.sh E1          # обучение -> инференс -> метрики -> строка в experiments/results.csv
-bash select_best_checkpoint.sh E1  # отбор лучшего чекпойнта по valid + число на test
+---
+
+## Структура репозитория
+
+```
+├── notebooks/          ← основное: ноутбуки в порядке пайплайна
+├── configs/            ← конфиги экспериментов и промптов
+├── annotation/         ← оценка LLM-кодера + результаты
+├── paper/              ← черновик статьи (LaTeX + PDF) и фигуры
+├── docs/               ← интерпретация результатов
+├── scripts/            ← служебные скрипты
+└── local_labeler/      ← локальный QLoRA-разметчик reasoning (Qwen3-8B): MLX + CUDA
 ```
 
-## Что не лежит в репозитории
-`.venv/`, базовая модель (`models/`, качается с HF), обученные адаптеры, предсказания и сырые данные
-исключены через `.gitignore` (см. соответствующий HANDOFF, как восстановить данные и окружение).
+---
+
+## Ноутбуки
+
+> Ноутбуки содержат готовые выходные данные — можно просматривать без запуска.
+> Для воспроизведения нужны данные (не включены в репозиторий, исключены `.gitignore`).
+
+### Сбор данных
+
+| Ноутбук | Описание |
+|---|---|
+| [`01_running_experiment.ipynb`](notebooks/01_running_experiment.ipynb) | Запуск API-прогонов (AsyncOpenAI + OpenRouter): батчи ответов с reasoning trace |
+| [`02_additional_run.ipynb`](notebooks/02_additional_run.ipynb) | Добор строк без финального ответа/reasoning |
+| [`03_constructing_master_table.ipynb`](notebooks/03_constructing_master_table.ipynb) | Склейка всех прогонов → `master_table.parquet` (~15.7k строк) |
+
+### Разметка reasoning
+
+| Ноутбук | Описание |
+|---|---|
+| [`04_markup_labeling.ipynb`](notebooks/04_markup_labeling.ipynb) | GPT-кодирование reasoning traces по схеме категорий (treatment awareness, social desirability, epistemic certainty и др.) |
+
+### Анализ
+
+| Ноутбук | Описание |
+|---|---|
+| [`05_statistical_analysis.ipynb`](notebooks/05_statistical_analysis.ipynb) | Распределения финальных ответов из master table: сетка experiment × model, сравнение температур |
+| [`06_main_analysis.ipynb`](notebooks/06_main_analysis.ipynb) | **Главный аналитический ноутбук:** описательная статистика, сравнение incentive vs no_incentive, классификаторы, SHAP/LIME, тематическое моделирование |
+| [`07_markup_analysis.ipynb`](notebooks/07_markup_analysis.ipynb) | Анализ LLM-разметки reasoning traces: частотность категорий, logit-регрессии (treatment/incentive → категория → ответ) |
+| [`08_hidden_states_analysis.ipynb`](notebooks/08_hidden_states_analysis.ipynb) | Сравнение скрытых состояний Qwen3-8B: L2-норма сдвига по слоям трансформера при разных incentive |
+
+---
+
+## Данные
+
+Сырые данные не включены в репозиторий (размер > 100 MB). Ноутбуки содержат все результаты в выходных ячейках.
+
+**Что исключено:**
+- `attitude/master_table.parquet` (~146 MB) — основная аналитическая таблица
+- `attitude/runs/` (~428 MB) — сырые ответы API по прогонам
+- `hidden_states/outputs_qwen3_8b_instruct/` (~168 MB) — тензоры скрытых состояний
+- `input_for_gpt_analysis.csv` (~52 MB) — экспорт для GPT-кодера
+
+---
+
+## Конфиги ([`configs/`](configs/))
+
+| Файл | Содержание |
+|---|---|
+| `two_experiments_hassner_savary_goldsmith.json` | Виньетки, вопросы, шкалы ответов по тритментам |
+| `two_experiments_hassner_savary_goldsmith.md` | Читаемое описание экспериментов |
+| `incentives.json` | Тексты prompt-based стимулов (ключ → абзац) |
+| `prompts_attitude.json` | Шаблоны one-stage / two-step промптов |
+
+---
+
+## Оценка разметки ([`annotation/`](annotation/))
+
+Оценка согласованности GPT-кодера с ручной разметкой на golden set.
+
+- `goldenset.csv` — золотой стандарт (ручная разметка)
+- `evaluate_openai_coders.py` — скрипт сравнения моделей-кодеров
+- `results/` — метрики по полям и моделям, предсказания
+
+---
+
+## Локальный разметчик ([`local_labeler/`](local_labeler/))
+
+Дообучение **Qwen3-8B (QLoRA)** для воспроизведения разметки reasoning traces локально — альтернатива GPT-кодеру из [`04_markup_labeling.ipynb`](notebooks/04_markup_labeling.ipynb). Модель выдаёт один JSON-объект из 37 полей таксономии (19 causality `0/1`, 3 binary `0/1`, 15 direction `-1/0/1`).
+
+- Два стека: **MLX** (Apple Silicon) и **CUDA** (NVIDIA, `transformers`+`peft`+`bitsandbytes`).
+- Текущая серия экспериментов **E0–E8** (бинарная схема causality): `local_labeler/qwen_cuda_binary_lora/`.
+- Метрика отбора — mean per-field macro-F1 (база 0.667).
+- С чего начать: [`local_labeler/qwen_cuda_binary_lora/README.md`](local_labeler/qwen_cuda_binary_lora/README.md).
+
+---
+
+## Статья ([`paper/`](paper/))
+
+Черновик статьи по результатам исследования (LaTeX + PDF).
