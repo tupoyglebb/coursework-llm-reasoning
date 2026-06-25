@@ -43,4 +43,4 @@ attn_implementation: flash_attention_2      # sdpa (без зависимост�
 gen_batch_size: 16             # батч генерации в evaluate_model.py / infer_cuda.py
 grad_checkpoint: false         # bf16 8B влезает без чекпойнтинга -> быстрее
 
-adapter_path: ./adapters/tier0_E0
+adapter_path: ./adapters/tier0_E1
