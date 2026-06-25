@@ -1,0 +1,63 @@
+{
+  "n_before": 6767,
+  "n_after": 10151,
+  "inflate": 1.5,
+  "fields": {
+    "common_interests_prioritization_direction": {
+      "before": 0.0074,
+      "after": 0.0409
+    },
+    "majority_reliance_causality": {
+      "before": 0.2033,
+      "after": 0.2214
+    },
+    "moral_style_reasoning_present": {
+      "before": 0.1448,
+      "after": 0.1581
+    },
+    "source_reliance_direction": {
+      "before": 0.1144,
+      "after": 0.1106
+    },
+    "incentive_effect_direction": {
+      "before": 0.0089,
+      "after": 0.0383
+    },
+    "possibility_of_different_opinions": {
+      "before": 0.115,
+      "after": 0.1357
+    },
+    "ratio_of_goals_and_means_causality": {
+      "before": 0.0672,
+      "after": 0.0977
+    },
+    "fear_negative_evaluation_causality": {
+      "before": 0.1534,
+      "after": 0.1724
+    },
+    "self_deception_causality": {
+      "before": 0.0098,
+      "after": 0.0397
+    },
+    "common_interests_prioritization_causality": {
+      "before": 0.0074,
+      "after": 0.0409
+    },
+    "majority_reliance_direction": {
+      "before": 0.2279,
+      "after": 0.2423
+    },
+    "emotional_reasoning_causality": {
+      "before": 0.1534,
+      "after": 0.1765
+    },
+    "private_interests_prioritization_direction": {
+      "before": 0.0955,
+      "after": 0.117
+    },
+    "overcorrection_concern_causality": {
+      "before": 0.4376,
+      "after": 0.4464
+    }
+  }
+}

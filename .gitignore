@@ -24,9 +24,7 @@ __pycache__/
 **/data_mlx/
 **/data/
 **/data_balanced/
-**/data_binary/
-**/data_field_balanced/
-**/data_balanced_binary/
+# data_binary/, data_field_balanced/, data_balanced_binary/ разрешены (нужны для qwen_cuda_binary_lora)
 
 # Raw datasets (large, not uploaded)
 input_for_gpt_analysis.csv
