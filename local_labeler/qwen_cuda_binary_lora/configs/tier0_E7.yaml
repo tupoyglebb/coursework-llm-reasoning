@@ -1,0 +1,48 @@
+# Binary / Tier 0 / E7 — FIELD-AWARE OVERSAMPLING.
+# База: конфиг победителя E3 (lr=1e-4, cosine, rank=8, num_layers=36).
+# Изучаемый фактор: data_field_balanced — оверсамплинг по редким значениям полей.
+#
+# Мотивация: в тестовом наборе обнаружены крайне несбалансированные поля:
+#   self_deception_causality         372×0 / 4×1  → макс. F1 = 0.497 во всех экспериментах
+#   common_interests_*_causality       1×0 / 375×1 → макс. F1 = 0.499 во всех экспериментах
+# Стандартный оверсамплинг по условиям (experiment × group × incentive) эти поля не затрагивает.
+# Скрипт oversample_fields.py дублирует строки, в которых редкий класс присутствует,
+# до целевой кратности inflate_field, независимо от групповой принадлежности.
+#
+# Данные создаются:
+#   python scripts/oversample_fields.py \
+#       --in-dir ./data_binary --out-dir ./data_field_balanced \
+#       --inflate-field 3.0 --seed 42
+model_id: Qwen/Qwen3-8B
+data_dir: ./data_field_balanced  # <-- ИЗУЧАЕМЫЙ ФАКТОР
+
+learning_rate: 1.0e-4
+lr_scheduler: cosine
+warmup_steps: 0
+lora:
+  rank: 8
+  dropout: 0.05
+  scale: 20.0
+
+num_layers: 36
+batch_size: 2
+grad_accumulation_steps: 4
+iters: 2200                    # ~2 эпохи с учётом раздутого набора
+max_seq_length: 3072
+mask_prompt: true
+optim: adamw_torch
+seed: 42
+
+steps_per_report: 10
+save_every: 100
+eval_every: 100
+save_total_limit: 6
+prompt_style: compact
+val_max_new_tokens: 900
+
+quantization: nf4
+attn_implementation: flash_attention_2
+gen_batch_size: 16
+grad_checkpoint: false
+
+adapter_path: ./adapters/tier0_E7

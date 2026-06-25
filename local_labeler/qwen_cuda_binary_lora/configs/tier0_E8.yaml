@@ -1,0 +1,45 @@
+# Binary / Tier 0 / E8 — WARMUP.
+# База: конфиг победителя E3 (lr=1e-4, cosine, rank=8, num_layers=36).
+# Изучаемый фактор: warmup_steps 0 → 170 (~10% от iters).
+#
+# Мотивация: E3 обучает LoRA на всех 36 слоях с lr=1e-4 и нулевым warmup.
+# Это в 9 раз больше параметров адаптера, чем у E0 (4 слоя). Первые шаги
+# с полным lr по всем слоям одновременно могут давать нестабильные градиенты.
+# Warmup 170 шагов (~10% от 1700) — стандартная практика для глубоких адаптеров.
+# Гипотеза: плавный разгон улучшит поля с нестабильными F1 между экспериментами
+# (source_reliance, emotional_reasoning, majority_reliance).
+model_id: Qwen/Qwen3-8B
+data_dir: ./data_binary
+
+learning_rate: 1.0e-4
+lr_scheduler: cosine
+# --- ИЗУЧАЕМЫЙ ФАКТОР: warmup_steps 0 → 170 ---
+warmup_steps: 170
+
+lora:
+  rank: 8
+  dropout: 0.05
+  scale: 20.0
+
+num_layers: 36
+batch_size: 2
+grad_accumulation_steps: 4
+iters: 1700
+max_seq_length: 3072
+mask_prompt: true
+optim: adamw_torch
+seed: 42
+
+steps_per_report: 10
+save_every: 100
+eval_every: 100
+save_total_limit: 6
+prompt_style: compact
+val_max_new_tokens: 900
+
+quantization: nf4
+attn_implementation: flash_attention_2
+gen_batch_size: 16
+grad_checkpoint: false
+
+adapter_path: ./adapters/tier0_E8

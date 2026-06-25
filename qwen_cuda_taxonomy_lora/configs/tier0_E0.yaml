@@ -1,5 +1,6 @@
 # CUDA / Tier 0 / E0 — КОНТРОЛЬ. Старые гиперпараметры обучения на новой инфраструктуре.
 # alpha = scale * rank = 20 * 8 = 160 (вычисляется в train_qlora_cuda.py).
+# Это эталонный конфиг: новые ключи (валидация/скорость) показаны явно; E1..E5 берут их из дефолтов.
 model_id: Qwen/Qwen3-8B
 data_dir: ./data
 
@@ -14,15 +15,32 @@ lora:
 
 # --- ФИКСИРОВАННЫЕ КОНСТАНТЫ (одинаковы во всех Tier 0) ---
 num_layers: 4                  # последние 4 из 36 -> layers_to_transform=[32,33,34,35]
-batch_size: 1
-grad_accumulation_steps: 8
+batch_size: 8                  # bf16 на H200 -> крупный батч (эффективный = batch_size * grad_accum)
+grad_accumulation_steps: 1     # эффективный батч = 8 (как раньше при bs=1, grad_accum=8)
 iters: 1700                    # ~2 эпохи для 6767 train. Для 5544 -> 1400.
 max_seq_length: 3072
-grad_checkpoint: true
 mask_prompt: true
-optim: paged_adamw_8bit
+optim: adamw_torch             # адаптер крошечный -> 8-bit/paged не нужны; paged_adamw_8bit лишь при OOM на nf4
 seed: 42
+
+# --- ОТЧЁТНОСТЬ / ВАЛИДАЦИЯ / ОТБОР ЛУЧШЕГО ЧЕКПОЙНТА ---
 steps_per_report: 10
-save_every: 100
+save_every: 100                # дефолт для eval_every, если тот не задан
+eval_every: 100                # валидация по eval_loss И сохранение каждые N шагов (save=eval для отбора лучшего)
 save_total_limit: 6
+# Лучший чекпойнт — по eval_loss (load_best_model_at_end). Оценка по полям (mean_f1_all) — отдельно:
+#   python scripts/evaluate_model.py --config <cfg> --label <EXP>
+# Ключи ниже читает evaluate_model.py (генерация на тесте), в обучении не используются:
+prompt_style: compact
+val_max_new_tokens: 900
+
+# --- КВАНТИЗАЦИЯ / ПРОИЗВОДИТЕЛЬНОСТЬ (H200) ---
+# nf4: учим LoRA на 4-бит базе, чтобы адаптер КОМПЕНСИРОВАЛ ошибку квантизации (QLoRA).
+# Инференс тоже в nf4 (evaluate_model.py берёт quantization отсюда) -> train/serve совпадают.
+# none(bf16) — быстрее обучать, но train/serve разойдутся, если сервить квантованно.
+quantization: nf4              # nf4 | int8 | none(bf16)
+attn_implementation: flash_attention_2      # sdpa (без зависимостей) | flash_attention_2 (если собран)
+gen_batch_size: 16             # батч генерации в evaluate_model.py / infer_cuda.py
+grad_checkpoint: false         # bf16 8B влезает без чекпойнтинга -> быстрее
+
 adapter_path: ./adapters/tier0_E0
