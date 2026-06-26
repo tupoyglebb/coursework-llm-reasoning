@@ -1,0 +1,158 @@
+{
+  "n_rows": 376,
+  "prediction_ok_rate": 1.0,
+  "row_exact_match": 0.18351063829787234,
+  "flat_macro_precision": 0.9259719432585015,
+  "flat_macro_recall": 0.9060412307754263,
+  "flat_macro_f1": 0.9154195333859954,
+  "per_column": {
+    "overcorrection_concern_causality": {
+      "accuracy": 0.7898936170212766,
+      "macro_f1": 0.7888045959032187
+    },
+    "treatment_awareness_causality": {
+      "accuracy": 1.0,
+      "macro_f1": 1.0
+    },
+    "incentive_awareness_causality": {
+      "accuracy": 0.8164893617021277,
+      "macro_f1": 0.7409925424541017
+    },
+    "self_enhancement_causality": {
+      "accuracy": 0.9122340425531915,
+      "macro_f1": 0.8416842105263158
+    },
+    "fear_negative_evaluation_causality": {
+      "accuracy": 0.8936170212765957,
+      "macro_f1": 0.806862543661393
+    },
+    "self_deception_causality": {
+      "accuracy": 0.9893617021276596,
+      "macro_f1": 0.49732620320855614
+    },
+    "majority_reliance_causality": {
+      "accuracy": 0.8617021276595744,
+      "macro_f1": 0.7790135177901352
+    },
+    "source_reliance_causality": {
+      "accuracy": 0.925531914893617,
+      "macro_f1": 0.9212164750957854
+    },
+    "common_interests_prioritization_causality": {
+      "accuracy": 0.9973404255319149,
+      "macro_f1": 0.4993342210386152
+    },
+    "private_interests_prioritization_causality": {
+      "accuracy": 0.9042553191489362,
+      "macro_f1": 0.8975786924939467
+    },
+    "personal_cost_burden_causality": {
+      "accuracy": 0.9680851063829787,
+      "macro_f1": 0.9679945522642153
+    },
+    "ratio_of_goals_and_means_causality": {
+      "accuracy": 0.925531914893617,
+      "macro_f1": 0.5139427516158819
+    },
+    "emotional_reasoning_causality": {
+      "accuracy": 0.8829787234042553,
+      "macro_f1": 0.7462576687116564
+    },
+    "public_recognition_causality": {
+      "accuracy": 1.0,
+      "macro_f1": 1.0
+    },
+    "privacy_factor_causality": {
+      "accuracy": 0.976063829787234,
+      "macro_f1": 0.9681975809862133
+    },
+    "social_reward_causality": {
+      "accuracy": 0.9893617021276596,
+      "macro_f1": 0.9867861535758214
+    },
+    "emergency_urgency_causality": {
+      "accuracy": 0.9893617021276596,
+      "macro_f1": 0.9891203703703704
+    },
+    "legality_assessment_causality": {
+      "accuracy": 0.9361702127659575,
+      "macro_f1": 0.9354395604395604
+    },
+    "cruelty_causality": {
+      "accuracy": 1.0,
+      "macro_f1": 1.0
+    },
+    "possibility_of_different_opinions": {
+      "accuracy": 0.9308510638297872,
+      "macro_f1": 0.7779796511627908
+    },
+    "moral_style_reasoning_present": {
+      "accuracy": 0.901595744680851,
+      "macro_f1": 0.7771048626131538
+    },
+    "rational_style_reasoning_present": {
+      "accuracy": 1.0,
+      "macro_f1": 1.0
+    },
+    "treatment_effect_direction": {
+      "accuracy": 0.9388297872340425,
+      "macro_f1": 0.9424030309330745
+    },
+    "incentive_effect_direction": {
+      "accuracy": 0.8936170212765957,
+      "macro_f1": 0.5122586882730645
+    },
+    "majority_reliance_direction": {
+      "accuracy": 0.8031914893617021,
+      "macro_f1": 0.7737161214089712
+    },
+    "source_reliance_direction": {
+      "accuracy": 0.8882978723404256,
+      "macro_f1": 0.8243719223017344
+    },
+    "common_interests_prioritization_direction": {
+      "accuracy": 0.9574468085106383,
+      "macro_f1": 0.3652828979003045
+    },
+    "private_interests_prioritization_direction": {
+      "accuracy": 0.8271276595744681,
+      "macro_f1": 0.738149963731359
+    },
+    "personal_cost_burden_direction": {
+      "accuracy": 0.925531914893617,
+      "macro_f1": 0.8397197241311769
+    },
+    "ratio_of_goals_and_means_direction": {
+      "accuracy": 0.8882978723404256,
+      "macro_f1": 0.6405069344811095
+    },
+    "emotional_reasoning_direction": {
+      "accuracy": 0.8590425531914894,
+      "macro_f1": 0.787962962962963
+    },
+    "public_recognition_direction": {
+      "accuracy": 0.9893617021276596,
+      "macro_f1": 0.8980278980278981
+    },
+    "privacy_factor_direction": {
+      "accuracy": 0.9654255319148937,
+      "macro_f1": 0.9308704982197825
+    },
+    "social_reward_direction": {
+      "accuracy": 0.9840425531914894,
+      "macro_f1": 0.6561551122757604
+    },
+    "emergency_urgency_direction": {
+      "accuracy": 0.9840425531914894,
+      "macro_f1": 0.6578488372093023
+    },
+    "legality_assessment_direction": {
+      "accuracy": 0.9361702127659575,
+      "macro_f1": 0.6245503252965939
+    },
+    "cruelty_direction": {
+      "accuracy": 0.9601063829787234,
+      "macro_f1": 0.8850392870326425
+    }
+  }
+}

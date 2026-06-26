@@ -1,0 +1,211 @@
+{
+  "_description": "Example outputs from the fine-tuned Qwen3-8B binary labeler (qwen_cuda_binary_lora). Each 'model_output' is the raw JSON the model returns in the assistant turn.",
+
+  "examples": [
+    {
+      "_label": "Hassner_2023 | control_base_case | no_incentive",
+      "_note": "Control group + no_incentive → treatment_awareness_causality=0, incentive_awareness_causality=0 enforced by rules. Reasoning uses majority opinion, legal/rights framing, and cruelty assessment to oppose sleep deprivation.",
+      "input": {
+        "experiment_name": "Hassner_2023_Persuasive_and_Unpersuasive_Critiques_of_Torture",
+        "group_name": "control_base_case",
+        "incentive": "no_incentive",
+        "stage1_reasoning_text": "The question asks whether to support denying sleep to a CIA suspect. Sleep deprivation is considered torture under international law and is widely condemned. Most survey respondents would oppose it on ethical and legal grounds. The urgency of the terror threat is noted but does not override the consensus against coercive interrogation. Answer: No."
+      },
+      "model_output": {
+        "overcorrection_concern_causality": 0,
+        "treatment_awareness_causality": 0,
+        "incentive_awareness_causality": 0,
+        "self_enhancement_causality": 0,
+        "fear_negative_evaluation_causality": 0,
+        "self_deception_causality": 0,
+        "majority_reliance_causality": 1,
+        "source_reliance_causality": 1,
+        "common_interests_prioritization_causality": 0,
+        "private_interests_prioritization_causality": 0,
+        "personal_cost_burden_causality": 0,
+        "ratio_of_goals_and_means_causality": 0,
+        "emotional_reasoning_causality": 0,
+        "public_recognition_causality": 0,
+        "privacy_factor_causality": 0,
+        "social_reward_causality": 0,
+        "emergency_urgency_causality": 1,
+        "legality_assessment_causality": 1,
+        "cruelty_causality": 1,
+        "possibility_of_different_opinions": 0,
+        "moral_style_reasoning_present": 1,
+        "rational_style_reasoning_present": 0,
+        "treatment_effect_direction": 0,
+        "incentive_effect_direction": 0,
+        "majority_reliance_direction": -1,
+        "source_reliance_direction": -1,
+        "common_interests_prioritization_direction": 0,
+        "private_interests_prioritization_direction": 0,
+        "personal_cost_burden_direction": 0,
+        "ratio_of_goals_and_means_direction": 0,
+        "emotional_reasoning_direction": 0,
+        "public_recognition_direction": 0,
+        "privacy_factor_direction": 0,
+        "social_reward_direction": 0,
+        "emergency_urgency_direction": 1,
+        "legality_assessment_direction": -1,
+        "cruelty_direction": -1
+      }
+    },
+
+    {
+      "_label": "Hassner_2023 | treatment_modest_intelligence | incentive_H",
+      "_note": "Non-control treatment: model uses treatment-specific content (limited informational value). Incentive present → incentive_awareness coded. Reasoning weighs public safety, urgency, and effectiveness (ratio_of_goals_and_means). Overcorrection concern flagged.",
+      "input": {
+        "experiment_name": "Hassner_2023_Persuasive_and_Unpersuasive_Critiques_of_Torture",
+        "group_name": "treatment_modest_intelligence",
+        "incentive": "H",
+        "stage1_reasoning_text": "As a plausible respondent I should avoid giving an overly sanitised answer. The treatment notes that sleep deprivation may only confirm existing CIA suspicions rather than yield new intelligence, which limits its usefulness. The incentive in this study pushes toward realistic human responding. Public safety is at stake, but if the method is unlikely to produce actionable information, the cost-benefit ratio is unfavorable. I lean No."
+      },
+      "model_output": {
+        "overcorrection_concern_causality": 1,
+        "treatment_awareness_causality": 1,
+        "incentive_awareness_causality": 1,
+        "self_enhancement_causality": 0,
+        "fear_negative_evaluation_causality": 0,
+        "self_deception_causality": 0,
+        "majority_reliance_causality": 0,
+        "source_reliance_causality": 0,
+        "common_interests_prioritization_causality": 1,
+        "private_interests_prioritization_causality": 0,
+        "personal_cost_burden_causality": 0,
+        "ratio_of_goals_and_means_causality": 1,
+        "emotional_reasoning_causality": 0,
+        "public_recognition_causality": 0,
+        "privacy_factor_causality": 0,
+        "social_reward_causality": 0,
+        "emergency_urgency_causality": 1,
+        "legality_assessment_causality": 0,
+        "cruelty_causality": 0,
+        "possibility_of_different_opinions": 0,
+        "moral_style_reasoning_present": 0,
+        "rational_style_reasoning_present": 1,
+        "treatment_effect_direction": -1,
+        "incentive_effect_direction": -1,
+        "majority_reliance_direction": 0,
+        "source_reliance_direction": 0,
+        "common_interests_prioritization_direction": 1,
+        "private_interests_prioritization_direction": 0,
+        "personal_cost_burden_direction": 0,
+        "ratio_of_goals_and_means_direction": -1,
+        "emotional_reasoning_direction": 0,
+        "public_recognition_direction": 0,
+        "privacy_factor_direction": 0,
+        "social_reward_direction": 0,
+        "emergency_urgency_direction": 1,
+        "legality_assessment_direction": 0,
+        "cruelty_direction": 0
+      }
+    },
+
+    {
+      "_label": "Savary_Goldsmith_2020 | public_recognition_treatment | no_incentive",
+      "_note": "Donation vignette. Public recognition treatment active. Reasoning uses both moral style (duty to help) and rational style (cost-benefit). Privacy and social reward coded. possibility_of_different_opinions=1 because model notes some people prefer anonymous giving.",
+      "input": {
+        "experiment_name": "Savary_Goldsmith_2020_Donation",
+        "group_name": "public_recognition_treatment",
+        "incentive": "no_incentive",
+        "stage1_reasoning_text": "The question is whether I would donate $5 knowing my name will be publicly listed. Some people value recognition and see it as a social reward; others prefer to give anonymously out of modesty. I think most respondents would still donate — $5 is a small cost and public recognition may actually motivate giving. However, people who find public listing performative might be put off. On balance, I would donate: the cause is worthy, the cost is low, and public recognition is mildly positive. Yes."
+      },
+      "model_output": {
+        "overcorrection_concern_causality": 0,
+        "treatment_awareness_causality": 1,
+        "incentive_awareness_causality": 0,
+        "self_enhancement_causality": 0,
+        "fear_negative_evaluation_causality": 0,
+        "self_deception_causality": 0,
+        "majority_reliance_causality": 1,
+        "source_reliance_causality": 0,
+        "common_interests_prioritization_causality": 1,
+        "private_interests_prioritization_causality": 0,
+        "personal_cost_burden_causality": 1,
+        "ratio_of_goals_and_means_causality": 0,
+        "emotional_reasoning_causality": 0,
+        "public_recognition_causality": 1,
+        "privacy_factor_causality": 1,
+        "social_reward_causality": 1,
+        "emergency_urgency_causality": 0,
+        "legality_assessment_causality": 0,
+        "cruelty_causality": 0,
+        "possibility_of_different_opinions": 1,
+        "moral_style_reasoning_present": 1,
+        "rational_style_reasoning_present": 1,
+        "treatment_effect_direction": 1,
+        "incentive_effect_direction": 0,
+        "majority_reliance_direction": 1,
+        "source_reliance_direction": 0,
+        "common_interests_prioritization_direction": 1,
+        "private_interests_prioritization_direction": 0,
+        "personal_cost_burden_direction": 1,
+        "ratio_of_goals_and_means_direction": 0,
+        "emotional_reasoning_direction": 0,
+        "public_recognition_direction": 1,
+        "privacy_factor_direction": -1,
+        "social_reward_direction": 1,
+        "emergency_urgency_direction": 0,
+        "legality_assessment_direction": 0,
+        "cruelty_direction": 0
+      }
+    }
+  ],
+
+  "_field_reference": {
+    "causality_fields_19": {
+      "values": "0 = absent, 1 = present",
+      "fields": [
+        "overcorrection_concern_causality",
+        "treatment_awareness_causality",
+        "incentive_awareness_causality",
+        "self_enhancement_causality",
+        "fear_negative_evaluation_causality",
+        "self_deception_causality",
+        "majority_reliance_causality",
+        "source_reliance_causality",
+        "common_interests_prioritization_causality",
+        "private_interests_prioritization_causality",
+        "personal_cost_burden_causality",
+        "ratio_of_goals_and_means_causality",
+        "emotional_reasoning_causality",
+        "public_recognition_causality",
+        "privacy_factor_causality",
+        "social_reward_causality",
+        "emergency_urgency_causality",
+        "legality_assessment_causality",
+        "cruelty_causality"
+      ]
+    },
+    "binary_fields_3": {
+      "values": "0 = absent, 1 = present",
+      "fields": [
+        "possibility_of_different_opinions",
+        "moral_style_reasoning_present",
+        "rational_style_reasoning_present"
+      ]
+    },
+    "direction_fields_15": {
+      "values": "-1 = lowers support, 0 = NA/absent causality, 1 = raises support",
+      "constraint": "If corresponding causality == 0, direction must == 0",
+      "fields": [
+        "treatment_effect_direction",
+        "incentive_effect_direction",
+        "majority_reliance_direction",
+        "source_reliance_direction",
+        "common_interests_prioritization_direction",
+        "private_interests_prioritization_direction",
+        "personal_cost_burden_direction",
+        "ratio_of_goals_and_means_direction",
+        "emotional_reasoning_direction",
+        "public_recognition_direction",
+        "privacy_factor_direction",
+        "social_reward_direction",
+        "emergency_urgency_direction",
+        "legality_assessment_direction",
+        "cruelty_direction"
+      ]
+    }
+  }
+}

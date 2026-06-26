@@ -15,9 +15,9 @@ __pycache__/
 
 # Артефакты прогонов QLoRA
 **/adapters/
-**/predictions/
-**/experiments/results.csv
+**/predictions/test_pred_*.csv
 **/*.safetensors
+# experiments/results.csv и predictions/metrics_*.json трекаются (малые текстовые файлы)
 
 # Данные QLoRA (большие; воспроизводятся скриптами)
 **/teacher_labeled_*.csv

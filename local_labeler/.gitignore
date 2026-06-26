@@ -7,9 +7,12 @@
 
 # --- Артефакты прогонов ---
 **/adapters/
-**/predictions/
-**/experiments/results.csv
+**/predictions/test_pred_*.csv
 **/*.safetensors
+# predictions/metrics_*.json и experiments/results.csv трекаются
+
+# --- Архивы с результатами (большие бинарники, хранятся локально) ---
+binary_results/
 
 # --- Данные (большие; у владельца проекта уже есть локально) ---
 # Раскомментируй, если решишь всё-таки версионировать данные в ПРИВАТНОМ репозитории.
