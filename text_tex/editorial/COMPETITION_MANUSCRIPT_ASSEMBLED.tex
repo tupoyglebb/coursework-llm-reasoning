@@ -1,0 +1,416 @@
+\documentclass[14pt,a4paper]{extarticle}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{mathptmx}
+
+\usepackage[
+    top=2cm,
+    bottom=2cm,
+    left=3cm,
+    right=1.5cm
+]{geometry}
+
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{tabularx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{makecell}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{csquotes}
+\usepackage{microtype}
+\usepackage[
+    backend=biber,
+    style=apa,
+    natbib=true
+]{biblatex}
+\addbibresource{Bib additions.bib}
+
+% Square-bracket APA citations: [Author, Year].
+% All existing \cite{...} commands in the text remain unchanged.
+\DeclareDelimAlias[squarecite]{finalnamedelim}[parencite]{finalnamedelim}
+\DeclareCiteCommand{\squarecite}[\mkbibbrackets]
+  {\usebibmacro{cite:init}%
+   \usebibmacro{prenote}%
+   \toggletrue{apa:inpcite}}
+  {\usebibmacro{citeindex}%
+   \usebibmacro{cite}%
+   \usebibmacro{cite:post}}
+  {}
+  {\usebibmacro{postnote}%
+   \togglefalse{apa:inpcite}}
+\DeclareMultiCiteCommand{\squarecites}[\mkbibbrackets]{\squarecite}
+  {\setunit{\multicitedelim}}
+\let\cite\squarecite
+
+\newcommand{\safeincludegraphics}[2][]{%
+  \IfFileExists{#2}{%
+    \includegraphics[#1]{#2}%
+  }{%
+    \IfFileExists{figures/#2}{%
+      \includegraphics[#1]{figures/#2}%
+    }{%
+      \fbox{\parbox{0.86\linewidth}{\centering Missing figure file: \texttt{\detokenize{#2}}}}%
+    }%
+  }%
+}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    citecolor=black
+}
+
+\onehalfspacing
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+% Absorb residual right-margin overflow in justified prose (long identifiers,
+% inline math) without altering wording.
+\setlength{\emergencystretch}{3em}
+
+\setlist[itemize]{leftmargin=1.5em}
+\setlist[enumerate]{leftmargin=1.8em}
+
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection.}{0.5em}{}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+% Make snake_case identifiers wrap when a line would otherwise overflow (purely a
+% line-breaking aid: a reluctant break after each underscore, no glyph change; no
+% section title or caption uses \_, so PDF bookmarks are unaffected).
+\newcommand{\snakebreak}{\renewcommand{\_}{\textunderscore\allowbreak}}
+\begin{document}
+\snakebreak
+\begin{center}
+{\Large\bfseries System-Prompt Stimuli in Socially Sensitive LLM Vignette Experiments}\\[0.5cm]
+Research manuscript --- anonymous competition version
+\end{center}
+\vspace{0.5cm}
+
+\section{Introduction}
+
+Large language models (LLMs) are increasingly used to simulate survey respondents and to pilot experimental designs before human data collection \cite{argyle2023,horton2023,dillion2023}. Yet a model's ability to produce plausible answers does not establish that it reproduces the effects of an experimental manipulation. For research design, the more relevant question is whether a synthetic sample responds to treatment conditions in the same direction as human participants, and whether that correspondence survives changes in the instructions given to the model.
+
+Socially sensitive vignette experiments provide a demanding test. Human answers can be shaped by social desirability pressures, while LLM outputs may also reflect safety alignment, preference optimization, and instruction-following \cite{tourangeau2007,krumpal2013,salecha2024,sharma2023}. These processes are not equivalent. In particular, a prompt that shifts an LLM answer away from a socially approved position does not necessarily make that answer more representative of human behavior. The distinction between \emph{behavioral steering} and \emph{human-effect replication} is therefore central to this study.
+
+We examine LLM responses to two published attitude-expression experiments with contrasting normative contexts: Hassner's vignette on support for coercive interrogation and Savary and Goldsmith's vignette on willingness to donate under different forms of public recognition. We compare treatment contrasts in synthetic responses with those reported for human respondents, and investigate how additional system-prompt stimuli affect model answers. The stimuli are treated as experimental interventions, not as validated corrections for social desirability bias.
+
+\textbf{Research question.} How do system-prompt stimuli intended to alter the conditions of socially desirable responding affect LLM behavior in socially sensitive vignette experiments, as observed in final answers, verbalized reasoning, and internal representations?
+
+\textbf{Goal.} To characterize the effects of system-prompt stimuli across three complementary observational levels: (1) final survey answers and their sensitivity to original vignette treatments; (2) the argumentative structure of verbalized reasoning; and (3) hidden-state representations in a separate local-model analysis.
+
+\textbf{Objectives.} First, establish the behavioral baseline by comparing LLM treatment contrasts with published human benchmarks in both vignette experiments. Second, estimate how stimulus conditions and their design attributes affect answers and interact with vignette treatments. Third, analyze stimulus-associated differences in annotated reasoning and their relationship to answers. Fourth, explore the representation of stimulus, treatment, and answer information in hidden states. Human benchmarks provide an external reference for interpreting synthetic responses, not a universal success criterion for every analysis.
+
+The three levels of observation are analytically distinct. Changes in verbalized reasoning do not by themselves identify causal cognitive mechanisms; local-model hidden-state findings cannot automatically be generalized to API models. Likewise, movement away from a socially approved answer does not establish reduced social desirability bias or greater human realism.
+
+The empirical analysis distinguishes the published human benchmarks, the completed LLM experiments, and any additional experiments conducted after this draft. The latter will be incorporated only after their design, data coverage, and analysis are verified. The paper first reviews the relevant literature and experimental designs, then presents the generation and analysis protocols, behavioral results, supplementary reasoning and representation analyses, and the limits of using LLMs for experimental pretesting.
+
+\section{Literature Review}
+
+\subsection{LLMs as synthetic respondents and experimental subjects}
+
+Large language models have been proposed as low-cost environments for piloting surveys and behavioral experiments. \textcite{argyle2023} introduced the notion of \emph{algorithmic fidelity}, using demographic conditioning to approximate human subgroup responses. \textcite{aher2023} extended simulation to classic human-subject experiments, while \textcite{horton2023} framed LLMs as computational economic agents. Related studies examine model behavior in repeated games and other experimental settings \cite{akata2025,mei2024}. Together, this literature establishes the methodological appeal of synthetic respondents: prompts and experimental conditions can be varied rapidly before human fieldwork.
+
+A central distinction, however, is between matching an observed response distribution and recovering the \emph{effect} of an experimental treatment. In a large-scale replication of published vignette studies, \textcite{cui2025} reported frequent agreement in the direction of main effects, alongside inflated effect magnitudes and weaker performance on socially sensitive topics. Other studies document limited demographic responsiveness, compressed response variation, and sensitivity to question wording or answer-option format \cite{santurkar2023,bisbee2024,dominguez2024,rottger2024}. These findings caution against treating a plausible synthetic answer, or even agreement on one treatment contrast, as general evidence of human representativeness.
+
+Our study therefore uses published human experiments as external behavioral benchmarks while investigating an additional question: how the \emph{instructions surrounding} an otherwise fixed vignette change LLM responses. The comparison with human treatment effects is informative, but the effect of system-prompt stimuli is also an object of study in its own right.
+
+\subsection{Social desirability bias in survey research}
+
+Social desirability bias (SDB) refers to response distortion associated with the perceived social acceptability of an answer. Classic accounts distinguish \emph{impression management}, in which respondents adjust their presentation to an audience, from \emph{self-deceptive enhancement}, which concerns favorable self-beliefs \cite{crowne1960,paulhus1984,randallFernandes1991}. Survey research further shows that sensitivity depends on the question, mode of administration, perceived privacy, and normative context \cite{tourangeau2007,krumpal2013}. Social desirability pressures can favor both the rejection of stigmatized attitudes and the endorsement of approved prosocial intentions.
+
+These insights motivate the use of two attitude-expression vignettes with contrasting normative contexts: support for coercive interrogation and willingness to donate. Unlike autobiographical self-reports, these tasks ask respondents to evaluate described situations. This makes them suitable for comparing treatment responses under controlled prompt templates, although it does not establish that the resulting variation is caused by SDB alone.
+
+Survey methodology offers both indirect elicitation designs and contextual measures, such as anonymity and self-administration, to limit socially desirable responding \cite{nederhof1985,horiuchi2022}. Our system-prompt stimuli are not equivalent to these validated human-survey techniques. They manipulate the instructions and purported stakes of the model's task; whether they reduce a bias, rather than merely redirect the answer, must be evaluated separately.
+
+\subsection{Alignment, sycophancy, and prompt sensitivity}
+
+The analogy between human SDB and LLM behavior is useful but incomplete. \textcite{salecha2024} document socially desirable shifts in models' personality-test answers, while \textcite{sharma2023} examine \emph{sycophancy}: the tendency of preference-trained models to favor responses aligned with apparent user expectations. These observations are compatible with normatively skewed answers in sensitive survey tasks, but do not identify a single mechanism shared by humans and models. Safety-related constraints, learned response preferences, and direct compliance with instructions are distinct possible explanations.
+
+Prompt sensitivity further complicates interpretation. \textcite{tjuatja2024} report that aligned models can diverge from human survey-response biases while remaining sensitive to seemingly minor changes in wording. Consequently, a stimulus that moves an answer away from the socially approved pole may reflect instruction-following, framing effects, or other model-specific behavior. Such movement is an observable treatment effect, not by itself evidence of greater realism or an unbiased latent preference.
+
+This motivates treating system-prompt wording as an experimentally manipulated factor rather than a neutral setup condition. The present study examines stimulus contrasts and attributes, including framing valence and the stated consequences of an answer, while keeping the distinction between \emph{response steering} and \emph{human correspondence} explicit.
+
+\subsection{Reasoning traces and levels of observation}
+
+Prompting can affect not only a final answer but also the text generated before it. Work on chain-of-thought elicitation shows that instructions to articulate intermediate steps can change task performance \cite{wei2022,kojima2022}; socially oriented reasoning prompts have likewise been studied in behavioral games \cite{akata2025}. These findings justify analyzing verbalized reasoning as an additional \emph{output} of the experimental condition. They do not establish that such traces faithfully reveal the internal causal process producing an answer.
+
+We therefore distinguish three observational levels. First, final answers show behavioral responses to vignette treatments and system-prompt stimuli. Second, structured annotation of verbalized reasoning describes how generated arguments vary across conditions and relate statistically to answers; the interpretation depends on annotation reliability. Third, a separate local-model analysis explores whether stimulus-related differences are detectable in hidden-state representations. These analyses are complementary, but findings from the local model cannot automatically be attributed to the API models used in the behavioral experiments.
+
+\subsection*{Research gap}
+
+Existing research has examined synthetic respondent fidelity, social desirability and sycophancy in aligned models, and prompt-based behavioral steering. The present study connects these questions by systematically varying system-prompt stimuli in two socially sensitive vignette experiments and examining their effects across answers, verbalized reasoning, and---for a separate local model---hidden states. Human experimental results provide an external benchmark for interpreting behavioral contrasts, while the primary contribution is a multi-level account of how task-framing interventions alter LLM outputs and representations. Claims about bias mitigation, human validity, and causal mechanisms are kept separate from the directly observed effects.
+
+\section{Research Design and Data}
+
+\subsection{Case selection and experimental treatments}
+
+We study two published \emph{attitude-expression} vignette experiments. Unlike autobiographical self-report questions, these tasks ask for judgments about externally described situations. This choice permits controlled variation of vignette treatments without assigning demographic identities or personal histories to the model. The cases also differ in the normative direction of the response: endorsement of coercive interrogation is socially disapproved, whereas charitable giving is socially approved. We use this contrast to investigate whether system-prompt stimuli have similar or domain-specific effects.
+
+\textbf{Hassner: coercive interrogation.} Following \textcite{hassner2023}, models evaluate the use of sleep deprivation in interrogating a terrorism suspect. The four conditions are a base case, modest expected intelligence value, protracted duration, and their combination. The response is binary (support versus opposition). Opposition is treated as the \emph{normatively approved response direction} for descriptive comparisons, not as a verified measure of an individual respondent's latent attitude.
+
+\textbf{Savary and Goldsmith: charitable donation.} Following \textcite{savary2020}, models report willingness to donate \$5 on a five-point scale. The three vignette conditions are private donation, public recognition, and public recognition combined with an additional social benefit. Greater stated willingness is the normatively approved response direction. The public-recognition treatment is also substantively important because it may alter the interpretation of donation as altruism or reputational signaling.
+
+Published human treatment contrasts provide an external benchmark. They are not assumed to be reproduced by every model, and matching a treatment direction does not imply that the full human response distribution or the underlying psychological mechanism has been reproduced.
+
+\subsection{Prompt structure and unit of observation}
+
+The original vignette treatment enters through the user-facing question and response options. The system message specifies the survey-response task; experimental system-prompt stimuli are added to this instruction layer. No demographic persona is assigned in the principal behavioral design. The exact template and verbatim stimulus strings must be preserved from the generation configurations before the final manuscript is frozen.
+
+Each generation produces a final answer and, where available, a model-generated reasoning trace associated with the same response event. These are separate analytical outputs, not independent observations. Repeated generations under a fixed model--experiment--treatment--stimulus configuration measure response variation within that configuration; they do not represent independent human respondents. We distinguish the \emph{run} (one generation) from the \emph{design cell} (a specified combination of model, vignette treatment, stimulus, and relevant generation settings). Statistical uncertainty must account for this nested structure rather than treating all completions as exchangeable people.
+
+\subsection{Models, decoding, and analytical samples}
+
+The behavioral corpus uses four API-accessed reasoning-capable models: \texttt{moonshotai/kimi-k2-thinking}, \texttt{z-ai/glm-4.6}, \texttt{qwen/qwen3.5-9b}, and \texttt{minimax/minimax-m2.5}. These models were selected pragmatically for the availability of final answers and reasoning traces; they do not constitute a representative sample of all LLMs. A separate local \texttt{Qwen3-8B} is used for hidden-state analysis and is not pooled with the API behavioral sample.
+
+The principal generation regime uses temperature $T=0.01$, with a separate no-stimulus comparison at $T=1.0$. Low temperature improves repeatability but may compress within-cell variation; the temperature comparison is a decoding sensitivity check rather than an independent human benchmark.
+
+The existing manuscript reports 15{,}680 raw runs, 12{,}434 retained rows after preprocessing, and 11{,}040 observations in the main $T=0.01$ analysis. These are \emph{reported historical totals}, not figures independently recomputed for this editorial draft. Final counts, exclusion rules, rerun handling, and cell-level coverage must be reconciled against raw data and analysis scripts before submission. In particular, the extended H--M stimulus family is not covered by all four API models; analyses of these conditions must identify the actual model subset and avoid unqualified cross-model generalization.
+
+\section{System-Prompt Stimuli}
+
+\subsection{Conceptual role}
+
+System-prompt stimuli modify the instructions surrounding a fixed vignette. They are intended to discourage normatively polished or sanitized answers, but their observed effects are described here as \emph{stimulus-induced response shifts}, not as established reductions in social desirability bias. The direction of a shift is evaluated relative to the \emph{normatively approved response direction} in each case. A shift away from that direction does not, on its own, establish greater correspondence with human responses.
+
+The historically implemented stimulus set includes the no-stimulus baseline, two core conditions (A and C), and the extended H--M family. A emphasizes the costs of sanitized answers; C includes an explicit anti-overcorrection qualification. The H--M family varies the stated target of consequences or benefits (science versus a company; personal or institutional benefit versus public good) and the valence of the framing (negative consequences versus positive benefits). These labels describe intended prompt functions, not independently identified causal mechanisms.
+
+\subsection{Historical stimulus conditions and coverage}
+
+\begin{table}[htbp]
+\centering
+\caption{Historical stimulus families and interpretation}
+\label{tab:stimuli_editorial}
+\begin{tabularx}{\textwidth}{L{2.5cm}X}
+\toprule
+\textbf{Condition} & \textbf{Interpretation and limitation}\\
+\midrule
+No stimulus & Baseline survey task without an additional experimental system-prompt stimulus.\\
+A & Strong anti-sanitization / realism instruction invoking negative consequences for research quality; exact wording to verify.\\
+C & Core realism instruction with an anti-overcorrection qualification; not a neutral control matched to A on all dimensions.\\
+H--K & Negative consequence framing with different stated recipients or beneficiaries; fielded in a subset of models.\\
+L--M & Positive benefit framing with different stated recipients or beneficiaries; fielded in a subset of models.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The existing coverage matrix contains H--M records for \emph{both} Hassner and Savary. However, the available project reconstruction provides semantic descriptions rather than verified verbatim H--M prompt strings. Accordingly, this draft does not reproduce invented quotations or claim that the historical conditions constitute a complete orthogonal factorial design. Exact prompt text, model snapshots, and an experiment--treatment--stimulus--model coverage table are prerequisites for strong comparisons among stimulus attributes.
+
+Additional conditions proposed in the later experiment plan (including consequence-specific and matched neutral controls) are \emph{prospective}, not part of the completed historical corpus. They will be described as implemented only after the corresponding configurations, generations, and analyses exist.
+
+\subsection{Analytical contrasts}
+
+The behavioral analysis distinguishes three comparisons: (i) original vignette-treatment contrasts within a fixed prompt condition; (ii) stimulus-induced shifts relative to a no-stimulus or explicitly specified reference condition; and (iii) changes in original treatment contrasts across stimulus conditions. Attribute-level comparisons are interpreted as conditional associations unless the compared prompts isolate the attribute of interest and have sufficient balanced coverage. Reasoning annotations and hidden-state measures are examined as complementary outcomes, with their separate validity and generalizability limitations stated in the relevant methods sections.
+
+\section{Analytical Strategy}
+
+We analyze three distinct levels of model response: final answers, verbalized reasoning, and hidden-state representations. The first two concern the four API models; the third is an exploratory analysis of a separate local model. The unit of recorded data is one generation, but repeated generations within a model--vignette-treatment--stimulus cell are not independent synthetic respondents.
+
+\subsection{Final answers}
+
+For Hassner, the binary support outcome is analyzed using a logit GLM; for Savary, the five-point willingness outcome is analyzed using OLS, with ordinal and thresholded specifications as sensitivity checks. The principal models include vignette-treatment, system-stimulus, and model indicators, plus treatment-by-stimulus interactions; an expanded specification also allows treatment effects to vary by model. Nonparametric comparisons use chi-squared tests for Hassner and rank-based tests for Savary. Holm corrections are applied to prespecified pairwise families, and false-discovery-rate adjustments are reported for broader coefficient families.
+
+A treatment-by-stimulus interaction tests whether the original vignette contrast changes under a system-prompt stimulus. For two treatment levels and two stimulus conditions, the descriptive difference-in-differences contrast is
+\begin{equation}
+\widehat{\mathrm{DiD}}=
+(\bar y_{1,s}-\bar y_{0,s})-(\bar y_{1,0}-\bar y_{0,0}).
+\end{equation}
+This is an interaction contrast within a controlled generation design, not a claim about a temporal policy intervention.
+
+The original analysis reports heteroskedasticity-robust HC3 estimates and cluster-robust re-estimation by model $\times$ vignette treatment $\times$ stimulus (96 Hassner and 72 Savary clusters in the reported main specification). Because completions within a cell may be highly similar at $T=0.01$, cluster-aware inference is central to interpretation; naive run-level standard errors can overstate precision. Quasi-separation in binary outcomes motivates penalized-logit checks, and failure of proportional odds in Savary motivates retaining OLS and thresholded sensitivity analyses.
+
+\subsection{Stimulus attributes}
+
+An exploratory regression encodes the historically fielded stimulus conditions using indicators for framing valence, company versus scientific context, public versus personal beneficiary, and stimulus family, on the Kimi/GLM subsample where H--M were collected. These coefficients summarize conditional differences among \emph{observed prompt packages}. Since the H--M conditions are incomplete and not a fully crossed factorial, attribute coefficients should not be interpreted as isolated causal effects of valence, beneficiary, or recipient. The prospective N0/N-negative/N-positive experiment is separate and is not incorporated into the historical estimates.
+
+\subsection{Annotation of verbalized reasoning}
+
+The original annotation pipeline uses \texttt{gpt-5.4-mini} to code generated reasoning traces with a fixed schema. Two disjoint batches of 5{,}040 traces yielded 10{,}080 annotations before merging and filtering; the manuscript reports 8{,}638 retained annotated records. The schema contains 19 causality fields (absent, mentioned, or decisive), 15 direction fields (negative, neutral, positive), and three binary style markers. Analyses use category presence and, where defined, signed presence. These labels describe \emph{verbalized text}; they are not direct measurements of latent reasoning mechanisms.
+
+Annotation agreement was checked against expert manual coding on 27 traces, with substantial variation across categories. The small validation sample limits the precision and generalizability of reliability estimates. Results for weakly validated or rare categories are treated as exploratory rather than measurement-grade.
+
+Category prevalence is modeled against vignette treatment, stimulus, and model identity, using logistic models for binary presence and linear models for signed presence. Multiple-comparison adjustments are applied across category-level tests. Associations between annotated features and final answers are assessed by comparing baseline outcome models with specifications that add annotation features; an additional fit omits the co-generated treatment-effect direction code to reduce tautological prediction. These regressions are descriptive associations, not evidence that a stated argument caused the answer.
+
+A separability analysis compares classification of stimulus presence with classification of decoding temperature from annotation vectors, using regularized logistic regression and gradient boosting with stratified five-fold cross-validation and ROC-AUC. A sensitivity analysis removes features directly encoding stimulus awareness. TreeSHAP is used for exploratory feature interpretation, followed by explicit regression checks of selected associations; neither feature importance nor post-selection significance establishes a causal mechanism.
+
+\subsection{Exploratory hidden-state analysis}
+
+A separate local \texttt{Qwen3-8B} experiment records last-token hidden states at 37 layers (4{,}096 dimensions) for 98 runs: 56 Hassner and 42 Savary, across no stimulus and A/B/C/D/F/X. These conditions and model identity differ from the principal API corpus. Findings therefore concern the local implementation and are not direct measurements of hidden states in the four API models.
+
+Layer-wise between-condition versus within-condition Euclidean distances are summarized by a separation ratio and a standardized mean-distance analogue. Linear centered kernel alignment (CKA) compares matched representation matrices across prompt conditions. A trajectory-length statistic sums successive layer-wise distances within a run, with paired Wilcoxon comparisons for matched conditions. Finally, layer-wise logistic probes assess stimulus and treatment information, while ridge probes assess answer decodability, including a condition-residualized check. Cross-validation and matched comparisons reduce some forms of leakage, but the small sample and high-dimensional representations make this track exploratory. Decodability and geometric separation are not, by themselves, evidence of causal mediation.
+
+\subsection{Interpretive scope}
+
+We distinguish (i) socially desirable response patterns, (ii) stimulus-induced response shifts, and (iii) correspondence with published human treatment contrasts. None is a substitute for the others. Evidence that a stimulus moves an answer away from the normatively approved pole does not establish that it mitigates human-style social desirability bias. Across all three tracks, the analysis identifies observable differences and statistical associations; mechanistic and human-validity claims require additional evidence.
+
+\section{Results}
+
+\subsection{Final answers: heterogeneous models and systematic prompt shifts}
+
+The four API models differ substantially in observed answers. Across the reported $T=0.01$ analytical sample, Hassner endorsement rates range from 10.3\% (Minimax) to 67.5\% (GLM-4.6), while Savary mean willingness ranges from 3.33 (Kimi) to 3.73 (Qwen). The Hassner treatment-by-model specification also improves model fit (McFadden pseudo-$R^2$: $0.507$ to $0.543$; $\Delta\mathrm{AIC}=-304$). Model identity therefore matters for both response levels and sensitivity to vignette manipulations. These descriptive rates pool different available stimulus conditions and should not be read as balanced model comparisons.
+
+In the no-stimulus Hassner condition, support for sleep deprivation decreases from 44.6\% in the control to 19.3\% with protracted duration, 12.2\% with modest intelligence value, and 1.0\% with both modifications. These directions agree with the human experimental benchmark. In Savary, by contrast, the LLM mean rises from 3.39 in the private condition to 3.73 with public recognition and 4.09 with added social benefit. The increment associated with social benefit is directionally consistent with the source experiment, but the private-to-public increase reverses the human finding: public recognition \emph{reduced} willingness in the original study. The benchmark therefore reveals domain-specific limits of directional replication rather than a general success or failure of synthetic respondents.
+
+All eight historical system-prompt stimuli are associated with shifts \emph{away from the normatively approved response direction} in the pooled descriptive comparisons. In Hassner, the no-stimulus endorsement rate is 19.1\%; it is 41.6\% under C, 72.1\% under A, and ranges from 56.4\% to 90.0\% across H--M. In Savary, mean willingness is 3.74 without a stimulus, 3.44 under C, 3.32 under A, and 3.14--3.35 across H--M (Table~\ref{tab:incentive-means}. These are \emph{socially desirable response patterns} and \emph{stimulus-induced response shifts}, not direct estimates of human-style SDB or its mitigation.
+
+The comparisons require a coverage qualification: H--M were fielded only on Kimi and GLM-4.6, while the baseline and core conditions have broader model coverage. Thus the displayed pooled means are useful descriptive summaries, but differences involving H--M are not automatically like-for-like causal estimates. In the historical attribute regression restricted to the two-model subsample, positive-framed L/M prompts are associated with substantially higher Hassner endorsement than negative-framed H--K (reported OR $\approx15$, $p<0.001$) and a smaller decrease in Savary willingness (reported $\beta=-0.13$, $p=0.02$). Because the observed prompts do not form a complete matched factorial, these are associations between prompt packages, not isolated effects of framing valence. Nonsignificant recipient and beneficiary coefficients do not establish that those attributes are inert.
+
+Treatment-by-stimulus contrasts also vary: the original analysis reports moderation in some conditions, without reversal of the sign of the original Hassner treatment contrasts. In Savary, the private-to-public contrast remains positive across the eight historical stimuli (reported range $+0.05$ to $+0.26$), so none reproduces the human reversal under the tested settings. This result identifies a limitation of the \emph{observed prompts}, not a general impossibility of eliciting self-signaling-related reasoning.
+
+\subsection{Verbalized reasoning: changes in content and argumentative direction}
+
+The annotation results indicate that stimuli change the text models produce while selecting answers. Explicit \texttt{overcorrection\_concern} appears in approximately 9\% of no-stimulus traces and 72--76\% under A/C (expert-validation $\kappa=0.64$, $n=27$). The prevalence of explicitly rational-deliberative style rises from 0.67 to 0.86, and acknowledgement of multiple defensible positions from 0.57 to 0.80. The latter style codes were not included in the small human-validation set and should be treated as exploratory. These changes describe generated text, not independently verified cognitive awareness.
+
+The A--C comparison is especially informative in Hassner. Endorsement is 72.1\% under A versus 41.6\% under C, while several coded category-prevalence differences are small. Direction codes, however, differ markedly: signed presence of \texttt{ratio\_of\_goals\_and\_means} changes from $-0.01$ under C to $+0.42$ under A, \texttt{majority\_reliance} from $+0.06$ to $+0.41$, and \texttt{cruelty} from $-0.68$ to $-0.34$ (Table~\ref{tab:direction-AvsC}). The first of these codes was not covered by expert validation; the others have limited or category-specific reliability evidence. The pattern is consistent with a shift in the \emph{polarity of verbalized arguments}, but it does not show that these arguments mediate the stimulus effect.
+
+In Savary, both A and C strongly increase annotation of personal costs and benefits, while their mean final answers remain comparatively close (3.32 and 3.44). Across both domains, the annotation vocabulary therefore responds to prompts, but the relation between coded text and the answer is domain-dependent.
+
+A separability benchmark classifies stimulus-present versus no-stimulus traces from annotation features at reported cross-validated ROC-AUC $0.96$, compared with $0.68$ for low- versus high-temperature no-stimulus traces. The original analysis also reports that the contrast survives exclusion of directly stimulus-linked codes. This demonstrates that the two classification tasks have different separability under the chosen features and samples; it does not by itself measure relative causal impact on internal reasoning.
+
+The annotation instrument has uneven validation. In a 27-trace expert-coded subset, agreement is high for \texttt{cruelty} and \texttt{personal\_cost\_burden} (both $\kappa=1.00$ for causality coding) and moderate-to-substantial for \texttt{overcorrection\_concern} ($\kappa=0.64$), whereas several psychological categories have near-zero agreement (Table~\ref{tab:kappa}). Interpretations of subtle self-presentational categories must therefore remain tentative.
+
+\subsection{Associations between reasoning annotations and answers}
+
+Adding annotation features increases reported explanatory fit in Savary from $R^2=0.419$ to $0.482$ ($\Delta R^2=0.063$). Overcorrection concern is negatively associated with willingness ($\beta=-0.047$, $p=0.012$), while positively directed personal-cost and private-interest codes are associated with higher willingness (both reported $\beta=+0.046$). A gradient-boosting model also outperforms the linear benchmark in cross-validation (reported $R^2=0.558$ versus $0.475$). These patterns indicate predictive information in verbalized reasoning beyond the specified treatment, stimulus, and model controls, but do not demonstrate that the generated text is causally upstream of the answer.
+
+For Hassner, the original non-tautological annotation specification reports a smaller increment in fit ($\Delta R^2=0.052$). Positive directions of majority-reliance and means--ends arguments are associated with endorsement, while overcorrection concern itself is not a significant predictor ($p=0.92$). Taken together, the two experiments suggest that the \emph{observable association} between reasoning categories and final responses varies by domain. The small expert-validation sample and co-generation of traces and answers limit stronger process claims.
+
+\subsection{Exploratory hidden-state results}
+
+The local Qwen3-8B analysis covers 98 runs (56 Hassner and 42 Savary) under a different stimulus inventory from the API study. In matched comparisons, the reported cumulative hidden-state trajectory is shorter under stimulus conditions than without a stimulus (3{,}370 versus 3{,}444 distance units; paired Wilcoxon $p<0.001$. This is a geometric difference across layer representations, not a direct measure of computational effort or deliberation.
+
+The between-/within-condition separation statistic peaks near layers 20--21 in the reported comparisons. Linear CKA remains above 0.94 across layers (reported L20 CKA $=0.994$), indicating broadly similar representational geometry despite detectable condition differences. These summaries do not uniquely identify a translation mechanism or a semantic processing stage.
+
+The local model also exhibits a representational--behavioral dissociation: stimulus-related hidden-state differences are detectable even where its Hassner responses are near-saturated (reported $P(\mathrm{Yes})\approx0.998$). A treatment-status probe performs poorly under leave-one-group-out validation despite higher standard cross-validation performance, cautioning against scenario-specific leakage. For Savary, a condition-residualized ridge probe reaches a reported leave-one-out $R^2=0.665$ at layer 27. The distinct layer peaks are descriptive: they do not establish when a decision is causally formed. Small samples, high-dimensional activations, and the separate model architecture constrain generalization.
+
+\subsection{Synthesis}
+
+Three results are most robust as a descriptive account of the historical corpus. First, model responses vary substantially across model families and between the two social domains; the Savary public-recognition contrast reverses the human benchmark. Second, system-prompt stimuli consistently accompany shifts away from the normatively approved response direction in the reported descriptive comparisons, while their apparent magnitude depends on prompt condition and model coverage. Third, stimuli are associated with changes in verbalized reasoning and with measurable hidden-state differences in a separate local model, but neither track alone identifies the mechanism producing final answers.
+
+The historical findings support the study of system prompts as consequential experimental inputs, not as neutral wrappers. They do \emph{not} establish that steering responses away from social approval makes LLMs more human-like, that the observed attribute associations isolate framing valence, or that verbalized and representational measures constitute a causal chain. The planned N0/negative/positive follow-up will be integrated only after its results are available.
+
+\section{Selected Results Tables}
+
+\begin{table}[H]
+\centering
+\caption{Mean response by stimulus condition ($T = 0.01$, all treatment groups pooled)}
+\label{tab:incentive-means}
+\begin{tabular}{L{5.0cm} r r r r}
+\toprule
+\textbf{Stimulus} & \multicolumn{2}{c}{\textbf{Hassner}} & \multicolumn{2}{c}{\textbf{Savary}} \\
+& P(Yes) & $n$ & Mean & $n$ \\
+\midrule
+no\_incentive & 19.1\% & 2{,}023 & 3.74 & 1{,}240 \\
+C\_balanced\_realism & 41.6\% & 1{,}340 & 3.44 & 1{,}034 \\
+H\_science\_personal\_gain & 56.4\% & 399 & 3.35 & 300 \\
+I\_science\_public\_good & 59.9\% & 399 & 3.30 & 300 \\
+J\_company\_personal\_gain & 61.4\% & 399 & 3.28 & 300 \\
+K\_company\_public\_good & 63.9\% & 399 & 3.30 & 299 \\
+A\_original\_core\_realism & 72.1\% & 696 & 3.32 & 515 \\
+L\_science\_public\_good\_positive & 88.2\% & 400 & 3.20 & 300 \\
+M\_company\_personal\_gain\_positive & 90.0\% & 399 & 3.14 & 298 \\
+\midrule
+\multicolumn{5}{l}{\footnotesize Stimuli H--M were fielded on GLM-4.6 and Kimi only.} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Signed-presence means by stimulus condition (Hassner, $T = 0.01$, all models pooled). Positive = framed pro-endorsement; negative = framed anti-endorsement. $\dagger$ = validated ($\kappa \geq 0.44$); $\ddagger$ = not in validation sample (exploratory).}
+\label{tab:direction-AvsC}
+\snakebreak
+\begin{tabular}{L{5.5cm} c c c c}
+\toprule
+\textbf{Category} & \textbf{No stimulus} & \textbf{C} & \textbf{A} & $\Delta_{A-C}$ \\
+\midrule
+ratio\_of\_goals\_and\_means$^{\ddagger}$ & $-0.24$ & $-0.01$ & $+0.42$ & $+0.43^{***}$ \\
+cruelty (direction)$^{\dagger}$ & $-0.67$ & $-0.68$ & $-0.34$ & $+0.34^{***}$ \\
+majority\_reliance (direction)$^{\dagger}$ & $-0.25$ & $+0.06$ & $+0.41$ & $+0.35^{***}$ \\
+source\_reliance$^{\ddagger}$ & $-0.42$ & $-0.09$ & $+0.16$ & $+0.24^{***}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Annotator validation against expert gold labels ($n = 27$ traces, Cohen's $\kappa$)}
+\label{tab:kappa}
+\snakebreak
+\begin{tabular}{L{6.5cm} c L{4.5cm}}
+\toprule
+\textbf{Category} & $\kappa$ & \textbf{Verdict} \\
+\midrule
+cruelty (causality) & 1.00 & reliable \\
+personal\_cost\_burden (causality) & 1.00 & reliable \\
+personal\_cost\_burden (direction) & 0.89 & reliable \\
+cruelty (direction) & 0.85 & reliable \\
+private\_interests\_prioritization & 0.82 & reliable \\
+public\_recognition (causality) & 0.76 & reliable \\
+public\_recognition (direction) & 0.65 & reliable \\
+treatment\_awareness & 0.73 & reliable \\
+legality\_assessment & 0.71 & reliable \\
+private\_interests\_prioritization (dir.) & 0.67 & reliable \\
+overcorrection\_concern & 0.64 & reliable \\
+social\_reward (direction) & 0.52 & moderate \\
+treatment\_effect\_direction & 0.46 & moderate \\
+emergency\_urgency & 0.44 & moderate \\
+privacy\_factor & 0.44 & moderate \\
+majority\_reliance (direction) & 0.44 & moderate \\
+emotional\_reasoning & 0.06 & noise level \\
+common\_interests\_prioritization & 0.00 & noise level \\
+incentive\_awareness & 0.00 & noise level \\
+self\_deception & 0.00 & noise level \\
+fear\_negative\_evaluation & $-0.04$ & noise level \\
+self\_enhancement & $-0.06$ & noise level \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Discussion}
+
+The findings show that system-prompt instructions are substantive experimental inputs in LLM-based vignette studies. Across two socially sensitive domains, the historical stimuli are associated with shifts away from the normatively approved response direction. Yet the direction of this movement is not a measure of increased human realism. A model may change its answer because it follows a new instruction, responds to the described stakes, or changes how it frames the vignette. These possibilities cannot be separated fully by the historical design.
+
+The human benchmarks help identify the limits of interpreting such shifts. In Hassner, the no-stimulus model responses reproduce the direction of the original vignette-treatment contrasts. In Savary and Goldsmith, however, public recognition increases stated donation willingness in the LLM sample, whereas the original human studies report a decrease. One possible interpretation is that the models emphasize the incentive of public recognition without reproducing the self-signaling concerns described in the source study. This remains an interpretation rather than a demonstrated absence of that mechanism: neither the final answer nor the generated reasoning trace directly reveals the model's latent decision process. Importantly, none of the historical stimuli reverses the observed LLM public-recognition contrast under the tested settings.
+
+The stimulus inventory also suggests that \emph{how} consequences are framed may matter. Positive-framed L/M conditions are associated with larger shifts than the negative-framed H--K conditions in the historical two-model comparisons, particularly in Hassner. But because these prompts do not form a complete matched factorial, their differences cannot be attributed uniquely to framing valence. The planned N0, negative-research-consequences, and positive-research-consequences conditions address a narrower comparison with a shared base instruction. Their results are not yet part of the present evidence.
+
+The three analytical levels add complementary information without establishing a causal sequence. Final answers identify behavioral shifts. Annotation shows that stimuli coincide with changes in verbalized argumentative content and direction, including increased explicit concern about overly sanitized responses. Local hidden-state measurements show that prompt conditions can be geometrically distinguishable even when final answers change little. These are distinct observations, made partly on different models. They should not be collapsed into a claim that a specific hidden-state displacement causes a particular argument, which then causes the final answer.
+
+For synthetic piloting, the practical implication is conditional rather than uniformly positive or negative. LLMs can expose sensitivity to vignette treatments and to the surrounding instruction environment. They cannot be assumed to reproduce human response distributions, human motivational mechanisms, or even the direction of every human treatment effect. Consequently, prompt specifications, model identity, and cross-condition coverage belong in the experimental design and reporting, not merely in implementation notes.
+
+\section{Scope and Limitations}
+
+The study covers two attitude-expression vignettes with contrasting normative contexts, not the broader universe of sensitive self-report or survey-methodology designs. The four API models were selected pragmatically and differ in baseline response patterns and treatment sensitivity; the stimulus inventory is unbalanced across them. In particular, H--M are available only for Kimi and GLM-4.6, so pooled comparisons across the full stimulus inventory require caution. Repeated generations within the same design cell are not independent respondents, and near-deterministic decoding further limits within-cell variation. Reported inference must be read in light of the design-cell clustering and quasi-separated binary outcomes.
+
+The distinction between \emph{socially desirable response patterns} and human \emph{social desirability bias} is central. The study does not directly identify impression management, self-deception, or a uniquely safety-alignment-driven mechanism in LLMs. Nor does a shift away from a normatively approved response establish greater human correspondence. Published human studies provide external treatment benchmarks, but differ from the LLM task in respondent population, incentives, and in some cases outcome measurement.
+
+The reasoning annotation is generated by an LLM coder and validated on only 27 expert-coded traces in the main analysis. Reliability varies substantially across categories, especially for subtle psychological constructs. Moreover, reasoning traces and final answers are co-generated, so predictive relationships between them cannot be interpreted as causal mediation. The a teacher-trained local annotation system would not resolve the main annotation-validity limitations.
+
+Hidden-state findings are restricted to 98 runs of a separate local Qwen3-8B model and a different stimulus set. Last-token, layer-wise geometry and probe accuracy cannot by themselves establish a computational mechanism. The local model's near-saturated Hassner outcomes further restrict behavioral comparisons. Finally, the exact historical H--M wording is represented in the available project materials by semantic reconstruction; these adopted formulations should not be described as independently authenticated verbatim generation prompts.
+
+\section{Conclusion}
+
+This study examined how system-prompt stimuli affect large language models in socially sensitive vignette experiments at three observational levels: final answers, verbalized reasoning, and hidden-state representations. The historical behavioral corpus shows substantial heterogeneity between models, directional agreement with the Hassner human benchmark, and a reversal of the Savary public-recognition effect. Across the observed stimulus conditions, model answers shift away from the normatively approved response direction in both domains, although unequal model coverage and the incomplete stimulus design constrain attribute-level interpretations.
+
+The annotation results show systematic changes in verbalized arguments, particularly explicit concern about overly sanitized answers and differences in argumentative direction between the A and C prompts. The separate local-model analysis finds detectable hidden-state differences that do not map straightforwardly onto behavioral change. Together, these findings support a multi-level description of prompt sensitivity, not a validated causal account of the internal response process.
+
+The contribution is therefore methodological as well as empirical: system prompts should be treated as experimental factors whose wording and coverage can materially alter conclusions drawn from LLM simulations. Human experimental benchmarks remain essential, and neither movement away from socially approved answers nor richer verbalized reasoning is sufficient evidence of bias reduction or improved human validity. The planned matched N0/negative/positive comparison will provide a more controlled test of consequence framing; until those runs are analyzed, its outcomes remain open.
+
+\printbibliography
+\end{document}
