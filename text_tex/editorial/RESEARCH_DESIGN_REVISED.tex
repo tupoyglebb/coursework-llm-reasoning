@@ -1,0 +1,66 @@
+% Editorial draft v1 — research design, generation, and stimuli.
+% Replacement for sections "Research Design: Experiments and Corpus",
+% "Model Set and Generation Protocol", and "System-Prompt Stimuli".
+% Not yet included in the main manuscript. Confirm exact config, prompt
+% strings, model snapshots, and coverage before final integration.
+
+\section{Research Design and Data}
+
+\subsection{Case selection and experimental treatments}
+
+We study two published \emph{attitude-expression} vignette experiments. Unlike autobiographical self-report questions, these tasks ask for judgments about externally described situations. This choice permits controlled variation of vignette treatments without assigning demographic identities or personal histories to the model. The cases also differ in the normative direction of the response: endorsement of coercive interrogation is socially disapproved, whereas charitable giving is socially approved. We use this contrast to investigate whether system-prompt stimuli have similar or domain-specific effects.
+
+\textbf{Hassner: coercive interrogation.} Following \textcite{hassner2023}, models evaluate the use of sleep deprivation in interrogating a terrorism suspect. The four conditions are a base case, modest expected intelligence value, protracted duration, and their combination. The response is binary (support versus opposition). Opposition is treated as the \emph{normatively approved response direction} for descriptive comparisons, not as a verified measure of an individual respondent's latent attitude.
+
+\textbf{Savary and Goldsmith: charitable donation.} Following \textcite{savary2020}, models report willingness to donate \$5 on a five-point scale. The three vignette conditions are private donation, public recognition, and public recognition combined with an additional social benefit. Greater stated willingness is the normatively approved response direction. The public-recognition treatment is also substantively important because it may alter the interpretation of donation as altruism or reputational signaling.
+
+Published human treatment contrasts provide an external benchmark. They are not assumed to be reproduced by every model, and matching a treatment direction does not imply that the full human response distribution or the underlying psychological mechanism has been reproduced.
+
+\subsection{Prompt structure and unit of observation}
+
+The original vignette treatment enters through the user-facing question and response options. The system message specifies the survey-response task; experimental system-prompt stimuli are added to this instruction layer. No demographic persona is assigned in the principal behavioral design. The exact template and verbatim stimulus strings must be preserved from the generation configurations before the final manuscript is frozen.
+
+Each generation produces a final answer and, where available, a model-generated reasoning trace associated with the same response event. These are separate analytical outputs, not independent observations. Repeated generations under a fixed model--experiment--treatment--stimulus configuration measure response variation within that configuration; they do not represent independent human respondents. We distinguish the \emph{run} (one generation) from the \emph{design cell} (a specified combination of model, vignette treatment, stimulus, and relevant generation settings). Statistical uncertainty must account for this nested structure rather than treating all completions as exchangeable people.
+
+\subsection{Models, decoding, and analytical samples}
+
+The behavioral corpus uses four API-accessed reasoning-capable models: \texttt{moonshotai/kimi-k2-thinking}, \texttt{z-ai/glm-4.6}, \texttt{qwen/qwen3.5-9b}, and \texttt{minimax/minimax-m2.5}. These models were selected pragmatically for the availability of final answers and reasoning traces; they do not constitute a representative sample of all LLMs. A separate local \texttt{Qwen3-8B} is used for hidden-state analysis and is not pooled with the API behavioral sample.
+
+The principal generation regime uses temperature $T=0.01$, with a separate no-stimulus comparison at $T=1.0$. Low temperature improves repeatability but may compress within-cell variation; the temperature comparison is a decoding sensitivity check rather than an independent human benchmark.
+
+The existing manuscript reports 15{,}680 raw runs, 12{,}434 retained rows after preprocessing, and 11{,}040 observations in the main $T=0.01$ analysis. These are \emph{reported historical totals}, not figures independently recomputed for this editorial draft. Final counts, exclusion rules, rerun handling, and cell-level coverage must be reconciled against raw data and analysis scripts before submission. In particular, the extended H--M stimulus family is not covered by all four API models; analyses of these conditions must identify the actual model subset and avoid unqualified cross-model generalization.
+
+\section{System-Prompt Stimuli}
+
+\subsection{Conceptual role}
+
+System-prompt stimuli modify the instructions surrounding a fixed vignette. They are intended to discourage normatively polished or sanitized answers, but their observed effects are described here as \emph{stimulus-induced response shifts}, not as established reductions in social desirability bias. The direction of a shift is evaluated relative to the \emph{normatively approved response direction} in each case. A shift away from that direction does not, on its own, establish greater correspondence with human responses.
+
+The historically implemented stimulus set includes the no-stimulus baseline, two core conditions (A and C), and the extended H--M family. A emphasizes the costs of sanitized answers; C includes an explicit anti-overcorrection qualification. The H--M family varies the stated target of consequences or benefits (science versus a company; personal or institutional benefit versus public good) and the valence of the framing (negative consequences versus positive benefits). These labels describe intended prompt functions, not independently identified causal mechanisms.
+
+\subsection{Historical stimulus conditions and coverage}
+
+\begin{table}[htbp]
+\centering
+\caption{Historical stimulus families and interpretation}
+\label{tab:stimuli_editorial}
+\begin{tabularx}{\textwidth}{L{2.5cm}X}
+\toprule
+\textbf{Condition} & \textbf{Interpretation and limitation}\\
+\midrule
+No stimulus & Baseline survey task without an additional experimental system-prompt stimulus.\\
+A & Strong anti-sanitization / realism instruction invoking negative consequences for research quality; exact wording to verify.\\
+C & Core realism instruction with an anti-overcorrection qualification; not a neutral control matched to A on all dimensions.\\
+H--K & Negative consequence framing with different stated recipients or beneficiaries; fielded in a subset of models.\\
+L--M & Positive benefit framing with different stated recipients or beneficiaries; fielded in a subset of models.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The existing coverage matrix contains H--M records for \emph{both} Hassner and Savary. However, the available project reconstruction provides semantic descriptions rather than verified verbatim H--M prompt strings. Accordingly, this draft does not reproduce invented quotations or claim that the historical conditions constitute a complete orthogonal factorial design. Exact prompt text, model snapshots, and an experiment--treatment--stimulus--model coverage table are prerequisites for strong comparisons among stimulus attributes.
+
+Additional conditions proposed in the later experiment plan (including consequence-specific and matched neutral controls) are \emph{prospective}, not part of the completed historical corpus. They will be described as implemented only after the corresponding configurations, generations, and analyses exist.
+
+\subsection{Analytical contrasts}
+
+The behavioral analysis distinguishes three comparisons: (i) original vignette-treatment contrasts within a fixed prompt condition; (ii) stimulus-induced shifts relative to a no-stimulus or explicitly specified reference condition; and (iii) changes in original treatment contrasts across stimulus conditions. Attribute-level comparisons are interpreted as conditional associations unless the compared prompts isolate the attribute of interest and have sufficient balanced coverage. Reasoning annotations and hidden-state measures are examined as complementary outcomes, with their separate validity and generalizability limitations stated in the relevant methods sections.
