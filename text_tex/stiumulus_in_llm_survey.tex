@@ -1,0 +1,1081 @@
+\documentclass[14pt,a4paper]{extarticle}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{mathptmx}
+
+\usepackage[
+    top=2cm,
+    bottom=2cm,
+    left=3cm,
+    right=1.5cm
+]{geometry}
+
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{tabularx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{makecell}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{csquotes}
+\usepackage{microtype}
+\usepackage[
+    backend=biber,
+    style=apa,
+    natbib=true
+]{biblatex}
+\addbibresource{Bib additions.bib}
+
+% Square-bracket APA citations: [Author, Year].
+% All existing \cite{...} commands in the text remain unchanged.
+\DeclareDelimAlias[squarecite]{finalnamedelim}[parencite]{finalnamedelim}
+\DeclareCiteCommand{\squarecite}[\mkbibbrackets]
+  {\usebibmacro{cite:init}%
+   \usebibmacro{prenote}%
+   \toggletrue{apa:inpcite}}
+  {\usebibmacro{citeindex}%
+   \usebibmacro{cite}%
+   \usebibmacro{cite:post}}
+  {}
+  {\usebibmacro{postnote}%
+   \togglefalse{apa:inpcite}}
+\DeclareMultiCiteCommand{\squarecites}[\mkbibbrackets]{\squarecite}
+  {\setunit{\multicitedelim}}
+\let\cite\squarecite
+
+\newcommand{\safeincludegraphics}[2][]{%
+  \IfFileExists{#2}{%
+    \includegraphics[#1]{#2}%
+  }{%
+    \IfFileExists{figures/#2}{%
+      \includegraphics[#1]{figures/#2}%
+    }{%
+      \fbox{\parbox{0.86\linewidth}{\centering Missing figure file: \texttt{\detokenize{#2}}}}%
+    }%
+  }%
+}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    citecolor=black
+}
+
+\onehalfspacing
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+% Absorb residual right-margin overflow in justified prose (long identifiers,
+% inline math) without altering wording.
+\setlength{\emergencystretch}{3em}
+
+\setlist[itemize]{leftmargin=1.5em}
+\setlist[enumerate]{leftmargin=1.8em}
+
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection.}{0.5em}{}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+% Make snake_case identifiers wrap when a line would otherwise overflow (purely a
+% line-breaking aid: a reluctant break after each underscore, no glyph change; no
+% section title or caption uses \_, so PDF bookmarks are unaffected).
+\newcommand{\snakebreak}{\renewcommand{\_}{\textunderscore\allowbreak}}
+\begin{document}
+\snakebreak
+
+\begin{titlepage}
+
+\begin{center}
+GOVERNMENT OF THE RUSSIAN FEDERATION
+
+\medskip
+FEDERAL STATE AUTONOMOUS EDUCATIONAL INSTITUTION OF HIGHER EDUCATION
+
+\medskip
+NATIONAL RESEARCH UNIVERSITY \\ ``HIGHER SCHOOL OF ECONOMICS''
+\end{center}
+
+\vspace{0.9cm}
+\begin{center}
+Faculty of Social Sciences
+\end{center}
+
+\vspace{2.6cm}
+\begin{center}
+Maria Akhryapina, Elizaveta Kuznechenkova, Maria Nesterskaya
+
+\vspace{0.5cm}
+{\large\bfseries Synthetic Sample Generation by Large Language Models in the Context of Experimental Studies}
+
+\vspace{0.5cm}
+Term paper
+
+\vspace{0.3cm}
+students of group BVSN231 \\ (educational programme ``Computational Social Sciences'')
+\end{center}
+
+\vspace{1.8cm}
+\begin{flushright}
+\begin{minipage}{0.62\textwidth}
+\raggedright
+Academic supervisor:\\
+PhD, Assistant Professor in Political Science,\\
+Academic Supervisor of the Bachelor's Programme ``Computational Social Sciences''\\[0.35cm]
+E.~A.~Sedashov
+\end{minipage}
+\end{flushright}
+
+\vfill
+\begin{center}
+Moscow, 2026
+\end{center}
+
+\end{titlepage}
+
+\input{declaration_ai}
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+
+Large language models (LLMs) are increasingly used to generate synthetic respondents, stress-test questionnaires, and pilot experimental designs before costly human data collection \cite{argyle2023, horton2023, dillion2023}. This project treats LLMs not as substantive replacements for survey respondents but as instruments for \emph{synthetic sample generation} at the early, pretesting stage of experimental research. The motivation is practical: if a model approximates how different respondents react to alternative wordings, vignettes, and contextual cues, it can help pilot the structure of a survey experiment, flag fragile manipulations, and show where a design is likely to be distorted by response biases.
+
+The project focuses on \emph{social desirability bias} (SDB), a choice that matters both theoretically and methodologically. SDB-related items are especially demanding for LLM-based piloting because two response-shaping forces meet in them. First, human respondents often adjust their answers toward what is socially acceptable, normatively safe, or reputationally advantageous \cite{tourangeau2007, krumpal2013}. Second, contemporary LLMs are themselves tuned, through human-preference alignment, to avoid harmful, offensive, or normatively problematic outputs --- and there is direct evidence that this tuning produces human-like social desirability skews in survey settings \cite{salecha2024, sharma2023}. SDB is therefore a strong test case rather than just another topic: the model's safety alignment can interact with the substantive logic of the survey instrument. If the model returns only sanitized, ``model citizen'' answers regardless of treatment, it is of little use for pretesting in sensitive domains. If instead it responds systematically to experimental manipulations and carefully designed prompt stimuli, it can help establish whether a survey design elicits meaningful variation before that design is fielded on human respondents.
+
+\textbf{Research question.} How do large language models react to stimuli in vignette-based survey experiments on socially sensitive topics? The independent variables are (i) the original experimental treatments embedded in the vignettes and (ii) additional realism-oriented system-prompt stimuli introduced by the project; the dependent variables are the model's final survey answer, the structure of its verbalized reasoning, and its internal hidden-state representations.
+
+\textbf{Goal.} To establish whether, and under what prompt conditions, reasoning-capable LLMs can work as informative pilot environments for vignette experiments in SDB-sensitive domains, by tracing prompt-level interventions across three levels of observation: final answers, reasoning traces, and hidden states.
+
+\textbf{Tasks.}
+\begin{enumerate}
+    \item Determine whether LLMs reproduce the direction of the original human treatment effects in two published vignette experiments (a negative-valence and a positive-valence SDB case).
+    \item Estimate the effect of realism-oriented system-prompt stimuli on final answers and on the stability of those answers, and test whether the stimuli moderate the original treatment effects.
+    \item Identify which design properties of the stimuli (framing valence, recipient of consequences, beneficiary, instruction force) are responsible for behavioral change.
+    \item Convert reasoning traces into structured variables via LLM annotation, validate the annotation, and test how stimuli reorganize the argumentative structure of reasoning and how reasoning features relate to final answers.
+    \item Test whether the stimuli are visible in the model's hidden states: at which layers stimulus information is encoded, whether treatment is encoded abstractly, and where the eventual answer becomes linearly decodable.
+\end{enumerate}
+
+\textbf{Hypotheses.}
+\begin{itemize}
+    \item[H1.] In the no-stimulus baseline, LLMs reproduce the qualitative direction of the original treatment effects in both experiments.
+    \item[H2.] Realism-oriented stimuli shift final answers away from the socially desirable pole, with the direction of the shift depending on the normative valence of the domain.
+    \item[H3.] Stimuli moderate the original treatment effects (interaction between treatment and stimulus).
+    \item[H4.] Positively framed stimuli (benefit framing) produce larger departures from sanitized answering than negatively framed stimuli (penalty framing).
+    \item[H5.] Stimulus effects are detectable below the surface of the final answer: in the structure of reasoning traces and in mid-layer hidden-state representations, even where the final answer does not change.
+\end{itemize}
+
+The text proceeds as follows. Section~2 reviews the literature on LLMs as synthetic respondents, on social desirability bias, and on the measurement instruments the project relies on. Sections~3--5 describe the research design: case selection, the experimental corpus, the model set, the generation protocol, and the system-prompt stimuli. Section~6 describes the reasoning-trace annotation instrument and its validation. Section~7 presents the analytical strategy, and Section~8 reports the results across the three levels of observation. Section~9 is reserved for the fine-tuned MoralLens annotation model. Sections~10--11 discuss limitations and conclude.
+
+\section{Literature Review}
+
+This review has four parts. The first looks at how LLMs are used in experimental research, both as stand-ins for human respondents and as tools for replicating and predicting experimental results. The second turns to social desirability bias (SDB), the survey-methodology tradition that defines the project's substantive domain. The third connects the two through recent work on social desirability and sycophancy in aligned models. The fourth reviews the prompt-engineering strategies that the project's system-prompt intervention builds on.
+
+\subsection{Large language models in experimental designs}
+
+The idea that a language model can stand in for a human respondent was first made concrete by \textcite{argyle2023}. They conditioned GPT-3 on demographic backstories and found that the resulting answers tracked the response patterns of the matching human groups closely enough that the authors called it \emph{algorithmic fidelity}. \textcite{aher2023} took the idea from opinion distributions to full experimental designs, with ``Turing Experiments'' that re-run classic studies on simulated participants, including the Milgram obedience paradigm, ultimatum games, and wisdom-of-crowds tasks.
+
+The approach has been especially active in behavioral and experimental economics, where the appeal of piloting a design cheaply before running it on people is strongest. \textcite{horton2023} proposed treating the model as \emph{homo silicus}, a computational economic agent on which an experiment can be tried out in advance, and showed that GPT reproduces several textbook results from behavioral economics. The behavioral-game literature has pushed this furthest. \textcite{akata2025} had models play repeated \(2 \times 2\) games and found stable, recognizable strategic ``personalities,'' and \textcite{mei2024} ran a battery of classic behavioral games measuring trust, fairness, risk aversion, and cooperation, and reported that ChatGPT-4's choices were statistically hard to tell apart from those of tens of thousands of human players across more than 50 countries, while leaning somewhat more cooperative and altruistic than the average person. Perspective pieces in psychology and the general-science journals \cite{dillion2023,grossmann2023} are more cautious, and they make a point the project takes seriously: LLM responses are useful only to the extent that their differences from human samples are understood and measurable. \textcite{park2023} broadened the picture by showing that LLM-driven agents can sustain believable behavior over time, well beyond single survey items.
+
+A second line of work asks a sharper question. It is not whether models match static opinion distributions, but whether they recover the \emph{effect} of an experimental manipulation. \textcite{cui2025} put this to a large test, using three frontier models to replicate 156 published vignette experiments drawn from top psychology and management journals. The models reproduced the direction of the original main effects 73--81\% of the time, but they inflated effect sizes and, tellingly for this project, replicated noticeably worse on socially sensitive topics such as race, gender, and ethics. Results like this are why the project benchmarks \emph{directional} replication, asking whether the model moves the right way under a treatment rather than whether it reproduces an exact number, and why it concentrates on the sensitive domains where this kind of simulation is most likely to break down.
+
+That ambition is tempered by a large critical literature. \textcite{santurkar2023}, using the OpinionQA benchmark, showed that aligned models lean toward particular demographic profiles and barely shift when steered toward others. \textcite{bisbee2024} found that synthetic survey data from persona prompts cluster too tightly compared with human benchmarks and produce unstable regression estimates. \textcite{dominguez2024} showed that LLM answers to standard survey items are driven heavily by option order and labeling, and lack the spread seen in human responses, and \textcite{rottger2024} added that forced-choice formats can manufacture ``opinions'' that vanish under simple rephrasing. A related strand treats the model itself as a psychological subject: \textcite{malberg2025} found evidence of all thirty classic cognitive biases they tested in at least some of twenty current models, a reminder that models bring their own systematic distortions to any task they are asked to simulate. The lesson the project draws is consistent. LLM piloting is trustworthy for the direction of an effect under fixed prompting, not for absolute response levels.
+
+\subsection{Social desirability bias: construct, domains, and mitigation}
+
+Social desirability bias (SDB) is one of the oldest and best-documented problems in survey research. It is the tendency to give answers that look good to others rather than answers that are true. \textcite{crowne1960} built the first widely used scale to measure this tendency as a personality trait. \textcite{paulhus1984} later showed that it has two distinct parts, and this split is still standard today. The first part is \emph{self-deceptive enhancement}: an honestly held but overly flattering view of oneself. The second is \emph{impression management}: the deliberate editing of one's answers for an audience. The distinction matters here for two reasons. First, the two parts react to different things. Impression management grows when answers feel visible and shrinks under anonymity, while self-deception is more stable. Second, the two parts line up neatly with the two pressures a safety-aligned model faces on a sensitive question. \textcite{randallFernandes1991} showed that both parts, plus how desirable the behavior itself looks, each shape what people report, which is why SDB is best understood as a property of questions and situations, not only of people.
+
+The survey-methodology literature develops this situational view. \textcite{tourangeau2007} review evidence that sensitive questions produce predictable misreporting, and that how much depends on the survey mode, whether an interviewer is present, and how anonymous the respondent feels. \textcite{krumpal2013} surveys the topic across domains and shows that the bias runs both ways: people under-report behavior that looks bad and over-report behavior that looks good. Two points from this work shape the design. Because SDB is two-directional, the project pairs a ``bad'' case, support for coercive interrogation, with a ``good'' case, willingness to donate. And because the bias works through how the respondent reads the question and who they imagine seeing the answer, the project pays close attention to the reasoning behind each answer.
+
+SDB does not show up equally everywhere, and the project's two cases sit inside a wider map of where it is strongest. In the \emph{environmental} domain, where caring about conservation is the expected answer, \textcite{horiuchi2022} use attitudes toward environmental conservation as their test case and find the bias large enough that a fully randomized conjoint design is needed to recover about two-thirds of the distorted effect. In the domain of \emph{legal compliance and discrimination}, \textcite{pagerQuillian2005} give a classic example of the gap between words and deeds: employers said they were willing to hire ex-offenders, but their actual hiring did not match, and their survey answers hid large racial differences that an audit study made visible. In the \emph{ethical and moral} domain, \textcite{chungMonroe2003} show that the bias grows stronger as a situation becomes more clearly unethical, and that it interacts with traits such as gender and religiousness, while \textcite{fernandesRandall1992} find that across many ethics studies SDB usually works as a moderator rather than a simple confounder. A systematic review by \textcite{tan2021} adds a telling point: only a small share of ethics studies measure SDB at all, and those that do almost always use it as a background control rather than studying it directly. The present project does the opposite. It makes the bias, and the prompt conditions that move it, the main object of study.
+
+Researchers have built two broad families of tools to reduce SDB. The first changes the instrument so the sensitive content is harder to manage. This includes indirect designs such as the list experiment, randomized-response techniques, and the trade-off conjoint designs tested by \textcite{horiuchi2022}. The second changes the situation instead, through anonymity, self-administration, and mode of delivery, as catalogued in the early review by \textcite{nederhof1985}. The project borrows the logic of the first family and moves it into the LLM setting. Instead of simply asking the model to be honest, it reshapes how the model understands the task through system-prompt stimuli, described in Section~2.4.
+
+\subsection{Social desirability and sycophancy in aligned LLMs}
+
+The two literatures meet in recent work showing that aligned models distort their answers in ways that look a lot like human SDB. \textcite{salecha2024} found that frontier models, once they can tell they are taking a personality test, shift their Big Five answers toward the socially desirable end of each scale, which is a direct analogue of impression management. \textcite{sharma2023} tie a related effect to the training objective: optimizing for human preferences rewards agreeable, user-pleasing answers and produces \emph{sycophancy}, a habit of telling the user what they seem to want to hear. Together with the evidence on opinion skew under alignment \cite{santurkar2023}, this suggests that a model facing a morally loaded question is under the same two pressures as a person, normative self-presentation and audience management, plus a third that is specific to models: safety alignment. That is what makes SDB a good stress test for synthetic piloting, and it motivates the project's main move, namely system-prompt stimuli that try to reframe the model's task from looking good to measuring accurately.
+
+\subsection{Prompt engineering and behavioral steering}
+
+The project's main intervention is a prompt, so it builds on a body of prompt-engineering technique developed mostly for other tasks. The most familiar lever is \emph{persona conditioning}, the demographic backstories used by \textcite{argyle2023}, which shapes who the model speaks as. The present design leaves this out on purpose and uses ``blank'' respondents, so that any change in behavior can be traced to the manipulated inputs rather than to an assigned identity. A second lever shapes how the model reasons before it answers. Chain-of-thought prompting \cite{wei2022} and its zero-shot version \cite{kojima2022} were first introduced to improve arithmetic and symbolic reasoning, and they showed that drawing out the intermediate steps changes the final answer, not just its wording. This is what makes a model's reasoning trace worth analyzing in its own right, rather than treating it as an after-the-fact excuse. \textcite{akata2025} turned this into a \emph{social} chain-of-thought, asking the model to consider the other player's point of view before choosing. That single change made behavior much more cooperative and human-like in repeated games, which shows that an instruction about how to reason can move behavior on a socially loaded task.
+
+A third lever targets the model's incentive to present itself well, and this is where the project's stimuli sit. The cautionary findings here come from work on prompt sensitivity and alignment. \textcite{tjuatja2024} showed that aligned, RLHF-tuned models often fail to reproduce genuine human response biases, yet still react to wording changes that would not move a human. Prompt phrasing therefore reaches the answer through channels that are not simply ``more realistic.'' The sycophancy and social-desirability results above \cite{sharma2023,salecha2024} name the exact incentive the stimuli are meant to push against: a trained pull toward agreeable, safe answers. The project's contribution is to treat this kind of meta-instruction as an experimental factor rather than a fixed wrapper, varying its framing valence, who is said to be affected, and how forceful it is, so that the space of ``realism'' prompts can be measured instead of assumed.
+
+\subsection*{Summary of the literature review}
+
+The literature supports four claims that together motivate the project. First, LLM simulation of respondents and experiments is reliable for the direction of an effect but not for absolute response levels. Second, SDB is a two-sided, two-part bias, consisting of impression management and self-deception, that varies across the environmental, legal, and ethical domains and is usually treated only as a nuisance control. Third, aligned models show their own version of this bias, with an extra component coming from safety training. Fourth, prompt-level moves such as persona conditioning, reasoning elicitation, and self-presentation framing can clearly shift model behavior on sensitive tasks. The project sits where these threads meet. It benchmarks directional replication, pairs an ethical and a prosocial SDB experiment of opposite valence, intervenes on the model's self-presentation incentives through systematically varied system prompts, and tracks the result on three levels: the final answers, the annotated reasoning, and the hidden states.
+
+\section{Research Design: Experiments and Corpus}
+
+\subsection{Why attitude-expression experiments}
+
+In this project, survey experiments on social desirability bias fall into three broad categories: \emph{methodological} SDB experiments (testing techniques for reducing or detecting socially desirable responding), \emph{self-report} SDB experiments (sensitive autobiographical questions), and \emph{attitude-expression} SDB experiments (evaluative judgments about externally described cases). The project focuses on the third category. Conceptually, attitude-expression designs make it easier to isolate how the model reacts to a vignette manipulation itself: the response is a judgment about an externally described case rather than a self-description, so the prompt does not need to induce a plausible autobiography. Practically, published attitude experiments have compact designs, clearly differentiated treatment conditions, and outcome measures that map onto a stable prompt template. At the same time, they remain genuinely difficult for LLMs: when the vignette concerns violence or generosity, an aligned model may drift toward a normatively polished answer regardless of treatment --- which is precisely the failure mode the project is designed to detect and counteract.
+
+\subsection{Case selection}
+
+The corpus consists of two published experiments selected by the following criteria: the article contains, or allows a defensible reconstruction of, the experimental conditions; the design includes multiple conditions so that treatment contrasts can be reproduced; the dependent variable is an evaluative judgment rather than self-report; the wording can be implemented in a stable prompt format across models; and the pair spans both a socially \emph{negative} and a socially \emph{positive} direction of desirability pressure. The last criterion is central: it makes it possible to study whether prompt stimuli operate symmetrically across normative valences.
+
+\textbf{Study 1 (negative pole): coercive interrogation.} The first study reproduces the vignette experiment of \textcite{hassner2023} on persuasive and unpersuasive critiques of torture. The respondent evaluates whether a terror suspect should be subjected to sleep deprivation during interrogation. Four conditions are implemented: a control base case and three treatments varying the expected informational value of the coercive act (\emph{modest intelligence}), its severity and duration (\emph{protracted duration}), and their combination. The dependent variable is binary: support for the interrogation (Yes/No, presented as numbered options 1/2). Supporting coercive interrogation is normatively problematic, so the socially desirable default is categorical rejection.
+
+\textbf{Study 2 (positive pole): charitable donation.} The second study reproduces the donation experiment of \textcite{savary2020} on unobserved altruism. The respondent evaluates willingness to donate \$5 under three conditions: a private-donation control, a public-recognition treatment, and public recognition with an added social benefit. The dependent variable is a five-point willingness scale (1 = ``Not at all willing'' \dots\ 5). Donating is socially approved, so desirability pressure here pushes toward \emph{overstatement} of willingness --- the opposite direction from Study 1.
+
+\subsection{Prompt template and observation unit}
+
+All runs use a fixed single-pass template. The system prompt instructs the model: \emph{``You are answering as a plausible survey respondent in a vignette-based study \dots\ Consider how a plausible respondent would evaluate this situation. Then choose exactly one response option. Output only the number of the selected option.''} The user prompt contains the vignette text, the question, and the numbered response options. Experimental treatments enter through the vignette text; the system-prompt stimuli described in Section~5 are appended to the system prompt. No demographic profile is injected into the prompt: the synthetic respondents are deliberately ``blank,'' so that all variation is attributable to the manipulated inputs. Each condition is run with 50 replicates (independent generations under distinct seeds); the replicate index plays no substantive role and only measures the stability of the response distribution.
+
+From each single generation the project collects two outputs simultaneously: the \textbf{final answer} required by the survey instruction and the \textbf{reasoning trace} produced by the model on the way to that answer. The study does \emph{not} use a two-stage setup in which reasoning and answer are elicited separately; the final answer and the reasoning trace are two analytically distinct components of the same response event, which preserves the tightest possible link between the stated outcome and the argumentative path available for inspection.
+
+\section{Model Set and Generation Protocol}
+
+\subsection{Models}
+
+The behavioral corpus is generated by four reasoning-capable models accessed through a unified API: \texttt{moonshotai/kimi-k2-thinking}, \texttt{z-ai/glm-4.6}, \texttt{qwen/qwen3.5-9b}, and \texttt{minimax/minimax-m2.5}. They were selected pragmatically rather than as an exhaustive benchmark: the project needs systems that generate not only a final answer but a sufficiently rich reasoning trace. The set nevertheless provides useful diversity in family, scale, and alignment profile, which makes cross-model comparison a substantive part of the design rather than a robustness afterthought.
+
+A fifth model, a locally hosted \texttt{Qwen3-8B}, is used exclusively for the hidden-state track (Section~7.3): extracting layer-wise activations requires white-box access that API models do not provide. This is a deliberate design asymmetry and a known limitation --- representational findings are established on a model that is related to, but not identical with, the behavioral set.
+
+\subsection{Generation settings}
+
+Main generations are run at temperature $0.01$. The purpose is not to claim that near-deterministic decoding is behaviorally ``natural,'' but to maximize reproducibility at the piloting stage: since the design compares subtle differences induced by vignette treatments and system-prompt stimuli, reducing sampling noise makes the effect of the manipulated inputs easier to attribute. In addition, a dedicated baseline of no-stimulus runs was collected at temperature $1.0$ (1{,}400 rows). This high-temperature baseline is a methodological yardstick: it lets the project compare the footprint of a \emph{semantic} intervention (a stimulus) against the footprint of a mere \emph{decoding-settings} change of comparable scale (Section~8.2.3).
+
+At $T = 0.01$, the 50 replicates per cell function as a design-stability check rather than a source of sampling variance: the near-deterministic decoder produces overwhelmingly consistent modal answers across replicates, and the pool allows detection of rare within-cell flips that would be missed with fewer observations. For inferential purposes, the effective unit of observation is the design cell, not the individual run; all headline regressions use cluster-robust standard errors that treat each cell as a single unit (96 clusters in Hassner, 72 in Savary), so the inferential $N$ reflects experimental granularity, not replicate count.
+
+\subsection{Corpus size and structure}
+
+The assembled master table contains 15{,}680 runs: 4 models $\times$ 2 experiments $\times$ (4 or 3) treatment groups $\times$ stimulus conditions $\times$ 50 replicates, plus the temperature-1.0 baseline. After preprocessing --- removal of non-reasoning runs, deduplication via rerun patches, and exclusion of empty or unparseable answers --- the analytical dataset contains 12{,}434 rows (79.5\%; this figure includes 1{,}394 temperature-1.0 baseline rows collected separately; the main $T = 0.01$ analytical dataset, \texttt{MAIN\_DF}, used in all inferential analyses in Section~8, contains 11{,}040 rows).
+
+One structural imbalance must be stated explicitly: the extended stimulus family H--M (Section~5) was run only on GLM-4.6 and Kimi; Minimax and Qwen3.5 cover only the no-stimulus, A, and C conditions. All analyses involving H--M are therefore estimated on the GLM+Kimi subsample and interpreted conditionally on it.
+
+\section{System-Prompt Stimuli}
+
+\subsection{Design logic}
+
+The main experimental intervention introduced by the project --- beyond the vignette treatments inherited from the source studies --- is a set of \emph{system-prompt stimuli} appended to the system prompt. Their shared purpose is to reduce sanitized answering and push the model toward \emph{behavioral realism}: approximating how a plausible respondent would actually answer, rather than how an idealized moral agent ought to answer. In SDB-related settings a model may respond in a way that is safe, cautious, and normatively polished but methodologically unhelpful; the stimuli reframe the task from self-presentation toward measurement.
+
+The stimuli form a structured design space rather than an ad hoc collection. Three dimensions are varied: (i) the \textbf{force} of the instruction --- whether it warns about consequences harshly or balances the realism request with an explicit anti-overcorrection clause; (ii) the \textbf{recipient of the consequences} of unrealistic answers --- the researcher's scientific work, science as a public enterprise, a company, or the users of its product; and (iii) the \textbf{valence of the framing} --- negative (harm if answers are unrealistic) versus positive (benefit if answers are realistic). These dimensions are miniature theories about which properties of a meta-instruction matter for an aligned model, and Section~8.1 estimates their effects directly.
+
+\subsection{Stimulus inventory}
+
+Table~\ref{tab:stimuli} lists the eight stimuli used in the behavioral corpus. Stimuli H--M form a (partial) factorial over the recipient/beneficiary/valence dimensions; A and C are the core-realism family in harsh and balanced variants.
+
+\begin{longtable}{L{4.5cm} L{8.5cm}}
+\caption{System-prompt stimuli in the behavioral corpus}\label{tab:stimuli}\\
+\toprule
+\textbf{Name} & \textbf{Core logic} \\
+\midrule
+\endfirsthead
+
+\toprule
+\textbf{Name} & \textbf{Core logic} \\
+\midrule
+\endhead
+
+\makecell[l]{A\_original\_core\_\\realism} &
+Strong realism instruction with negative consequences for the researcher if responses look sanitized rather than human. No anti-overcorrection clause. \\
+
+\makecell[l]{C\_balanced\_\\realism} &
+Same core realism instruction, with an explicit warning not to overcorrect toward provocative or implausibly extreme answers. \\
+
+\makecell[l]{H\_science\_\\personal\_gain} &
+Negative framing: the researcher's scientific work suffers if unrealistic answers reduce the informativeness of the study; anti-overcorrection clause. \\
+
+\makecell[l]{I\_science\_\\public\_good} &
+Negative framing: lower scientific value for broader public understanding; anti-overcorrection clause. \\
+
+\makecell[l]{J\_company\_\\personal\_gain} &
+Negative framing: firm-level losses if misleading data distort product design; anti-overcorrection clause. \\
+
+\makecell[l]{K\_company\_\\public\_good} &
+Negative framing: reduced usefulness of the product for real people; anti-overcorrection clause. \\
+
+\makecell[l]{L\_science\_public\_\\good\_positive} &
+Positive framing: realistic responses improve scientific value and produce a more truthful picture of human behavior. \\
+
+\makecell[l]{M\_company\_personal\_\\gain\_positive} &
+Positive framing: realistic responses improve product design and benefit the company. \\
+
+\bottomrule
+\end{longtable}
+
+The configuration files additionally define several stimuli (softened realism, research-purpose framing, stronger stakes, scientific integrity, measurement neutrality) that were not fielded in the behavioral corpus; four of them (B, D, F, X) were used in the separate hidden-state track (Section~7.3), whose local-model runs cover the conditions $\{$none, A, B, C, D, F, X$\}$.
+
+\section{Reasoning-Trace Annotation}
+
+\subsection{Why reasoning traces require a dedicated instrument}
+
+Because each run yields a reasoning trace alongside the final answer, the project needs a principled way to transform long free-form text into structured analytical variables. Raw traces are rich but unwieldy: they contain explicit moral arguments, hedging, meta-commentary on the survey format, treatment uptake, stimulus uptake, and artifacts of alignment behavior. Manual inspection during instrument development showed that the relevant features fall into two broad groups: \emph{format-related} features (reflections on the answer scale, the respondent role, what would ``look too saintly'') and \emph{substantive} features (which moral categories the model invokes, where it locates the treatment, whether it reacts to the stimulus). The coding scheme was built to preserve both layers.
+
+\subsection{Annotation pipeline and schema}
+
+The main annotation was produced by \texttt{gpt-5.4-mini} acting as an LLM coder. The annotator receives the experiment context (system prompt, vignette, treatment, stimulus where present) together with the full reasoning trace and returns a strictly machine-readable record conforming to a fixed schema. Two batches of 5{,}040 traces each were annotated (disjoint row sets), for a total of 10{,}080 annotated runs covering all four models, both experiments, the conditions $\{$no stimulus, A, C$\}$, and the temperature-1.0 baseline. After merging with the master table and filtering to parseable runs with valid answers, the working annotated sample is $n = 8{,}638$ (Hassner 5{,}085; Savary 3{,}475).
+
+The schema contains 37 coded fields per trace: 19 \emph{causality} variables (does the category causally participate in the answer: 0 = absent, 1 = mentioned, 2 = decisive; binarized 0 vs.\ 1--2 for analysis), 15 \emph{direction} variables ($-1/0/+1$: does the category push the answer down or up), and 3 binary style markers (acknowledgment of the possibility of different opinions; moral-style reasoning; rational-style reasoning). The categories span treatment awareness, stimulus (incentive) awareness, overcorrection concern, self-enhancement, fear of negative evaluation, self-deception, reliance on majority or source, prioritization of common vs.\ private interests, personal cost, means--ends reasoning, emotional reasoning, public recognition, privacy, social reward, urgency, legality, and cruelty. For the 14 categories possessing a direction, analysis uses \emph{signed presence} (causality $\times$ direction); stimulus-effect direction is kept separate because of its high share of neutral codes.
+
+\subsection{Validation against gold labels}
+
+Following the best-practice requirement that LLM labels be validated before downstream use \cite{gilardi2023, tornberg2024}, the annotator was benchmarked against expert manual coding on a validation subset ($n=27$ traces). Full results are reported in Table~\ref{tab:kappa} (Section~8.2.4); briefly: agreement is excellent for \texttt{cruelty} and \texttt{personal\_cost\_burden} ($\kappa = 1.00$), substantial for \texttt{overcorrection\_concern} ($\kappa = 0.64$), and at chance level for several psychologically subtle categories. The validation subset is small ($n = 27$; $\kappa$ confidence intervals are correspondingly wide and should be read as ordering estimates rather than precise thresholds); extending it is part of the planned MoralLens work (Section~9). All downstream findings are graded by category reliability: claims based on validated categories are treated as measurement-grade, claims based on unvalidated categories as strictly exploratory.
+
+\section{Analytical Strategy}
+
+The project observes LLM behavior on four connected levels --- final answers, reasoning traces, structured annotations, and hidden states --- and the analytical strategy mirrors this structure in three tracks implemented in three notebooks.
+
+\subsection{Track 1: behavioral analysis of final answers}
+
+\subsubsection*{Nonparametric tests and effect sizes}
+
+Treatment effects within each stimulus condition are tested with $\chi^2$ tests (binary Hassner outcome) and Mann--Whitney/Kruskal--Wallis tests (Savary scale), with Holm--Bonferroni correction applied within each family of pairwise contrasts; stimulus effects are tested against the no-stimulus baseline in the same way. Moderation (does the stimulus change the treatment effect?) is assessed by difference-in-differences (DiD) contrasts. For a two-by-two table indexed by treatment $t \in \{0,1\}$ and stimulus $s \in \{0,s'\}$:
+\begin{equation}
+\widehat{\mathrm{DiD}} = \bigl(\bar{y}_{t=1,s=s'} - \bar{y}_{t=0,s=s'}\bigr) - \bigl(\bar{y}_{t=1,s=0} - \bar{y}_{t=0,s=0}\bigr),
+\label{eq:did}
+\end{equation}
+with standard error $\mathrm{SE}(\widehat{\mathrm{DiD}}) = \sqrt{\sum_{k \in \{a,b,c,d\}} S_k^2 / n_k}$ (ratio of within-cell sample variances to cell sizes), tested as a two-sided $z$-statistic. Effect sizes are reported as Cram\'er's $V$ (Hassner: $V = \sqrt{\chi^2 / n}$) and Cohen's $d$ (Savary: $d = (\bar{y}_1 - \bar{y}_0)/s_{\mathrm{pooled}}$).
+
+\subsubsection*{Main regression models}
+
+The headline regressions are a binomial GLM (logit link) for Hassner and an OLS regression for Savary.\footnote{An ordinal logit (proportional-odds model) is estimated in parallel for Savary; binary-threshold and OLS codings are preferred due to failure of the proportional-odds assumption.} Both follow the specification:
+
+\begin{align}
+\text{Hassner:} \quad \operatorname{logit}\bigl[P(y_i = 1)\bigr] &= \alpha + \boldsymbol{\beta}_T \mathbf{d}^{\mathrm{treat}}_i + \boldsymbol{\beta}_S \mathbf{d}^{\mathrm{stim}}_i \nonumber \\
+&\quad + \boldsymbol{\beta}_{TS}(\mathbf{d}^{\mathrm{treat}}_i \otimes \mathbf{d}^{\mathrm{stim}}_i) + \boldsymbol{\gamma} \mathbf{d}^{\mathrm{model}}_i, \label{eq:logit} \\
+\text{Savary:} \quad y_i &= \alpha + \boldsymbol{\beta}_T \mathbf{d}^{\mathrm{treat}}_i + \boldsymbol{\beta}_S \mathbf{d}^{\mathrm{stim}}_i \nonumber \\
+&\quad + \boldsymbol{\beta}_{TS}(\mathbf{d}^{\mathrm{treat}}_i \otimes \mathbf{d}^{\mathrm{stim}}_i) + \boldsymbol{\gamma} \mathbf{d}^{\mathrm{model}}_i + \varepsilon_i, \label{eq:ols}
+\end{align}
+where $\mathbf{d}^{\mathrm{treat}}$, $\mathbf{d}^{\mathrm{stim}}$, $\mathbf{d}^{\mathrm{model}}$ are dummy vectors for treatment group, stimulus condition, and model identity (with the control group, no-stimulus condition, and Minimax as reference categories), and $\otimes$ denotes an element-wise (interaction) expansion. The models are estimated with HC3 heteroskedasticity-robust standard errors. An extended specification M2 adds the interaction $\mathbf{d}^{\mathrm{treat}} \otimes \mathbf{d}^{\mathrm{model}}$ for cross-model treatment heterogeneity.
+
+\subsubsection*{Cluster-robust re-estimation and robustness}
+
+Because the 50 replicates within each design cell are not independent observations, all headline regressions are re-estimated with cluster-robust standard errors, clustering on the design cell $c_i = (\text{model} \times \text{group} \times \text{stimulus})$ (96 clusters in Hassner, 72 in Savary):
+\begin{equation}
+\widehat{V}_{\mathrm{cluster}}(\hat{\boldsymbol{\beta}}) = (X^TX)^{-1} \Bigl(\sum_{c} X_c^T \hat{\varepsilon}_c \hat{\varepsilon}_c^T X_c\Bigr) (X^TX)^{-1}.
+\label{eq:cov-cluster}
+\end{equation}
+Additional robustness layers: quasi-separation (28/96 Hassner cells with P(Yes)$=0$ or $1$; ridge-penalized logit cross-checks with $\lambda$ chosen by 5-fold CV); proportional-odds violations in Savary (binary threshold $y \geq 4$ and OLS cross-check); Benjamini--Hochberg FDR across coefficient families.
+
+\subsubsection*{Stimulus attribute regression}
+
+The stimulus design space is also analyzed by decomposing stimuli into their constitutive attributes. Let $d_{\mathrm{pos}}$, $d_{\mathrm{co}}$, $d_{\mathrm{pub}}$ be binary indicators for positive valence (L/M vs.\ H--K), company recipient, and public beneficiary, respectively, and $d_A$, $d_C$, $d_{HM}$ indicator dummies for the three stimulus families. The attribute regression on the GLM+Kimi subsample is:
+\begin{equation}
+\begin{aligned}
+g(y_i) ={}& \alpha + \beta_{\mathrm{pos}} d_{\mathrm{pos},i} + \beta_{\mathrm{co}} d_{\mathrm{co},i} + \beta_{\mathrm{pub}} d_{\mathrm{pub},i} + \beta_A d_{A,i} \\
+&{} + \beta_C d_{C,i} + \beta_{HM} d_{HM,i} + \boldsymbol{\beta}_T \mathbf{d}^{\mathrm{treat}}_i + \boldsymbol{\gamma} \mathbf{d}^{\mathrm{model}}_i,
+\end{aligned}
+\label{eq:attr}
+\end{equation}
+where $g(\cdot)$ is the logit link (Hassner) or the identity (Savary), with cluster-robust SE (cluster $=$ model $\times$ treatment group $\times$ stimulus). A within-H--M factorial refit restricts the sample to stimuli H--K/L/M and recovers the same estimates. The valence effect is domain-asymmetric in magnitude: in the negative-valence Hassner domain, where the model's default is near-categorical refusal, positive framing produces a 15-fold odds increase; in the positive-valence Savary domain, where the model reports moderate baseline willingness, the same contrast shifts the mean by 0.13 scale points. This asymmetry likely reflects a floor effect in the Hassner no-stimulus baseline rather than a different underlying mechanism.
+
+\subsection{Track 2: statistical analysis of annotated reasoning}
+
+\subsubsection*{Category prevalence regressions}
+
+For each of the 22 annotation categories (19 causality-bearing categories plus 3 binary style markers), prevalence and its dependence on treatment and stimulus are estimated by a per-category binomial logit (causality binary) or OLS (signed presence, $-1/0/+1$ direction):
+\begin{equation}
+\operatorname{logit}\bigl[P(\text{cat}_{k,i} = 1)\bigr] = \alpha_k + \boldsymbol{\beta}_T^{(k)} \mathbf{d}^{\mathrm{treat}}_i + \boldsymbol{\beta}_S^{(k)} \mathbf{d}^{\mathrm{stim}}_i + \boldsymbol{\gamma}^{(k)} \mathbf{d}^{\mathrm{model}}_i,
+\label{eq:cat-logit}
+\end{equation}
+where the index $k$ runs over all categories with mean prevalence in $(0.01, 0.99)$. The family of 65 Hassner and 64 Savary coefficients is corrected for multiple testing using Benjamini--Hochberg FDR at $q = 0.05$.
+
+\subsubsection*{Reasoning-to-answer models}
+
+Let $\mathbf{x}_i = (x_{1,i}, \ldots, x_{K,i})^T$ be the vector of annotation features for run $i$ (signed presence variables $\mathrm{sp}_k$ plus binary causality indicators). The reasoning-to-answer models are:
+\begin{align}
+\text{Hassner M0:}& \quad \operatorname{logit}[P(y_i=1)] = \alpha + \boldsymbol{\beta}_T \mathbf{d}^{\mathrm{treat}}_i + \boldsymbol{\beta}_S \mathbf{d}^{\mathrm{stim}}_i + \boldsymbol{\gamma} \mathbf{d}^{\mathrm{model}}_i, \label{eq:m0h} \\
+\text{Hassner M1:}& \quad \operatorname{logit}[P(y_i=1)] = \alpha + \boldsymbol{\mu}^T \mathbf{x}_i + \boldsymbol{\beta}_T \mathbf{d}^{\mathrm{treat}}_i + \boldsymbol{\beta}_S \mathbf{d}^{\mathrm{stim}}_i + \boldsymbol{\gamma} \mathbf{d}^{\mathrm{model}}_i, \label{eq:m1h} \\
+\text{Savary M1:}& \quad y_i = \alpha + \boldsymbol{\mu}^T \mathbf{x}_i + \boldsymbol{\beta}_T \mathbf{d}^{\mathrm{treat}}_i + \boldsymbol{\beta}_S \mathbf{d}^{\mathrm{stim}}_i + \boldsymbol{\gamma} \mathbf{d}^{\mathrm{model}}_i + \varepsilon_i. \label{eq:m1s}
+\end{align}
+The incremental pseudo-$R^2$ (McFadden, Hassner) and $R^2$ (Savary) from M0 to M1 quantifies the annotation's explanatory contribution. A non-tautological refit drops the co-generated \texttt{sp\_treatment\_effect} direction variable to remove the logically co-determined component.
+
+\subsubsection*{Separability benchmark and interpretable-ML layer}
+
+The separability benchmark trains two classifiers --- $\ell_2$-regularized logit and gradient boosting machine (GBM) --- to distinguish (a) stimulus-present vs.\ stimulus-absent runs and (b) $T=0.01$ vs.\ $T=1.0$ no-stimulus runs, using the annotation feature vector $\mathbf{x}_i$ as input. Performance is reported as stratified 5-fold cross-validated ROC-AUC. A leakage-controlled variant removes the two categories whose codes are definitionally linked to the stimulus (stimulus-awareness causality and stimulus-effect direction). The interpretable-ML layer applies TreeSHAP \cite{lundberg2017} in a discovery role to the Savary GBM where CV $R^2 > $ CV $R^2_{\mathrm{logit}}$; each discovered interaction is then re-estimated as an explicit product term in a confirmatory OLS with HC3 SE.
+
+\subsection{Track 3: hidden-state analysis}
+
+The representational track runs on the local Qwen3-8B (37 transformer blocks, 4{,}096-dimensional hidden states): 98 single-pass runs (56 Hassner, 42 Savary) across the conditions $\{$none, A, B, C, D, F, X$\}$, with last-token activations $\mathbf{h}^{(\ell)}_i \in \mathbb{R}^{4096}$ extracted at every layer $\ell = 0, \ldots, 36$.
+
+\subsubsection*{Separation ratio and Cohen's $d$-like}
+
+For each layer $\ell$ and each stimulus $s$ let $\mathcal{N} = \{\mathbf{h}^{(\ell)}_i : \text{cond}_i = \text{none}\}$ and $\mathcal{S} = \{\mathbf{h}^{(\ell)}_j : \text{cond}_j = s\}$. The separation ratio is:
+\begin{equation}
+\mathrm{sep}(\ell) = \frac{d_{\mathrm{between}}(\ell)}{\tfrac{1}{2}\bigl[d_{\mathrm{within}}^{\mathcal{N}}(\ell) + d_{\mathrm{within}}^{\mathcal{S}}(\ell)\bigr]},
+\label{eq:sep}
+\end{equation}
+where $d_{\mathrm{between}}(\ell) = \mathbb{E}_{i \in \mathcal{N}, j \in \mathcal{S}}\|\mathbf{h}^{(\ell)}_i - \mathbf{h}^{(\ell)}_j\|_2$ and $d_{\mathrm{within}}^{\mathcal{A}}(\ell) = \mathbb{E}_{i \neq j \in \mathcal{A}}\|\mathbf{h}^{(\ell)}_i - \mathbf{h}^{(\ell)}_j\|_2$ are all-pairs average L2 distances. A value $>1$ indicates that between-condition spread exceeds within-condition spread. A high-dimensional Cohen's $d$-like analogue is computed as:
+\begin{equation}
+d(\ell) = \frac{\|\boldsymbol{\mu}_{\mathcal{S}}^{(\ell)} - \boldsymbol{\mu}_{\mathcal{N}}^{(\ell)}\|_2}{\sqrt{\bigl(\sigma^2_{\mathcal{S}}(\ell) + \sigma^2_{\mathcal{N}}(\ell)\bigr)/2}}, \quad \sigma^2_{\mathcal{A}}(\ell) = \mathbb{E}_{i \in \mathcal{A}}\|\mathbf{h}^{(\ell)}_i - \boldsymbol{\mu}_{\mathcal{A}}^{(\ell)}\|_2^2.
+\label{eq:cohend}
+\end{equation}
+The layer of peak separation is located via $\ell^* = \arg\max_\ell \mathrm{sep}(\ell)$ and its confidence interval by 1{,}000 bootstrap resamples of the run indices.
+
+\subsubsection*{Linear CKA}
+
+To assess whether stimuli change the directional structure (subspace orientation) rather than merely the magnitude of activations, linear centered kernel alignment (CKA; \cite{kornblith2019}) is computed between stimulus and no-stimulus representation matrices. Let $X \in \mathbb{R}^{K \times D}$ and $Y \in \mathbb{R}^{K \times D}$ be the matched-pair activation matrices, $H = I_K - \mathbf{1}\mathbf{1}^T/K$ the centering matrix, $\widetilde{K}_X = H(XX^T)H$, $\widetilde{K}_Y = H(YY^T)H$:
+\begin{equation}
+\mathrm{CKA}(X, Y) = \frac{\mathrm{tr}(\widetilde{K}_X \widetilde{K}_Y)}{\sqrt{\mathrm{tr}(\widetilde{K}_X^2)\cdot\mathrm{tr}(\widetilde{K}_Y^2)}}.
+\label{eq:cka}
+\end{equation}
+$\mathrm{CKA} = 1$ implies the column spaces are identical up to orthogonal rotation; $\mathrm{CKA} \ll 1$ implies directional divergence. The kernel form is used because $D \gg K$, which makes direct linear CKA numerically unstable.
+
+\subsubsection*{Trajectory length, probing, and answer decodability}
+
+The cumulative trajectory length of a run through layer space is:
+\begin{equation}
+\mathrm{traj}(i) = \sum_{\ell=0}^{35} \|\mathbf{h}^{(\ell+1)}_i - \mathbf{h}^{(\ell)}_i\|_2.
+\label{eq:traj}
+\end{equation}
+Differences in $\mathrm{traj}(i)$ across stimulus conditions are tested by a paired Wilcoxon signed-rank test on the 14 matched no-stimulus/stimulus pairs.
+
+Stimulus-presence and treatment-status probes are logistic classifiers trained on each layer's activations; treatment probing uses leave-one-group-out (LOGO) cross-validation, holding out all runs sharing the same vignette group and context, to prevent scenario memorization from masquerading as abstract encoding.
+
+Layer-wise answer decodability is estimated with a ridge regression probe:
+\begin{equation}
+\hat{y}_i = \mathbf{w}^T \mathbf{h}^{(\ell)}_i + b, \quad \mathbf{w} = \arg\min_{\mathbf{w}} \sum_i (y_i - \mathbf{w}^T \mathbf{h}^{(\ell)}_i - b)^2 + \lambda \|\mathbf{w}\|_2^2,
+\label{eq:ridge}
+\end{equation}
+where $y_i$ is the continuous behavioral outcome (logprob-derived P(Yes) for Hassner, expected scale for Savary) and $\lambda$ is fixed at $1000$ (robustness checked at $\lambda \in \{100, 10^4\}$). Performance is reported as leave-one-out $R^2$ on the 42 Savary runs. A condition-residualized variant replaces $y_i$ with $y_i - \hat{y}^{\mathrm{cond}}_i$ (within-condition deviation from the condition mean) to isolate individual-run answer information from condition identity.
+
+
+\section{Results}
+
+\subsection{Behavioral level}
+
+\subsubsection{Model heterogeneity and pooling logic}
+
+Models differ substantially in their baseline attitudes (Table~\ref{tab:model-descriptives}): in Hassner, P(Yes) ranges from 10\% (Minimax) to 68\% (GLM-4.6); in Savary, mean willingness spans 3.33 (Kimi) to 3.73 (Qwen). This heterogeneity is large enough that any single-model pilot would give a misleading picture; all headline results pool models and treat model identity as a cluster variable in inferential analyses.\footnote{The analytical dataset (\texttt{MAIN\_DF}) contains 11{,}040 rows at $T = 0.01$ after excluding empty or unparseable responses. Replicate stability, temperature robustness, and cluster-robust inference details are reported in Appendix~A.} The heterogeneity is moreover not confined to baseline levels: adding a treatment$\times$model interaction to the Hassner regression improves fit substantially (McFadden pseudo-$R^2$ rises from $0.507$ to $0.543$; $\Delta\mathrm{AIC} = -304$), so models differ in their \emph{sensitivity} to the experimental manipulation, not merely in their starting point --- which compounds the case against any single-model pilot.
+
+\begin{table}[H]
+\centering
+\caption{Per-model descriptives and replicate stability ($T = 0.01$, all conditions pooled)}
+\label{tab:model-descriptives}
+\begin{tabular}{L{4.8cm} r r r r r r}
+\toprule
+\textbf{Model} & \multicolumn{3}{c}{\textbf{Hassner}} & \multicolumn{3}{c}{\textbf{Savary}} \\
+& P(Yes) & $n$ & $\kappa$ & Mean & $n$ & $\kappa$ \\
+\midrule
+moonshotai/kimi-k2-thinking & 55.6\% & 2{,}318 & 0.44 & 3.33 & 1{,}738 & 0.29 \\
+z-ai/glm-4.6 & 67.5\% & 2{,}312 & 0.45 & 3.43 & 1{,}735 & 0.51 \\
+qwen/qwen3.5-9b & 22.3\% & 704 & --- & 3.73 & 273 & --- \\
+minimax/minimax-m2.5 & 10.3\% & 1{,}120 & 0.12 & 3.59 & 840 & 0.58 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Treatment effects and directional replication (H1 partially supported)}
+
+In the no-stimulus baseline, treatment effects in Hassner replicate directionally in full; Savary shows a split pattern (Figure~\ref{fig:replication}).
+
+\textbf{Hassner.} Support for sleep deprivation falls monotonically: 44.6\% (control) $\to$ 19.3\% (protracted duration) $\to$ 12.2\% (modest intelligence) $\to$ 1.0\% (combined). Pairwise contrasts are significant after Holm correction in 22/27 tests.
+
+\textbf{Savary --- partial replication.} Public recognition raises LLM willingness from 3.39 to 3.73 ($d = +0.72$) and social benefit raises it further to 4.09 ($d = +1.66$); pairwise contrasts are significant in 14/18 tests. The direction of the social-benefit increment (public recognition with social benefit $>$ public recognition alone) replicates the human benchmark: in Savary~\&~Goldsmith~(2020) Experiment~4 ($N = 368$, binary), adding enhanced social benefit raised the donation rate from 66\% back toward 78\%, compared with 80\% for private donation (min-max rescaled to a 5-point scale: private $\approx 4.20$, standard public $\approx 3.64$, public+ESB $\approx 4.12$).
+
+However, the direction of the private-vs-public comparison is reversed. LLMs show willingness \emph{increasing} with public recognition ($+0.30$ scale points in the no-stimulus baseline), while Savary~\&~Goldsmith consistently find it \emph{decreasing}: Experiment~1A ($N = 171$, 7-point scale) yields private $M = 4.82$ vs.\ public $M = 4.07$ (rescaled to a 5-point range: $3.55 \to 3.05$); Experiment~4 shows private 80\% vs.\ standard public 66\%. The original effect reflects the self-signaling mechanism described by Savary~\&~Goldsmith: public recognition creates \emph{motivational ambiguity} by suggesting the act may be driven by reputational rather than prosocial motives, and thereby \emph{reduces} willingness. LLMs produce the opposite, naive prediction --- that visibility is an additional incentive.
+
+Critically, this reversal is robust across the full stimulus inventory: all eight stimuli yield a positive private-to-public delta ($\Delta$ ranging from $+0.05$ under A\_original\_core\_realism to $+0.26$ under L/M). Stimuli compress the magnitude of the reversal relative to the no-stimulus condition ($+0.30$) but do not flip its sign. The self-signaling mechanism is therefore not accessible through system-prompt engineering in the present design. The annotation evidence is consistent with this reading: in the no-stimulus Savary baseline, categories capturing image-management and self-presentation concerns are at their floor, indicating that LLMs do not spontaneously engage with the motivational-ambiguity logic that governs human donors, and stimuli do not reliably activate it.
+
+This benchmark tests directional replication, not magnitude: effect sizes differ from the source studies because Hassner~(2022) used a probability sample with distinct wording and Savary~\&~Goldsmith~(2020) used real monetary stakes.
+
+\begin{figure}[H]
+\centering
+\safeincludegraphics[width=\textwidth]{fig_treatment_replication.png}
+\caption{Directional replication of the original treatment effects in the no-stimulus baseline (all four models pooled, $T=0.01$). Left: share of support for sleep deprivation by condition, Wilson 95\% CIs. Right: mean stated willingness to donate by condition, bootstrap 95\% CIs.}
+\label{fig:replication}
+\end{figure}
+
+\subsubsection{Stimuli push answers away from the socially desirable pole (H2 supported)}
+
+Every system-prompt stimulus shifts LLM answers away from the socially desirable baseline in both domains, without exception (Figure~\ref{fig:stimuli-effects}; Table~\ref{tab:incentive-means}). In Hassner, stimuli raise P(Yes) from a 19\% no-stimulus baseline to 42--90\% depending on framing: the harsh A stimulus reaches 72\%, and the positive-framing L/M pair reaches 88--90\%. In Savary, every stimulus deflates mean willingness from the 3.74 baseline, reaching a floor of 3.14 under the M stimulus. The movements are directionally symmetric across domains --- stimuli simultaneously push models \emph{toward} endorsing coercive interrogation and \emph{away} from stated willingness to donate --- though the underlying mechanisms differ (see Section~8.2). Stimuli also change the shape of the response distribution: the no-stimulus Hassner condition is strongly homogeneous (model nearly always refuses), while stimuli broaden or fully invert the distribution.
+
+\begin{table}[H]
+\centering
+\caption{Mean response by stimulus condition ($T = 0.01$, all treatment groups pooled)}
+\label{tab:incentive-means}
+\begin{tabular}{L{5.0cm} r r r r}
+\toprule
+\textbf{Stimulus} & \multicolumn{2}{c}{\textbf{Hassner}} & \multicolumn{2}{c}{\textbf{Savary}} \\
+& P(Yes) & $n$ & Mean & $n$ \\
+\midrule
+no\_incentive & 19.1\% & 2{,}023 & 3.74 & 1{,}240 \\
+C\_balanced\_realism & 41.6\% & 1{,}340 & 3.44 & 1{,}034 \\
+H\_science\_personal\_gain & 56.4\% & 399 & 3.35 & 300 \\
+I\_science\_public\_good & 59.9\% & 399 & 3.30 & 300 \\
+J\_company\_personal\_gain & 61.4\% & 399 & 3.28 & 300 \\
+K\_company\_public\_good & 63.9\% & 399 & 3.30 & 299 \\
+A\_original\_core\_realism & 72.1\% & 696 & 3.32 & 515 \\
+L\_science\_public\_good\_positive & 88.2\% & 400 & 3.20 & 300 \\
+M\_company\_personal\_gain\_positive & 90.0\% & 399 & 3.14 & 298 \\
+\midrule
+\multicolumn{5}{l}{\footnotesize Stimuli H--M were fielded on GLM-4.6 and Kimi only.} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\safeincludegraphics[width=\textwidth]{fig_stimulus_effects.png}
+\caption{Final answers by system-prompt stimulus, pooled over treatment groups and models (grey = no-stimulus baseline; 95\% CIs). Every stimulus moves the answer away from the socially desirable pole: upward in Hassner (left), downward in Savary (right). Stimuli H--M are available only for GLM-4.6 and Kimi.}
+\label{fig:stimuli-effects}
+\end{figure}
+
+\subsubsection{Framing valence is the only active design ingredient (H4 supported)}
+
+Among the stimulus design dimensions, only \emph{framing valence} consistently determines behavioral impact. Positive framing (L/M stimuli) produces a 15-fold odds increase in Hassner relative to negative framing ($\beta = +2.71$, $p < 0.001$, OR $= 15.0$); the same contrast is statistically present but substantively small in Savary ($\beta = -0.13$, $p = 0.02$). Recipient identity (company vs.\ science) and beneficiary type (personal vs.\ public good) are non-significant in both experiments. Full decomposition is in Table~\ref{tab:attr} (Appendix).
+
+\subsubsection{Stimulus--treatment interaction (H3 partially supported)}
+
+Stimuli modulate --- but never invert --- treatment effects. In Hassner, negative-framing stimuli (H--K) weaken treatment effects while positive-framing stimuli (L/M) amplify them; no difference-in-differences contrast reverses the sign of a treatment effect. In practical terms, the harsh A stimulus raises P(Yes) by $+49$ p.p.\ on average, a shift comparable in magnitude to the largest treatment contrast, effectively substituting for the experimental manipulation under that condition.
+
+\subsection{Reasoning level: how stimuli restructure argumentation}
+
+The behavioral level establishes \emph{that} stimuli move answers and that framing valence governs the size of the move. The annotated reasoning traces show \emph{how}. Stimuli reorganize the argument the model assembles before answering along three channels: a \emph{meta-reflexive} channel (awareness of being evaluated), a \emph{structural} channel (how explicitly the model deliberates), and a \emph{directional} channel (the polarity of the pragmatic arguments it recruits). The first two are largely domain-general and are treated next; the third is domain-specific and carries the A-versus-C contrast (Section~8.2.2).
+
+\subsubsection{Stimuli activate meta-reflexive awareness}
+
+Stimuli activate explicit \emph{overcorrection concern} --- the model's expressed worry that it may be generating a socially desirable rather than genuine answer. This category appears in just 9\% of no-stimulus traces, rising to 72--76\% under stimuli A and C (Figure~\ref{fig:overcorrection}; substantially validated: $\kappa = 0.64$, $n = 27$). This is the single largest annotation effect in the corpus.
+
+\begin{figure}[H]
+\centering
+\safeincludegraphics[width=0.7\textwidth]{fig_overcorrection.png}
+\caption{Share of reasoning traces containing explicit overcorrection concern, by stimulus condition ($T = 0.01$; all models pooled).}
+\label{fig:overcorrection}
+\end{figure}
+
+The meta-reflexive shift is itself two-pronged: alongside overcorrection concern, \emph{treatment\_awareness} --- explicit recognition of being in an experimental condition --- rises in parallel ($\kappa = 0.73$, reliable). Together they encode a full cognitive-frame shift: stimuli reposition the model as an experimental participant rather than a naive respondent.
+
+In Savary, by contrast, the experimental \emph{treatments} (rather than the stimuli) independently \emph{reduce} overcorrection concern ($\beta = -0.48$ and $-0.74$ for the two treatment conditions, both $p < 0.001$; $\kappa = 0.64$, reliable). Models assigned to the social-benefit donation conditions are \emph{less} worried about overcorrecting --- the normative clarity of a socially recognized charitable act apparently substitutes for the self-monitoring function that stimuli otherwise induce. This treatment-driven reduction directly feeds the behavioral pathway described in Section~8.3: less overcorrection concern $\to$ higher predicted willingness to donate.
+
+Stimuli also activate a substantive-argument channel whose profile is domain-specific. In Hassner, the dominant activated categories are emergency urgency and common-interests framing. In Savary, the single largest incentive effect in the entire dataset is activation of \emph{personal\_cost\_burden} ($\beta \approx 5.0$ for both A and C, $p < 0.001$; $\kappa = 1.00$, $\kappa_{\mathrm{dir}} = 0.89$, both reliable): under a stimulus, virtually every Savary reasoning trace explicitly weighs personal costs and benefits of charitable giving. This domain-specific profile explains why A and C produce nearly identical behavioral outcomes in Savary --- both equally redirect reasoning toward cost-benefit framing --- while diverging sharply in Hassner, where the \emph{direction} of activated categories is decisive (Section~8.2.2).
+
+Beyond redirecting the \emph{content} of reasoning, stimuli also increase its \emph{structure}. On the same annotation instrument, the share of traces exhibiting an explicit rational-deliberative style rises from $0.67$ in the no-stimulus baseline to $0.86$ under A/C, the share acknowledging that multiple positions are defensible rises from $0.57$ to $0.80$, and the fraction of traces displaying no structured reasoning style at all is roughly halved ($0.33 \to 0.14$; all $\chi^2$ tests $p < 10^{-50}$). A stimulus thus does not merely tell the model what to weigh --- it prompts it to deliberate more explicitly, converting otherwise terse or unstructured responses into reasoned ones.\footnote{These reasoning-style sub-codes were not part of the $n = 27$ gold-validation set, so their individual reliability is exploratory; the effects are nonetheless large and consistent across both stimulus variants.}
+
+At the \emph{prevalence} level, A and C produce qualitatively similar restructuring (inter-variant classifier AUC $= 0.73$); the direction-level analysis below shows they diverge substantially in argumentative polarity. The baseline reasoning vocabulary is predominantly utilitarian-deliberative; psychologically self-referential categories are rare without a stimulus (self\_enhancement: 13\%, fear\_negative\_evaluation: 13\%, self\_deception: $<$1\%). The signed-presence structure of this baseline vocabulary reveals its default argumentative orientation: common\_interests\_prioritization is framed pro-endorsement in 81\% of traces; cruelty is framed as a negative argument in 45\%. The most ambivalent category is treatment\_effect\_direction --- the model's own assessment of whether the experimental condition justifies compliance --- which splits nearly evenly (26\% negative / 38\% neutral / 36\% positive; $\kappa = 0.46$, moderate). This ambivalence directly mirrors the intermediate-magnitude behavioral treatment effects: models simultaneously marshal arguments for and against compliance, and the balance determines the outcome. Social desirability thus operates through the \emph{latent} structure of argumentation rather than through explicit self-referential naming. Full prevalence statistics are in Table~\ref{tab:prevalence-full} (Appendix).
+
+\subsubsection{A vs C: direction reversal, not category substitution}
+
+The A--C behavioral gap is large in Hassner (72\% vs.\ 41\% endorsement) and nearly absent in Savary (3.32 vs.\ 3.44 on the 5-point scale). Annotation prevalence does not explain the asymmetry: for every validated category, $|d| < 0.11$ between A and C conditions. The explanation lies in the \emph{direction} of reasoning, not its content.
+
+Table~\ref{tab:direction-AvsC} shows signed-presence means (positive $=$ pro-endorsement) for the four categories with the largest A--C contrasts in Hassner ($p < 0.001$, cluster-robust). Under the no-stimulus baseline, all four categories lean \emph{against} endorsement. Stimulus C moves each toward neutral. Stimulus A \emph{reverses the sign}: the pragmatic ratio-of-goals-and-means calculus flips from $-0.24$ to $+0.42$; majority-opinion framing flips from $-0.25$ to $+0.40$. Critically, A does not introduce different reasoning categories --- it recruits the \emph{same} ones and inverts their argumentative polarity from ``against coercion'' to ``for coercion.''
+
+\begin{table}[H]
+\centering
+\caption{Signed-presence means by stimulus condition (Hassner, $T = 0.01$, all models pooled). Positive = framed pro-endorsement; negative = framed anti-endorsement. $\dagger$ = validated ($\kappa \geq 0.44$); $\ddagger$ = not in validation sample (exploratory).}
+\label{tab:direction-AvsC}
+\snakebreak
+\begin{tabular}{L{5.5cm} c c c c}
+\toprule
+\textbf{Category} & \textbf{No stimulus} & \textbf{C} & \textbf{A} & $\Delta_{A-C}$ \\
+\midrule
+ratio\_of\_goals\_and\_means$^{\ddagger}$ & $-0.24$ & $-0.01$ & $+0.42$ & $+0.43^{***}$ \\
+cruelty (direction)$^{\dagger}$ & $-0.67$ & $-0.68$ & $-0.34$ & $+0.34^{***}$ \\
+majority\_reliance (direction)$^{\dagger}$ & $-0.25$ & $+0.06$ & $+0.41$ & $+0.35^{***}$ \\
+source\_reliance$^{\ddagger}$ & $-0.42$ & $-0.09$ & $+0.16$ & $+0.24^{***}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Two additional validated findings complete the picture of A's activation mechanism. First, stimulus A specifically suppresses legality\_assessment ($\beta = -0.634$, $p < 0.001$; $\kappa = 0.71$, reliable) while stimulus C does not reach significance on this category: harsh realism removes the normative-legal brake entirely, whereas balanced realism leaves it intact. Second, private\_interests\_prioritization --- reasoning about whose interests the decision serves --- is activated more strongly under A than C in Hassner (A: $\beta = +1.95$, C: $\beta = +1.28$, both $p < 0.001$; $\kappa = 0.82$, reliable): A prompts models to reason more explicitly about the instrumental calculus of competing interests, reinforcing the direction flip documented above.
+
+This mechanism is domain-specific. In Savary, the A--C direction differences are attenuated and partially reversed: C activates personal-cost-burden framing more positively than A ($+0.75$ vs.\ $+0.56$), and the overall behavioral difference shrinks to $\Delta = 0.12$. Stimulus A's direction-flipping potency is greatest in the negative-valence domain, where the target behavior implicates explicit moral-pragmatic reasoning about coercion; it offers no comparable advantage in the positive-valence domain, where charitable giving is already approached in cost-benefit terms regardless of framing harshness.
+
+\subsubsection{Stimulus leaves a larger footprint than temperature (H5, text level)}
+
+A separability benchmark compares how much the stimulus vs.\ a decoding-settings change disrupts reasoning structure. Classifiers trained on annotation features discriminate stimulus-present from no-stimulus traces at AUC $= 0.96$; the analogous classifier for $T = 0.01$ vs.\ $T = 1.0$ reaches only AUC $= 0.68$ (Figure~\ref{fig:benchmark}). A semantic prompt intervention restructures the reasoning process far more deeply than a temperature change, and this gap survives removal of leakage features (stimulus-awareness annotation codes).
+
+\begin{figure}[H]
+\centering
+\safeincludegraphics[width=0.82\textwidth]{fig_benchmark.png}
+\caption{Separability benchmark on annotation features (stratified 5-fold CV ROC-AUC). The stimulus leaves a far larger footprint in reasoning structure than a change of decoding temperature, and the result survives removal of leakage features.}
+\label{fig:benchmark}
+\end{figure}
+
+\subsubsection{Annotation reliability}
+
+Table~\ref{tab:kappa} reports inter-rater $\kappa$ against expert gold labels ($n = 27$). The headline finding --- overcorrection concern --- is substantially validated ($\kappa = 0.64$); cruelty and personal\_cost\_burden reach $\kappa = 1.00$. Several other categories are at noise level: emotional\_reasoning ($\kappa = 0.06$), self\_enhancement ($\kappa = -0.06$), fear\_negative\_evaluation ($\kappa = -0.04$), incentive\_awareness ($\kappa = 0.00$). Findings relying on those categories are strictly exploratory.
+
+\begin{table}[H]
+\centering
+\caption{Annotator validation against expert gold labels ($n = 27$ traces, Cohen's $\kappa$)}
+\label{tab:kappa}
+\snakebreak
+\begin{tabular}{L{6.5cm} c L{4.5cm}}
+\toprule
+\textbf{Category} & $\kappa$ & \textbf{Verdict} \\
+\midrule
+cruelty (causality) & 1.00 & reliable \\
+personal\_cost\_burden (causality) & 1.00 & reliable \\
+personal\_cost\_burden (direction) & 0.89 & reliable \\
+cruelty (direction) & 0.85 & reliable \\
+private\_interests\_prioritization & 0.82 & reliable \\
+public\_recognition (causality) & 0.76 & reliable \\
+public\_recognition (direction) & 0.65 & reliable \\
+treatment\_awareness & 0.73 & reliable \\
+legality\_assessment & 0.71 & reliable \\
+private\_interests\_prioritization (dir.) & 0.67 & reliable \\
+overcorrection\_concern & 0.64 & reliable \\
+social\_reward (direction) & 0.52 & moderate \\
+treatment\_effect\_direction & 0.46 & moderate \\
+emergency\_urgency & 0.44 & moderate \\
+privacy\_factor & 0.44 & moderate \\
+majority\_reliance (direction) & 0.44 & moderate \\
+emotional\_reasoning & 0.06 & noise level \\
+common\_interests\_prioritization & 0.00 & noise level \\
+incentive\_awareness & 0.00 & noise level \\
+self\_deception & 0.00 & noise level \\
+fear\_negative\_evaluation & $-0.04$ & noise level \\
+self\_enhancement & $-0.06$ & noise level \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsection{From reasoning to answer: domain asymmetry}
+
+Showing that stimuli restructure reasoning does not establish that the restructured reasoning \emph{drives} the answer rather than rationalizing it after the fact. Linking the validated annotation features to final answers tests exactly this --- and the link, it turns out, takes a different form in each domain. In Savary, adding annotation features raises explained variance from $R^2 = 0.419$ to $0.482$ ($\Delta = +0.063$), and the link is direct: traces containing explicit \emph{overcorrection concern} predict lower stated willingness ($\beta = -0.047$, $p = 0.012$), connecting the meta-reflexive channel activated by stimuli (Section~8.2.1) directly to the behavioral outcome. Among individual validated predictors, two carry counter-intuitive signs: private\_interests\_prioritization ($\hat{\beta} = +0.046$, $p < 0.001$; $\kappa = 0.82$) and personal\_cost\_burden ($\hat{\beta} = +0.046$, $p = 0.002$; $\kappa = 0.89$) are both \emph{positive} predictors of stated willingness when framed pro-giving --- suggesting that cost-benefit deliberation, when it reaches a favorable resolution, is a driver of charitable intent rather than a brake. Two further validated predictors reflect the treatment construct itself: reasoning about public recognition framed positively ($\hat{\beta} = +0.068$, $p = 0.028$; $\kappa = 0.76$, reliable) and social reward framing ($\hat{\beta} = +0.089$, $p = 0.006$; $\kappa = 0.52$, moderate) each independently predict higher stated willingness, indicating that part of the treatment effect on behavior operates through the model's own representation of recognition as a social incentive. The reasoning-to-answer mapping is also non-linear in Savary: a gradient-boosting model outperforms linear regression (CV $R^2$ $0.558$ vs.\ $0.475$; Figure~\ref{fig:shap-savary}). The dominant interaction is social-benefit treatment $\times$ no-stimulus ($\hat{\beta} = -0.25$, $p < 0.001$): the social-benefit effect on willingness operates primarily in the baseline condition and attenuates under stimuli. A second confirmed interaction is privacy\_factor $\times$ no-incentive ($\hat{\beta} = -0.121$, $p < 0.001$; $\kappa = 0.44$, moderate): privacy-related reasoning suppresses willingness in the no-stimulus baseline but not under a stimulus, consistent with stimuli reframing privacy concerns as surmountable rather than prohibitive.
+
+\begin{figure}[H]
+\centering
+\safeincludegraphics[width=0.92\textwidth]{fig_shap_savary.png}
+\caption{SHAP attribution of the Savary gradient-boosting answer model (annotation features plus experimental context). The social-benefit treatment and the no-stimulus condition carry the most weight, and among annotation features privacy and private-interests reasoning dominate --- the discovery step behind the confirmatory interaction terms in Table~\ref{tab:interactions}.}
+\label{fig:shap-savary}
+\end{figure}
+
+In Hassner, the non-circular annotation increment is smaller ($\Delta R^2 = +0.052$, retaining only category-presence predictors and removing co-generated directional variables) and the reasoning-to-answer mapping is \emph{additive}: gradient boosting does not outperform a linear model. Beyond the cruelty finding --- when cruelty rhetoric appears framed \emph{instrumentally} (effective means, not moral veto; 5.4\% of occurrences) it associates with Yes answers ($\hat{\beta} = +0.605$, $p = 0.042$) --- the regression reveals the mechanism through which stimulus A produces its behavioral effect. Majority\_reliance ($\hat{\beta} = +1.42$, $p < 0.001$; $\kappa = 0.44$) and ratio\_of\_goals\_and\_means ($\hat{\beta} = +0.78$, $p < 0.001$; exploratory) are both strong positive predictors of Yes. Source\_reliance ($\hat{\beta} = +0.68$, $p < 0.001$; exploratory) --- authority citation directed positively --- is also a significant predictor. Since stimulus A specifically flips majority\_reliance, ratio\_of\_goals\_and\_means, and source\_reliance from negative to positive argumentative polarity (Section~8.2.2), the direction-flip mechanism can be traced end-to-end: A shifts polarity $\to$ all three categories fire pro-endorsement $\to$ endorsement rate rises to 72\%. Overcorrection concern, despite being massively activated by stimuli, does not directly predict the binary Hassner answer ($p = 0.92$): meta-awareness is present but decoupled from the outcome in the negative-valence domain. Full predictor profiles are in Tables~\ref{tab:M1-hassner}--\ref{tab:interactions} (Appendix).
+
+\subsection{Representational level: hidden states}
+
+The behavioral and reasoning levels locate the stimulus in what the model \emph{says}. The final part of H5 asks whether it is also visible in what the model \emph{computes}, and in what form. The hidden-state analysis on the local model ($n = 98$ runs) yields two substantive findings and three diagnostic observations useful for future work.
+
+\subsubsection{Substantive finding 1: stimulus constrains the computational trajectory}
+
+One might expect a complex system prompt to trigger more processing --- instead, stimulus runs traverse a \emph{shorter} cumulative hidden-state path than no-stimulus runs: 3{,}370 vs.\ 3{,}444 units ($p < 0.001$, paired Wilcoxon; every single pair shorter under incentive). The gap accumulates from L15 onward (Figure~\ref{fig:trajectory}), suggesting the stimulus constrains representational exploration from the mid-layers outward rather than adding to it.
+
+\begin{figure}[H]
+\centering
+\safeincludegraphics[width=0.85\textwidth]{fig_hs_trajectory.png}
+\caption{Cumulative hidden-state trajectory length across layers, by condition (local Qwen3-8B, $n = 98$ runs). Stimulus runs traverse a shorter path, with the deficit accumulating monotonically from L15.}
+\label{fig:trajectory}
+\end{figure}
+
+\subsubsection{Substantive finding 2: representation--behavior dissociation}
+
+Representational shifts at L20 are comparable across both experiments (mean HS@L20 $\approx$ 15--17 units in both), while behavioral effects differ by $\approx$700$\times$: the local model is near-degenerate in Hassner (P(Yes) $\approx 0.998$) and reverses behavioral direction in Savary relative to all four API models. The stimulus leaves a consistent representational footprint regardless of whether behavior moves. The uniformity also holds \emph{across} the stimulus inventory: all six probed variants (A, B, C, D, F, X) produce displacements of comparable magnitude (final-layer $L_2 \approx 28.6$--$30.8$), despite spanning softened, balanced, and strengthened framings that move behavior very differently. Representational displacement thus tracks the \emph{presence} of a stimulus far more than its behavioral potency. This dissociation --- strong representational effect, weak or inverted behavioral effect --- is observed under conditions that are themselves a limit case, and whether it generalizes to non-degenerate models is an open question for future work.
+
+\subsubsection{Diagnostic: where the stimulus signal peaks (for future probing)}
+
+The between/within separation ratio peaks at L20--L21 across all 21 stimulus$\times$experiment combinations (Figure~\ref{fig:separation}), with the fastest growth in L17--L21. This is a \emph{geometric} diagnostic rather than evidence of deep semantic processing: the same stimulus text is repeated identically across all scenarios, so its signal propagates from L1 forward and is decodable at every layer. The displacement is a \emph{translation}, not a reorientation of the representation: linear CKA between stimulus and no-stimulus activations stays above $0.94$ at every layer (L20: $0.994$, 95\% CI $[0.991, 0.998]$) and the mean cosine distance between matched pairs never exceeds $0.03$. The stimulus adds a near-constant offset vector within a subspace it otherwise leaves intact, rather than rotating the geometry into which the scenario is encoded. The L20 peak simply identifies where the signal-to-noise ratio is highest relative to within-condition variation --- a useful target layer for future probing studies on this model class.
+
+\begin{figure}[H]
+\centering
+\safeincludegraphics[width=0.85\textwidth]{fig_hs_separation.png}
+\caption{Standardized separation between stimulus and no-stimulus hidden states by layer (local Qwen3-8B). The peak at L20--L21 identifies the best signal-to-noise layer for probing, not a uniquely ``semantic'' encoding point.}
+\label{fig:separation}
+\end{figure}
+
+\subsubsection{Diagnostic: treatment is not abstractly encoded (for generalizability claims)}
+
+A probing classifier trained to predict the experimental treatment condition (control / duration / intelligence / combined) falls to chance under leave-one-group-out cross-validation (LOGO AUC $= 0.034$ at L20), while standard cross-validation achieves AUC $= 0.67$ --- the latter signal is scenario memorization. This null sits within a clear representational hierarchy. A low-dimensional projection separates runs cleanly by \emph{experiment} (domain; silhouette $0.5$--$0.75$ across layers) and, secondarily, by \emph{stimulus presence} (peak silhouette $0.48$ at L20), but not at all by \emph{treatment} (silhouette $\approx 0$). The mid-layer geometry encodes which scenario world the model is in and whether a stimulus is attached, but carries no abstract, scenario-independent representation of the treatment contrast itself. This null is a useful methodological caveat: treatment wording varies across vignettes without a consistent surface footprint, so non-generalizable probing signals should not be interpreted as abstract treatment representations. Future designs with consistent treatment phrasing across scenarios could test whether abstract treatment encoding is possible in principle.
+
+\subsubsection{Diagnostic: the answer crystallizes deeper than the stimulus signal (for future probing)}
+
+Where does the final answer become linearly readable? A ridge probe trained on the continuous Savary outcome reaches $R^2 \approx 0.86$ by the early layers and saturates near $0.99$ in the upper stack --- but most of that reflects condition identity, which is already decodable from the prompt. Isolating the within-condition component of the answer (the run-to-run variation the experimental design does not fix) sharpens the picture (Figure~\ref{fig:decodability}): this residualized signal is weak early ($R^2 \approx 0.55$ at L2--L4), strengthens through the middle layers, and \emph{peaks at L27} ($R^2 = 0.665$; permutation $p \approx 0.005$) --- several layers \emph{above} the L20--L21 peak of stimulus separation. The two signals are temporally staged: the stimulus is maximally distinct in the mid-layers, while the answer it ultimately shapes becomes most decodable deeper in the stack. The framing is registered before the decision it influences is resolved. This locates, for this model class, the layer band where answer information is richest --- a second probing target alongside the L20 stimulus peak.\footnote{Answer decodability is reported for Savary only; the local model's Hassner answers are saturated near P(Yes) $\approx 0.998$, leaving essentially no within-condition variance to decode.}
+
+\begin{figure}[H]
+\centering
+\safeincludegraphics[width=0.85\textwidth]{fig_hs_decodability.png}
+\caption{Layer-wise decodability of the final Savary answer (ridge probes, leave-one-out $R^2$; local Qwen3-8B). The condition-residualized answer (dashed) peaks at L27, several layers above the L20 stimulus-separation peak (dotted line): the framing is registered before the decision it shapes becomes most decodable.}
+\label{fig:decodability}
+\end{figure}
+
+\subsection{Summary of results against hypotheses}
+
+\noindent\textbf{H1 (directional replication of treatment effects) --- partially supported.} Hassner replicates in full (3/3 contrasts directionally correct; Cram\'er's $V$ up to 0.92 for the combined treatment). Savary splits: the social-benefit increment replicates, but private-vs-public recognition is reversed (LLMs $+0.34$, humans $-0.50$ to $-0.56$ on a rescaled 5-point scale). The reversal is attributed to LLMs treating visibility as a pure incentive, absent the self-signaling mechanism that reduces human willingness.
+
+\medskip
+\noindent\textbf{H2 (stimuli shift answers from the desirable pole) --- supported.} The direction is domain-specific (up in Hassner, down in Savary), and all eight stimuli are significant.
+
+\medskip
+\noindent\textbf{H3 (stimuli moderate treatment effects) --- partially supported.} About half of the DiD pairs show moderation: H--K weaken treatment effects, L/M strengthen them, and the harsh A stimulus can substitute for treatment.
+
+\medskip
+\noindent\textbf{H4 (positive framing $>$ negative framing) --- supported asymmetrically.} The effect is overwhelming in Hassner (OR $\approx 15$) but statistically present and substantively small in Savary ($\beta = -0.13$, $p = 0.02$); recipient and beneficiary identity are immaterial in both.
+
+\medskip
+\noindent\textbf{H5 (stimulus visible below the answer surface) --- supported.} At the reasoning level, classifiers separate stimulus from no-stimulus traces at AUC 0.96, against 0.68 for the temperature baseline. At the representational level (local model), the stimulus shortens the computational trajectory from L15 ($p < 0.001$, every pair), and a representation--behaviour dissociation appears under degenerate conditions. Diagnostically, separation peaks at L20--L21 (geometric, not semantic), and treatment is not abstractly encoded under LOGO (a methodological caveat for future probing designs).
+
+Read together, the three levels tell one story rather than three. Stimuli act on these models as \emph{realism cues}: they move final answers away from the sanitized pole in a lawful, designable way --- framing valence sets the magnitude, while recipient and beneficiary identity do not register --- they do so by reorganizing the reasoning the model assembles before it answers (activating meta-reflexive awareness, increasing explicit deliberation, and, in the negative-valence domain, \emph{flipping} the polarity of the pragmatic arguments that decide the case), and they leave a clean, geometrically simple footprint in the mid-layer representations: a translation, not a reorientation. The levels are coherent without being redundant. The behavioral level shows the effect is real and orderly; the reasoning level shows it is a change of \emph{argument}, not merely of output; the representational level shows the model registers the cue internally well before --- and largely independently of --- whether that cue ultimately changes its answer.
+
+For the question that motivated the project --- whether LLMs can serve as pilot environments for survey experiments in SDB-sensitive domains --- the results support a \emph{qualified, structural} yes. The models are trustworthy for \emph{contrasts}: treatment directions replicate, stimulus interventions behave lawfully enough to be engineered, and the validated reasoning traces give a measurable window onto the response process. They are not trustworthy for \emph{levels}: absolute response rates are arbitrary, and between-model heterogeneity is large in both baseline attitude and treatment sensitivity, so no single-model pilot is informative. Most instructively, the two places where the models fail are different in kind. The Savary private-versus-public reversal is a \emph{reasoning} failure: the models lack the self-signaling logic that makes human donors wary of visible generosity, and --- since the reversal survives all eight stimuli --- no system-prompt intervention in this design installs it, marking a boundary on what prompt engineering can repair. The representation--behavior dissociation is an \emph{inferential} failure: a strong, consistent internal signature need not move behavior, so white-box probing cannot stand in for measuring what the model does. These boundaries, more than any single effect size, are what the study contributes to how LLM piloting should be read --- as a source of contrasts, mechanisms, and fragility warnings rather than of numbers. They also frame the questions taken up next: whether the dissociation persists in non-degenerate, larger white-box models, whether abstract treatment encoding becomes probeable under consistent-phrasing designs, and whether the self-signaling gap is a fixable artifact of alignment or a durable limit of how these models reason about motivation.
+
+
+\section{MoralLens as Prospective Annotation Infrastructure}
+
+\subsection{Motivation and Design}
+
+Analyzing LLMs as synthetic respondents requires more than observing final
+survey answers. In socially sensitive vignette experiments, the same response
+option may be selected for qualitatively different reasons: moral condemnation,
+an assessment of effectiveness, reliance on majority opinion, concern about
+giving an overly sanitized answer, or direct uptake of the experimental stimulus.
+For this reason, reasoning traces are treated as empirical objects in their own
+right, allowing us to observe not only \emph{what} the model chooses but also
+\emph{which argumentative structure} leads to that choice.
+
+The main annotation pipeline (Section~6) relied on an external LLM coder.
+This approach enabled rapid large-scale annotation but carries three limitations
+as the project scales: dependence on a closed commercial model, binding inference
+costs when the corpus is extended, and compounding expense across tens of
+thousands of traces. To address these, we developed \textbf{MoralLens}: a
+locally hosted fine-tuned model trained to reproduce the annotation schema.
+Technically, MoralLens is a knowledge-distillation product. It is \emph{not}
+used in the results reported in Section~8, which are based entirely on the
+original annotation pipeline; it constitutes infrastructure for future
+iterations where cost and reproducibility become primary constraints.
+
+\subsection{Task Format and Training Data}
+
+The input unit is a reasoning trace; the output is a JSON object conforming to
+the schema described in Section~6.2. The task combines two variable types:
+\textbf{causality variables} (binary: category present/absent) and
+\textbf{direction variables} ($-1/0/+1$: whether the argument pushes toward
+lower or higher support for the described action).
+
+We applied the annotation prompt to the full corpus, producing $7{,}092$
+annotated examples split into training, validation, and test partitions.
+An important clarification: MoralLens learns to reproduce LLM-generated
+annotations, not human labels. It therefore inherits the systematic errors of
+its teacher, and the performance figures below measure agreement with the
+teacher model, not with the human gold standard.
+
+Prior to training, a gold set of $100$ manually annotated examples was
+constructed for prompt selection. Agreement between human coders and the LLM
+annotator reached $\kappa = 0.70$ averaged across all fields---an acceptable
+level for a schema with many psychologically subtle categories, though some
+require cautious interpretation. This gold set was used exclusively for prompt
+selection and not for evaluating MoralLens.
+
+MoralLens was trained locally on a Mac with $32$\,GB RAM and Apple Silicon,
+using a 4-bit quantized \texttt{Qwen3-8B} fine-tuned with QLoRA via
+\texttt{MLX-LM}---a configuration chosen to meet local memory constraints.
+
+\subsection{Iterative Schema Development and Performance}
+
+In the first training run, the model targeted the original three-level causality
+schema ($0$ = absent; $1$ = mentioned; $2$ = decisive), achieving
+\texttt{flat\_macro\_F1} $= 0.751$. Qualitative inspection showed that the
+difficulty lay not in category detection but in distinguishing secondary mentions
+from key argumentative roles---the most subjective component of the schema.
+
+In the second iteration, causality fields were binarized (values $1$ and $2$
+merged), consistent with the main analytical objectives of the project. Performance
+improved substantially: on the held-out test set ($n = 376$), the model achieved
+\texttt{flat\_macro\_F1} $= 0.813$ (precision $0.813$, recall $0.815$,
+\texttt{prediction\_ok\_rate} $= 1.0$).
+
+Table~\ref{tab:morallens_performance} reports per-category results. Categories
+with explicit lexical markers---\texttt{treatment\_awareness\_causality},
+\texttt{cruelty\_causality}, \texttt{emergency\_urgency\_causality},
+\texttt{social\_reward\_causality}, \texttt{legality\_assessment\_causality}---%
+achieve macro-F1 $\geq 0.92$. A second group shows high accuracy but low
+macro-F1, diagnostic of class imbalance: the model predicts the majority class
+(absence) while failing on positive cases (e.g.,
+\texttt{self\_deception\_causality}: accuracy $0.989$, macro-F1 $0.497$;
+\texttt{common\_interests\_prioritization\_causality}: accuracy $0.997$,
+macro-F1 $0.499$). Direction variables show a consistent accuracy--macro-F1
+gap, reflecting the three-class prediction combined with uneven distributions;
+domain-specific fields (\texttt{cruelty\_direction},
+\texttt{treatment\_effect\_direction}) outperform those requiring interpretation
+of argumentative balance (\texttt{source\_reliance\_direction},
+\texttt{common\_interests\_prioritization\_direction}).
+
+\begin{longtable}{>{\raggedright\arraybackslash\ttfamily\snakebreak}p{0.62\textwidth}cc}
+\caption{MoralLens per-category performance on the test set
+  (\emph{n} = $376$; binary causality schema; metrics against teacher-model
+  labels).}
+\label{tab:morallens_performance}\\
+\toprule
+\textnormal{Category} & \textnormal{Accuracy} & \textnormal{Macro-F1} \\
+\midrule
+\endfirsthead
+\toprule
+\textnormal{Category} & \textnormal{Accuracy} & \textnormal{Macro-F1} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+\multicolumn{3}{l}{\textbf{Causality variables}} \\
+treatment\_awareness\_causality               & 1.000 & 1.000 \\
+cruelty\_causality                            & 1.000 & 1.000 \\
+rational\_style\_reasoning\_present           & 1.000 & 1.000 \\
+emergency\_urgency\_causality                 & 0.984 & 0.984 \\
+social\_reward\_causality                     & 0.957 & 0.949 \\
+public\_recognition\_causality                & 0.955 & 0.947 \\
+legality\_assessment\_causality               & 0.926 & 0.925 \\
+privacy\_factor\_causality                    & 0.934 & 0.908 \\
+personal\_cost\_burden\_causality             & 0.832 & 0.831 \\
+self\_enhancement\_causality                  & 0.854 & 0.643 \\
+incentive\_awareness\_causality               & 0.816 & 0.788 \\
+private\_interests\_prioritization\_causality & 0.769 & 0.756 \\
+ratio\_of\_goals\_and\_means\_causality       & 0.923 & 0.480 \\
+emotional\_reasoning\_causality               & 0.811 & 0.519 \\
+fear\_negative\_evaluation\_causality         & 0.830 & 0.483 \\
+majority\_reliance\_causality                 & 0.793 & 0.454 \\
+overcorrection\_concern\_causality            & 0.596 & 0.541 \\
+possibility\_of\_different\_opinions          & 0.904 & 0.475 \\
+moral\_style\_reasoning\_present              & 0.843 & 0.457 \\
+self\_deception\_causality                    & 0.989 & 0.497 \\
+common\_interests\_prioritization\_causality  & 0.997 & 0.499 \\
+source\_reliance\_causality                   & 0.556 & 0.556 \\[4pt]
+
+\multicolumn{3}{l}{\textbf{Direction variables}} \\
+treatment\_effect\_direction                  & 0.875 & 0.884 \\
+cruelty\_direction                            & 0.939 & 0.767 \\
+emergency\_urgency\_direction                 & 0.891 & 0.659 \\
+public\_recognition\_direction                & 0.936 & 0.668 \\
+social\_reward\_direction                     & 0.952 & 0.631 \\
+legality\_assessment\_direction               & 0.912 & 0.609 \\
+privacy\_factor\_direction                    & 0.875 & 0.674 \\
+personal\_cost\_burden\_direction             & 0.761 & 0.646 \\
+ratio\_of\_goals\_and\_means\_direction       & 0.809 & 0.597 \\
+emotional\_reasoning\_direction               & 0.697 & 0.552 \\
+incentive\_effect\_direction                  & 0.811 & 0.461 \\
+private\_interests\_prioritization\_direction & 0.681 & 0.533 \\
+majority\_reliance\_direction                 & 0.662 & 0.518 \\
+common\_interests\_prioritization\_direction  & 0.859 & 0.338 \\
+source\_reliance\_direction                   & 0.484 & 0.458 \\
+\end{longtable}
+
+\subsection{Limitations and Future Use}
+
+Three limitations govern the use of MoralLens. First, as a distillation product
+it inherits the systematic errors of its teacher: categories where the original
+annotator agrees poorly with human coders (Table~8) will be reproduced
+unreliably. Second, rare categories suffer from class imbalance; macro-F1 is
+the informative metric for these, and analyses relying on them should be treated
+as exploratory. Third, direction variables are harder to predict than causality
+variables because they require tracking argumentative flow, not merely topic
+detection.
+
+ In subsequent iterations, MoralLens will serve as a full local replacement for the external annotator on high-performing categories (macro-F1 $\geq$ 0.90), removing API dependence and making the pipeline reproducible at scale. Beyond annotation replacement, the model has two prospective uses: (i) real-time reasoning monitoring --- applied to streaming traces, it can detect the moment a specific argumentative category enters the response, a temporal resolution unavailable from post-hoc annotation; and (ii) transfer to human responses --- because the schema was developed on vignette reasoning, MoralLens can in principle be applied to open-ended human survey answers in the same experimental designs, providing a methodological bridge between the synthetic corpus and future human-sample validation.
+
+
+\section{Scope and Limitations}
+
+Several limits of the present study should be made explicit.
+
+\begin{itemize}
+    \item \textbf{Corpus breadth.} The empirical corpus contains two attitude-expression experiments; the methodological and self-report SDB categories remain outside the current scope, and generalization beyond attitude expression is untested.
+    \item \textbf{Design imbalance.} The H--M stimulus family was fielded only on GLM-4.6 and Kimi; the stimulus-anatomy estimates are conditional on this two-model subsample. Completing the model $\times$ stimulus grid is the most direct planned extension.
+    \item \textbf{Annotation reliability is uneven.} Only \texttt{cruelty} ($\kappa = 1.0$) and \texttt{overcorrection\_concern} ($\kappa = 0.64$) are substantially validated; several psychologically subtle categories code at chance level ($\kappa < 0.10$), and findings resting on them are strictly exploratory. The gold subset ($n = 27$, approximately 0.3\% of the annotated corpus) is itself small: $\kappa$ confidence intervals at this sample size are wide ($\pm 0.10$--$0.20$), and the reliability verdicts should be read as ordering estimates rather than precise thresholds.
+    \item \textbf{Cross-population stitching.} The three tracks observe different model populations (four API models; a fifth local model for hidden states; a sixth model as annotator). The representational findings, including the dissociation result, are established on one local model with $n = 98$ runs and last-token representations only.
+    \item \textbf{Behavioral degeneracy of the local model.} Hassner is saturated (P(Yes) $\approx 0.998$) and Savary is direction-reversed for the local model, which limits which representational questions are answerable and marks the stimulus-direction reversal as potentially model-specific.
+    \item \textbf{Inference granularity.} The effective number of independent observations is the number of design cells, not rows; all headline claims are therefore tied to the cluster-robust estimates, and quasi-separated cells are reported descriptively.
+    \item \textbf{No demographic conditioning.} Respondent profiles are deliberately absent from the prompts; the project measures the ``blank respondent'' regime, and interactions between stimuli and persona conditioning remain future work.
+\end{itemize}
+
+\section{Conclusion}
+
+This project asked how large language models react to stimuli in vignette-based survey experiments shaped by social desirability bias, and answered it on three levels of observation within a single controlled design: 15{,}680 behavioral runs of four reasoning-capable API models on two opposite-valence published experiments, 10{,}080 LLM-annotated reasoning traces, and 98 white-box runs of a local model with full hidden-state extraction.
+
+Three results carry the main weight. First and most practically, realism-oriented system-prompt stimuli move answers away from the socially desirable pole in both normative domains --- raising support for coercive interrogation and deflating overstated willingness to donate --- and the decomposition of the stimulus inventory shows that \emph{framing valence} is the active design ingredient: positively framed realism instructions produce a 15-fold odds increase in the negative-valence domain, with the effect domain-asymmetric but statistically present in the positive-valence domain as well; recipient identity and beneficiary type are immaterial. The directional replication benchmark (H1) is the prerequisite sanity check for this finding rather than its centerpiece: Hassner treatment contrasts replicate fully; Savary replicates partially --- the social-benefit increment direction is correct, but LLMs reverse the private-vs-public comparison, treating visibility as a pure incentive rather than engaging the self-signaling mechanism that reduces human willingness. This partial failure is itself informative: it reveals a systematic gap in how aligned models reason about charitable motivation that annotation evidence corroborates at the reasoning-trace level. Second, the stimulus restructures the reasoning process itself: it activates explicit overcorrection concern --- from 9\% of traces in the no-stimulus condition to 72--76\% under A/C (substantially validated: $\kappa = 0.64$, $n = 27$), the single largest annotation effect in the corpus and the most novel finding of the reasoning-trace analysis --- shifts the argumentative repertoire, and leaves a footprint in annotated reasoning that classifiers separate at AUC 0.96, far above the 0.68 footprint of a comparable decoding-settings change. Third, the levels do not reduce to one another. For the local model studied, the stimulus is encoded in mid-layer representations (peak L20--L21) and shortens the computational trajectory, while behavior barely moves --- representational and behavioral sensitivity dissociate under the degenerate conditions observed. A structurally distinct null result: treatment status is not abstractly encoded (LOGO AUC $= 0.034$ at L20, permutation $p = 1.0$), indicating that behavioral directional replication is achieved through scenario-specific responses rather than a generalizable internal representation of treatment.
+
+For the practical question that motivated the project --- can LLMs serve as pilot environments for survey experiments in SDB-sensitive domains --- the answer is a qualified yes. The models are usable for \emph{directional, within-design piloting}: treatment contrasts replicate, stimulus interventions behave lawfully enough to be designed (valence matters, recipients do not), and the reasoning traces provide a measurable window into the response process. The qualifications are equally clear: absolute response levels are not trustworthy, model heterogeneity is large enough that any single-model pilot is uninformative, and what a model represents internally is not reliably what it will do. A survey methodologist using LLM piloting should therefore read it the way this project does --- as a source of contrasts, mechanisms, and fragility warnings, not of numbers.
+
+The study also shows that the formulation of prompt-based incentives matters. Generic instructions aimed at reducing sanitized or safety-oriented answers did not reliably change the model's behavior. More systematic effects appeared when the prompt contained a concrete incentive or consequence. This finding suggests that LLM behavior in survey-style simulations is shaped not only by the substantive vignette treatment, but also by the pragmatic structure of the system prompt.
+
+In particular, explicit incentive formulations appear to be more effective than abstract requests to answer ``honestly,'' ``directly,'' or ``without sanitization.'' This should be taken into account in future work using LLMs as synthetic respondents: prompt-based interventions should be treated as experimental conditions in their own right, rather than as neutral technical adjustments.
+
+MoralLens (Section~9) constitutes prospective infrastructure: it enables the annotation pipeline to run locally at scale, removing API dependence and enabling real-time reasoning monitoring during generation. Deployed on future corpus extensions, it would make the full three-level design reproducible without recurrent cost. The results reported above are fully independent of it.
+
+Several directions follow from this work. The first is breadth of replication: extending the design beyond the two attitude-expression cases to other domains in which social desirability operates --- sensitive self-report, environmental and health attitudes, discrimination and compliance --- to test how far the stimulus mechanisms documented here generalize across the SDB landscape. The second is to keep developing the stimulus space itself: completing the model~$\times$~stimulus grid, fielding the full inventory on every model, and adding new framing dimensions so that the anatomy of an effective realism instruction can be mapped more finely. A third is to strengthen the annotation instrument --- enlarging the expert gold set, raising reliability for the categories that currently code at noise level, and scaling local annotation through MoralLens. A fourth, and analytically central, direction is to move the reasoning-to-answer and representational findings from correlational toward causal: interventions on the model's hidden states --- activation patching and steering of the mid-layer stimulus signal --- would test directly whether the representational shift \emph{causes} the behavioral one, continuing the hidden-state track begun here. Finally, a more applied goal is to package the three-level design as reusable infrastructure: a piloting framework wrapping oTree and similar experiment platforms, with an interface for composing and A/B-testing system-prompt stimuli and built-in analysis of model outputs --- final answers, reasoning traces, and optionally hidden states --- so that vignette experiments can be piloted against LLMs without rebuilding the pipeline each time.
+
+\newpage
+\appendix
+\section{Supplementary Tables}
+
+\begin{table}[H]
+\centering
+\caption{Stimulus-attribute decomposition (GLM+Kimi subsample; cluster-robust SE; reference: no stimulus / negative framing / science / personal beneficiary)}
+\label{tab:attr}
+\begin{tabular}{L{5.6cm} rrr rrr}
+\toprule
+ & \multicolumn{3}{c}{\textbf{Hassner (logit)}} & \multicolumn{3}{c}{\textbf{Savary (OLS)}} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+\textbf{Attribute} & $\beta$ & OR & $p$ & $\beta$ & & $p$ \\
+\midrule
+Positive valence (L/M vs.\ H--K) & $+2.71$ & 15.0 & $<0.001$ & $-0.13$ & & 0.020 \\
+Recipient: company vs.\ science & $+0.35$ & 1.42 & 0.060 & $-0.05$ & & 0.34 \\
+Beneficiary: public vs.\ personal & $+0.20$ & 1.22 & 0.30 & $-0.01$ & & 0.86 \\
+A (harsh core) vs.\ baseline & $+3.99$ & 53.9 & $<0.001$ & $-0.48$ & & $<0.001$ \\
+C (balanced) vs.\ baseline & $+1.40$ & 4.05 & $<0.001$ & $-0.36$ & & $<0.001$ \\
+H--M family vs.\ baseline & $+1.44$ & 4.21 & $<0.001$ & $-0.38$ & & $<0.001$ \\
+\midrule
+$n$ (clusters) & \multicolumn{3}{c}{4{,}630 (72)} & \multicolumn{3}{c}{3{,}473 (54)} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Response distribution homogeneity by stimulus ($T = 0.01$; Hassner: entropy over Yes/No; Savary: mean and SD over 1--5 scale)}
+\label{tab:homogeneity}
+\begin{tabular}{L{4.8cm} r r r r r}
+\toprule
+\textbf{Stimulus} & \multicolumn{3}{c}{\textbf{Hassner}} & \multicolumn{2}{c}{\textbf{Savary}} \\
+& Entropy & Conc. & Extremity & Mean & Std \\
+\midrule
+no\_incentive & 0.703 & 0.809 & 0.618 & 3.74 & 0.52 \\
+A\_original\_core\_realism & 0.854 & 0.721 & 0.443 & 3.32 & 0.60 \\
+C\_balanced\_realism & 0.980 & 0.584 & 0.167 & 3.44 & 0.53 \\
+H\_science\_personal\_gain & 0.988 & 0.564 & 0.128 & 3.35 & 0.54 \\
+I\_science\_public\_good & 0.972 & 0.599 & 0.198 & 3.30 & 0.52 \\
+J\_company\_personal\_gain & 0.962 & 0.614 & 0.228 & 3.28 & 0.57 \\
+K\_company\_public\_good & 0.943 & 0.639 & 0.278 & 3.30 & 0.59 \\
+L\_science\_public\_good\_positive & 0.522 & 0.882 & 0.765 & 3.20 & 0.64 \\
+M\_company\_personal\_gain\_positive & 0.470 & 0.900 & 0.799 & 3.14 & 0.60 \\
+\midrule
+\multicolumn{6}{l}{\footnotesize Stimuli H--M were fielded on GLM-4.6 and Kimi only.} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Annotated category prevalence and signed-presence distribution ($n = 8{,}638$ traces)}
+\label{tab:prevalence-full}
+\snakebreak
+\begin{tabular}{L{5.8cm} r r r r}
+\toprule
+\textbf{Category} & \textbf{Prev.} & \textbf{neg} & \textbf{neu} & \textbf{pos} \\
+\midrule
+rational\_style\_reasoning & 0.864 & \multicolumn{3}{c}{(binary)} \\
+common\_interests\_prioritization & 0.858 & 4.4\% & 14.2\% & 81.4\% \\
+ratio\_of\_goals\_and\_means & 0.806 & 28.1\% & 19.4\% & 52.5\% \\
+possibility\_of\_different\_opinions & 0.765 & \multicolumn{3}{c}{(binary)} \\
+moral\_style\_reasoning & 0.740 & \multicolumn{3}{c}{(binary)} \\
+emotional\_reasoning & 0.731 & 28.6\% & 26.9\% & 44.5\% \\
+majority\_reliance & 0.688 & 21.5\% & 33.4\% & 45.1\% \\
+treatment\_awareness & 0.622 & \multicolumn{3}{c}{(binary)} \\
+cruelty & 0.507 & 45.3\% & 49.3\% & 5.4\% \\
+emergency\_urgency & 0.497 & 1.5\% & 50.3\% & 48.2\% \\
+personal\_cost\_burden & 0.413 & 8.7\% & 58.7\% & 32.6\% \\
+legality\_assessment & 0.408 & 40.4\% & 59.2\% & 0.4\% \\
+overcorrection\_concern & 0.376 & \multicolumn{3}{c}{(binary)} \\
+source\_reliance & 0.331 & 23.1\% & 66.9\% & 10.0\% \\
+private\_interests\_prioritization & 0.279 & 8.5\% & 72.3\% & 19.3\% \\
+public\_recognition & 0.239 & 1.9\% & 76.2\% & 21.9\% \\
+social\_reward & 0.238 & 0.3\% & 76.2\% & 23.5\% \\
+incentive\_awareness & 0.224 & \multicolumn{3}{c}{(binary)} \\
+privacy\_factor & 0.222 & 10.3\% & 77.9\% & 11.8\% \\
+self\_enhancement & 0.133 & \multicolumn{3}{c}{(binary)} \\
+fear\_negative\_evaluation & 0.132 & \multicolumn{3}{c}{(binary)} \\
+self\_deception & 0.008 & \multicolumn{3}{c}{(binary)} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Reasoning-category predictors of the final answer: Hassner M1 (logistic, HC3 SE; $p < 0.10$)}
+\label{tab:M1-hassner}
+\snakebreak
+\begin{tabular}{L{6.2cm} r r r}
+\toprule
+\textbf{Predictor} & $\beta$ & SE & $p$ \\
+\midrule
+sp\_treatment\_effect & $+2.194$ & 0.192 & $<0.001$ \\
+sp\_majority\_reliance & $+1.419$ & 0.205 & $<0.001$ \\
+sp\_emotional\_reasoning & $+1.194$ & 0.127 & $<0.001$ \\
+fear\_negative\_evaluation\_bin & $+1.062$ & 0.621 & 0.087 \\
+sp\_common\_interests\_prioritization & $+0.959$ & 0.579 & 0.098 \\
+sp\_ratio\_of\_goals\_and\_means & $+0.776$ & 0.153 & $<0.001$ \\
+sp\_source\_reliance & $+0.684$ & 0.154 & $<0.001$ \\
+incentive\_awareness\_causality\_bin & $+0.652$ & 0.305 & 0.033 \\
+sp\_cruelty & $+0.605$ & 0.298 & 0.042 \\
+possibility\_of\_different\_opinions & $-1.340$ & 0.741 & 0.071 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Reasoning-category predictors of the final answer: Savary M1 (OLS, HC3 SE; $p < 0.05$)}
+\label{tab:M1-savary}
+\snakebreak
+\begin{tabular}{L{6.2cm} r r r}
+\toprule
+\textbf{Predictor} & $\beta$ & SE & $p$ \\
+\midrule
+sp\_common\_interests\_prioritization & $-0.499$ & 0.040 & $<0.001$ \\
+sp\_ratio\_of\_goals\_and\_means & $+0.130$ & 0.021 & $<0.001$ \\
+sp\_emotional\_reasoning & $+0.120$ & 0.015 & $<0.001$ \\
+possibility\_of\_different\_opinions & $-0.114$ & 0.018 & $<0.001$ \\
+sp\_private\_interests\_prioritization & $+0.046$ & 0.011 & $<0.001$ \\
+sp\_social\_reward & $+0.089$ & 0.032 & 0.006 \\
+incentive\_awareness\_causality\_bin & $+0.068$ & 0.021 & 0.001 \\
+sp\_majority\_reliance & $+0.061$ & 0.018 & 0.001 \\
+sp\_personal\_cost\_burden & $+0.046$ & 0.015 & 0.002 \\
+self\_enhancement\_causality\_bin & $+0.046$ & 0.020 & 0.025 \\
+sp\_public\_recognition & $+0.068$ & 0.031 & 0.028 \\
+sp\_privacy\_factor & $+0.031$ & 0.015 & 0.041 \\
+overcorrection\_concern\_causality\_bin & $-0.047$ & 0.019 & 0.012 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{SHAP-discovered interactions re-estimated in confirmatory OLS (Savary; HC3 SE). Base $R^2 = 0.487$; with interactions $R^2 = 0.519$.}
+\label{tab:interactions}
+\begin{tabular}{L{8.4cm} rr}
+\toprule
+\textbf{Interaction term} & $\beta$ & $p$ \\
+\midrule
+treatment(social benefit) $\times$ no-stimulus & $-0.25$ & $<0.001$ \\
+privacy reasoning $\times$ no-stimulus & $-0.12$ & $<0.001$ \\
+treatment(social benefit) $\times$ Qwen3.5 & $-0.33$ & $<0.001$ \\
+no-stimulus $\times$ Kimi & $-0.18$ & $<0.001$ \\
+privacy reasoning $\times$ treatment(social benefit) & $+0.01$ & 0.81 \\
+emotional reasoning $\times$ privacy reasoning & $+0.08$ & $<0.001$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Mean representational shift at L20 and behavioral effect by incentive condition (local Qwen3-8B)}
+\label{tab:hs-behavioral}
+\begin{tabular}{L{4.8cm} r r r r}
+\toprule
+\textbf{Incentive} & \multicolumn{2}{c}{\textbf{Hassner}} & \multicolumn{2}{c}{\textbf{Savary}} \\
+& HS@L20 & $\Delta y$ & HS@L20 & $\Delta y$ \\
+\midrule
+A\_original\_core\_realism & 16.09 & $-0.000$ & 15.96 & $-0.740$ \\
+B\_softened\_realism & 15.24 & $-0.004$ & 15.19 & $-0.811$ \\
+C\_balanced\_realism & 16.56 & $-0.001$ & 16.25 & $-0.818$ \\
+D\_research\_purpose & 16.54 & $-0.000$ & 15.99 & $-0.794$ \\
+F\_stronger\_stakes & 17.32 & $-0.000$ & 16.33 & $-0.603$ \\
+X\_measurement\_neutrality & 16.19 & $-0.003$ & 15.73 & $-0.786$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+\printbibliography
+
+
+\end{document}
