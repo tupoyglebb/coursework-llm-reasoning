@@ -1,0 +1,42 @@
+% Editorial draft: replaces Reasoning-Trace Annotation and Analytical Strategy.
+% Historical analyses only; planned follow-up experiments are excluded.
+\section{Analytical Strategy}
+
+We analyze three distinct levels of model response: final answers, verbalized reasoning, and hidden-state representations. The first two concern the four API models; the third is an exploratory analysis of a separate local model. The unit of recorded data is one generation, but repeated generations within a model--vignette-treatment--stimulus cell are not independent synthetic respondents.
+
+\subsection{Final answers}
+
+For Hassner, the binary support outcome is analyzed using a logit GLM; for Savary, the five-point willingness outcome is analyzed using OLS, with ordinal and thresholded specifications as sensitivity checks. The principal models include vignette-treatment, system-stimulus, and model indicators, plus treatment-by-stimulus interactions; an expanded specification also allows treatment effects to vary by model. Nonparametric comparisons use chi-squared tests for Hassner and rank-based tests for Savary. Holm corrections are applied to prespecified pairwise families, and false-discovery-rate adjustments are reported for broader coefficient families.
+
+A treatment-by-stimulus interaction tests whether the original vignette contrast changes under a system-prompt stimulus. For two treatment levels and two stimulus conditions, the descriptive difference-in-differences contrast is
+\begin{equation}
+\widehat{\mathrm{DiD}}=
+(\bar y_{1,s}-\bar y_{0,s})-(\bar y_{1,0}-\bar y_{0,0}).
+\end{equation}
+This is an interaction contrast within a controlled generation design, not a claim about a temporal policy intervention.
+
+The original analysis reports heteroskedasticity-robust HC3 estimates and cluster-robust re-estimation by model $\times$ vignette treatment $\times$ stimulus (96 Hassner and 72 Savary clusters in the reported main specification). Because completions within a cell may be highly similar at $T=0.01$, cluster-aware inference is central to interpretation; naive run-level standard errors can overstate precision. Quasi-separation in binary outcomes motivates penalized-logit checks, and failure of proportional odds in Savary motivates retaining OLS and thresholded sensitivity analyses.
+
+\subsection{Stimulus attributes}
+
+An exploratory regression encodes the historically fielded stimulus conditions using indicators for framing valence, company versus scientific context, public versus personal beneficiary, and stimulus family, on the Kimi/GLM subsample where H--M were collected. These coefficients summarize conditional differences among \emph{observed prompt packages}. Since the H--M conditions are incomplete and not a fully crossed factorial, attribute coefficients should not be interpreted as isolated causal effects of valence, beneficiary, or recipient. The prospective N0/N-negative/N-positive experiment is separate and is not incorporated into the historical estimates.
+
+\subsection{Annotation of verbalized reasoning}
+
+The original annotation pipeline uses \texttt{gpt-5.4-mini} to code generated reasoning traces with a fixed schema. Two disjoint batches of 5{,}040 traces yielded 10{,}080 annotations before merging and filtering; the manuscript reports 8{,}638 retained annotated records. The schema contains 19 causality fields (absent, mentioned, or decisive), 15 direction fields (negative, neutral, positive), and three binary style markers. Analyses use category presence and, where defined, signed presence. These labels describe \emph{verbalized text}; they are not direct measurements of latent reasoning mechanisms.
+
+Annotation agreement was checked against expert manual coding on 27 traces, with substantial variation across categories. The small validation sample limits the precision and generalizability of reliability estimates. Results for weakly validated or rare categories are treated as exploratory rather than measurement-grade.
+
+Category prevalence is modeled against vignette treatment, stimulus, and model identity, using logistic models for binary presence and linear models for signed presence. Multiple-comparison adjustments are applied across category-level tests. Associations between annotated features and final answers are assessed by comparing baseline outcome models with specifications that add annotation features; an additional fit omits the co-generated treatment-effect direction code to reduce tautological prediction. These regressions are descriptive associations, not evidence that a stated argument caused the answer.
+
+A separability analysis compares classification of stimulus presence with classification of decoding temperature from annotation vectors, using regularized logistic regression and gradient boosting with stratified five-fold cross-validation and ROC-AUC. A sensitivity analysis removes features directly encoding stimulus awareness. TreeSHAP is used for exploratory feature interpretation, followed by explicit regression checks of selected associations; neither feature importance nor post-selection significance establishes a causal mechanism.
+
+\subsection{Exploratory hidden-state analysis}
+
+A separate local \texttt{Qwen3-8B} experiment records last-token hidden states at 37 layers (4{,}096 dimensions) for 98 runs: 56 Hassner and 42 Savary, across no stimulus and A/B/C/D/F/X. These conditions and model identity differ from the principal API corpus. Findings therefore concern the local implementation and are not direct measurements of hidden states in the four API models.
+
+Layer-wise between-condition versus within-condition Euclidean distances are summarized by a separation ratio and a standardized mean-distance analogue. Linear centered kernel alignment (CKA) compares matched representation matrices across prompt conditions. A trajectory-length statistic sums successive layer-wise distances within a run, with paired Wilcoxon comparisons for matched conditions. Finally, layer-wise logistic probes assess stimulus and treatment information, while ridge probes assess answer decodability, including a condition-residualized check. Cross-validation and matched comparisons reduce some forms of leakage, but the small sample and high-dimensional representations make this track exploratory. Decodability and geometric separation are not, by themselves, evidence of causal mediation.
+
+\subsection{Interpretive scope}
+
+We distinguish (i) socially desirable response patterns, (ii) stimulus-induced response shifts, and (iii) correspondence with published human treatment contrasts. None is a substitute for the others. Evidence that a stimulus moves an answer away from the normatively approved pole does not establish that it mitigates human-style social desirability bias. Across all three tracks, the analysis identifies observable differences and statistical associations; mechanistic and human-validity claims require additional evidence.
