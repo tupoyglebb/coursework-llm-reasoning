@@ -1,0 +1,21 @@
+% Editorial draft v1 (2026-10-13).
+% Standalone replacement for the Introduction section of
+% text_tex/stiumulus_in_llm_survey.tex.
+% NOT yet included in the main manuscript; pending author approval.
+% Citations use keys from "Bib additions.bib".
+
+\section{Introduction}
+
+Large language models (LLMs) are increasingly used to simulate survey respondents and to pilot experimental designs before human data collection \cite{argyle2023,horton2023,dillion2023}. Yet a model's ability to produce plausible answers does not establish that it reproduces the effects of an experimental manipulation. For research design, the more relevant question is whether a synthetic sample responds to treatment conditions in the same direction as human participants, and whether that correspondence survives changes in the instructions given to the model.
+
+Socially sensitive vignette experiments provide a demanding test. Human answers can be shaped by social desirability pressures, while LLM outputs may also reflect safety alignment, preference optimization, and instruction-following \cite{tourangeau2007,krumpal2013,salecha2024,sharma2023}. These processes are not equivalent. In particular, a prompt that shifts an LLM answer away from a socially approved position does not necessarily make that answer more representative of human behavior. The distinction between \emph{behavioral steering} and \emph{human-effect replication} is therefore central to this study.
+
+We examine LLM responses to two published attitude-expression experiments with contrasting normative contexts: Hassner's vignette on support for coercive interrogation and Savary and Goldsmith's vignette on willingness to donate under different forms of public recognition. We compare treatment contrasts in synthetic responses with those reported for human respondents, and investigate how additional system-prompt stimuli affect model answers. The stimuli are treated as experimental interventions, not as validated corrections for social desirability bias.
+
+\textbf{Research question.} To what extent do LLMs reproduce the direction of human treatment effects in socially sensitive vignette experiments, and how do system-prompt stimuli change these effects?
+
+\textbf{Primary objective.} Evaluate directional correspondence between human and LLM treatment contrasts separately for each experimental case. Agreement in response levels or distributions, and any claim of improved human realism, require additional evidence and are not inferred from a shift in the socially desirable direction alone.
+
+\textbf{Secondary objectives.} Assess the sensitivity of final answers to system-prompt stimuli and their design attributes; examine associations between stimulus conditions, annotated verbalized reasoning, and answers; and explore stimulus-related hidden-state differences in a separate local-model analysis. Reasoning traces are treated as generated explanations rather than direct observations of causal cognitive mechanisms, and hidden-state findings are not assumed to generalize to the API models.
+
+The empirical analysis distinguishes the published human benchmarks, the completed LLM experiments, and any additional experiments conducted after this draft. The latter will be incorporated only after their design, data coverage, and analysis are verified. The paper first reviews the relevant literature and experimental designs, then presents the generation and analysis protocols, behavioral results, supplementary reasoning and representation analyses, and the limits of using LLMs for experimental pretesting.
