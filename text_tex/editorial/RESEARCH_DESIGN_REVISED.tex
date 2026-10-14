@@ -8,11 +8,19 @@
 
 \subsection{Case selection and experimental treatments}
 
-We study two published \emph{attitude-expression} vignette experiments. Unlike autobiographical self-report questions, these tasks ask for judgments about externally described situations. This choice permits controlled variation of vignette treatments without assigning demographic identities or personal histories to the model. The cases also differ in the normative direction of the response: endorsement of coercive interrogation is socially disapproved, whereas charitable giving is socially approved. We use this contrast to investigate whether system-prompt stimuli have similar or domain-specific effects.
+We study four published \emph{attitude-expression} vignette experiments. Unlike autobiographical self-report questions, these tasks ask for judgments about externally described situations. This choice permits controlled variation of vignette treatments without assigning demographic identities or personal histories to the model. The original cases also differ in the normative direction of the response: endorsement of coercive interrogation is socially disapproved, whereas charitable giving is socially approved. We use this contrast to investigate whether system-prompt stimuli have similar or domain-specific effects.
 
 \textbf{Hassner: coercive interrogation.} Following \textcite{hassner2023}, models evaluate the use of sleep deprivation in interrogating a terrorism suspect. The four conditions are a base case, modest expected intelligence value, protracted duration, and their combination. The response is binary (support versus opposition). Opposition is treated as the \emph{normatively approved response direction} for descriptive comparisons, not as a verified measure of an individual respondent's latent attitude.
 
 \textbf{Savary and Goldsmith: charitable donation.} Following \textcite{savary2020}, models report willingness to donate \$5 on a five-point scale. The three vignette conditions are private donation, public recognition, and public recognition combined with an additional social benefit. Greater stated willingness is the normatively approved response direction. The public-recognition treatment is also substantively important because it may alter the interpretation of donation as altruism or reputational signaling.
+
+\paragraph{Bolsen et al.: energy conservation.}
+The third experiment adapts the energy-conservation framing design of Bolsen, Druckman, and Cook (2014). Its nine treatment cells combine attribution of responsibility (government, individuals, or neither) with economic-cost, environmental-benefit, or no consequence framing. Models rate likelihood of investing in home insulation or weatherization on a seven-point scale. We examine original treatment-versus-control comparisons as well as attribution-by-consequence contrasts. The dependent variable measures stated willingness, not observed investment.
+
+\paragraph{Corbacho et al.: bribery and institutional information.}
+The fourth experiment adapts Corbacho et al. (2016), comparing a control with information about corruption prevalence and an institutional-inefficiency placebo. Respondents indicate whether they would offer a bribe to avoid a fine, selecting True, False, or Prefer not to respond. These are three nominal outcomes; refusal is not interchangeable with unwillingness. The source paper reports direct-response and privacy-adjusted comparisons with different estimands. Our prompt adaptation does not reproduce its original crosswise-response procedure.
+
+Across all four experiments, human source outcomes, stakes, and elicitation procedures differ, so directional comparisons are more defensible than pooling numerical effects across studies.
 
 Published human treatment contrasts provide an external benchmark. They are not assumed to be reproduced by every model, and matching a treatment direction does not imply that the full human response distribution or the underlying psychological mechanism has been reproduced.
 
@@ -60,6 +68,9 @@ L--M & Positive benefit framing with different stated recipients or beneficiarie
 The existing coverage matrix contains H--M records for \emph{both} Hassner and Savary. However, the available project reconstruction provides semantic descriptions rather than verified verbatim H--M prompt strings. Accordingly, this draft does not reproduce invented quotations or claim that the historical conditions constitute a complete orthogonal factorial design. Exact prompt text, model snapshots, and an experiment--treatment--stimulus--model coverage table are prerequisites for strong comparisons among stimulus attributes.
 
 Additional conditions proposed in the later experiment plan (including consequence-specific and matched neutral controls) are \emph{prospective}, not part of the completed historical corpus. They will be described as implemented only after the corresponding configurations, generations, and analyses exist.
+
+\subsection{Implemented stimulus conditions in the new experiments}
+Bolsen and Corbacho each use A, C, N0, N$-$, and N$+$ prompts. N0 explicitly instructs the model to respond with neutral realism; it is \emph{not} the historical no-incentive condition. Similarly labeled prompts should be compared using the actual message text rather than their short identifiers alone. Therefore the new N0-referenced comparisons and the older unstimulated-baseline comparisons have different reference conditions, and are not treated as a fully matched four-experiment factorial experiment.
 
 \subsection{Analytical contrasts}
 
