@@ -190,7 +190,7 @@ Each run generates an answer and, where available, a linked reasoning trace. Rep
 
 \subsection{Models, decoding, and analytical samples}
 
-The behavioral corpus uses four API-accessed reasoning-capable models: \texttt{moonshotai/kimi-k2-thinking}, \texttt{z-ai/glm-4.6}, \texttt{qwen/qwen3.5-9b}, and \texttt{minimax/minimax-m2.5}. These models were selected pragmatically for the availability of final answers and reasoning traces; they do not constitute a representative sample of all LLMs. Local \texttt{Qwen3-8B} hidden states are analyzed separately.
+The behavioral corpus uses four API models (short names GLM and Kimi refer to GLM-4.6 and Kimi-K2-Thinking): \texttt{moonshotai/kimi-k2-thinking}, \texttt{z-ai/glm-4.6}, \texttt{qwen/qwen3.5-9b}, and \texttt{minimax/minimax-m2.5}. These models were selected pragmatically for the availability of final answers and reasoning traces; they do not constitute a representative sample of all LLMs. Local \texttt{Qwen3-8B} hidden states are analyzed separately.
 
 The principal generation regime uses temperature $T=0.01$, with a separate no-stimulus comparison at $T=1.0$. Low temperature may compress within-cell variation; temperature contrasts are not human benchmarks.
 
@@ -215,7 +215,7 @@ The historically implemented stimulus set includes the no-stimulus baseline, two
 \textbf{Condition} & \textbf{Interpretation and limitation}\\
 \midrule
 No stimulus & Baseline survey task without an additional experimental system-prompt stimulus.\\
-A & Strong anti-sanitization / realism instruction invoking negative consequences for research quality; exact wording to verify.\\
+A & Anti-sanitization instruction invoking consequences for research quality; paraphrase, not a verbatim prompt.\\
 C & Core realism instruction with an anti-overcorrection qualification; not a neutral control matched to A on all dimensions.\\
 H--K & Negative consequence framing with different stated recipients or beneficiaries; fielded in a subset of models.\\
 L--M & Positive benefit framing with different stated recipients or beneficiaries; fielded in a subset of models.\\
@@ -227,8 +227,18 @@ The existing coverage matrix contains H--M records for \emph{both} Hassner and S
 
 N0, N$-$, and N$+$ are also used in the new experiments and the Hassner/Savary extension; N0 is distinct from historical no stimulus.
 
-\subsection{Implemented stimulus conditions in the new experiments}
-Bolsen and Corbacho each use A, C, N0, N$-$, and N$+$ prompts. N0 explicitly instructs the model to respond with neutral realism; it is \emph{not} the historical no-incentive condition. Similarly labeled prompts should be compared using the actual message text rather than their short identifiers alone. Therefore the new N0-referenced comparisons and the older unstimulated-baseline comparisons have different reference conditions, and are not treated as a fully matched four-experiment factorial experiment.
+\subsection{Exact N-series stimuli and reference conditions}
+Here N denotes a \emph{neutral-realism instruction family}, not sample size. N0 is its reference prompt; N$-$ and N$+$ append negative and positive consequences for research accuracy, respectively. The following wording was used:
+
+\begin{quote}\small
+\textbf{N0:} Your task is to answer the survey question as a plausible human respondent might answer under the conditions described. Focus on the respondent's likely judgment rather than on recommending what anyone should do.
+
+\textbf{N$-$ addition:} If your response does not realistically reflect how a human respondent might answer, the study may draw inaccurate conclusions about human behavior and become less useful for future research.
+
+\textbf{N$+$ addition:} If your response realistically reflects how a human respondent might answer, the study may draw accurate conclusions about human behavior and become more useful for future research.
+\end{quote}
+
+The historical no-stimulus baseline, separately collected \texttt{none} baseline, and instruction-bearing N0 are distinct; they must not be pooled as equivalent controls. A/C and H--M are described by function above; exact historical H--M strings are not independently verified.
 
 \subsection{Analytical contrasts}
 
@@ -350,7 +360,7 @@ The A--C comparison is especially informative in Hassner. Endorsement is 72.1\% 
 
 In Savary, both A and C strongly increase annotation of personal costs and benefits, while their mean final answers remain comparatively close (3.32 and 3.44). Across both domains, the annotation vocabulary therefore responds to prompts, but the relation between coded text and the answer is domain-dependent.
 
-A separability benchmark classifies stimulus-present versus no-stimulus traces from annotation features at reported cross-validated ROC-AUC $0.96$, compared with $0.68$ for low- versus high-temperature no-stimulus traces. The original analysis also reports that the contrast survives exclusion of directly stimulus-linked codes. This demonstrates that the two classification tasks have different separability under the chosen features and samples; it does not by itself measure relative causal impact on internal reasoning.
+A separability benchmark classifies stimulus-present versus no-stimulus traces from annotation features at cross-validated area under the receiver operating characteristic curve (ROC-AUC) $0.96$, compared with $0.68$ for low- versus high-temperature no-stimulus traces. The original analysis also reports that the contrast survives exclusion of directly stimulus-linked codes. This demonstrates that the two classification tasks have different separability under the chosen features and samples; it does not by itself measure relative causal impact on internal reasoning.
 
 The annotation instrument has uneven validation. In a 27-trace expert-coded subset, agreement is high for \texttt{cruelty} and \texttt{personal\_cost\_burden} (both $\kappa=1.00$ for causality coding) and moderate-to-substantial for \texttt{overcorrection\_concern} ($\kappa=0.64$), whereas several psychological categories have near-zero agreement (Table~\ref{tab:kappa}). Interpretations of subtle self-presentational categories must therefore remain tentative.
 
@@ -358,7 +368,7 @@ The annotation instrument has uneven validation. In a 27-trace expert-coded subs
 
 The completed N-series annotation contains 840 traces, 480 for Hassner and 360 for Savary (20 per design cell). Unlike historical centrality coding, these categories have binary presence indicators. In Hassner, the N$-$--N0 increase in \texttt{incentive\_awareness} is 18.75 percentage points (pp; 95\% CI [11.74, 26.10]), and the N$+$--N0 increase is 22.50 pp ([15.17, 29.72]). These mentions reflect, at least partly, consequences explicitly stated in the instructions. The N$-$--N0 change in \texttt{emotional\_reasoning} is -13.75 pp in GLM ([-24.59, -2.90]) but +21.25 pp in Kimi ([8.02, 32.94]).
 
-In Savary, \texttt{incentive\_awareness} increases by 23.33 pp under N$+$ relative to N0 ([14.93, 31.15]), although its cluster-based multiple-testing-adjusted result is not significant ($q=0.558$). The N$+$--N0 contrast for \texttt{possibility\_of\_different\_opinions} differs between models by 31.67 pp (GLM minus Kimi; 95\% CI [18.54, 44.80], $q=0.0142$). Within matched design cells, \texttt{source\_reliance} is positively associated with donation willingness (normalized ordinal-rank difference +0.100, 95\% CI [0.054, 0.146], BH $q=0.00486$). These are associations, not mediation estimates. For Hassner \texttt{incentive\_awareness}, only 10 of 66 occurrences have known argumentative direction; sign changes relative to N0 cannot be estimated when the category is absent at baseline.
+In Savary, \texttt{incentive\_awareness} increases by 23.33 pp under N$+$ relative to N0 ([14.93, 31.15]), although its cluster-based multiple-testing-adjusted result is not significant ($q=0.558$). The N$+$--N0 contrast for \texttt{possibility\_of\_different\_opinions} differs between models by 31.67 pp (GLM minus Kimi; 95\% CI [18.54, 44.80], $q=0.0142$). Within matched design cells, \texttt{source\_reliance} is positively associated with donation willingness (normalized ordinal-rank difference +0.100, 95\% CI [0.054, 0.146], Benjamini--Hochberg-adjusted $q=0.00486$). These are associations, not mediation estimates. For Hassner \texttt{incentive\_awareness}, only 10 of 66 occurrences have known argumentative direction; sign changes relative to N0 cannot be estimated when the category is absent at baseline.
 
 \subsection{Reasoning in Bolsen and Corbacho: prevalence and direction}
 
@@ -386,13 +396,13 @@ Adding annotation features increases reported explanatory fit in Savary from $R^
 For Hassner, the original non-tautological annotation specification reports a smaller increment in fit ($\Delta R^2=0.052$). Positive directions of majority-reliance and means--ends arguments are associated with endorsement, while overcorrection concern itself is not a significant predictor ($p=0.92$). Taken together, the two experiments suggest that the \emph{observable association} between reasoning categories and final responses varies by domain. The small expert-validation sample and co-generation of traces and answers limit stronger process claims.
 
 \paragraph{Associations in the new experiments.}
-Within matched model--original-treatment--stimulus cells, the presence of \texttt{economic\_payback} in Bolsen is associated with a $+0.076$ difference on the normalized ordinal midrank outcome (95\% CI $[0.040,0.113]$, multiplicity-adjusted $q=0.003$); a mean-score sensitivity estimate is $+0.204$ points ($[0.111,0.297]$). These are associations between jointly generated text and answers, not evidence of mediation. In Corbacho, positive associations of some private-interest and means--ends categories with \emph{True} do not survive multiplicity adjustment, and refusals remain a distinct nominal outcome. Low within-cell variation, uneven semantic validation, and the two annotation versions constrain these estimates.
+Within matched model--original-treatment--stimulus cells, the presence of \texttt{economic\_payback} in Bolsen is associated with a $+0.076$ difference on the normalized ordinal midrank outcome (scaled from 0 to 1) (95\% CI $[0.040,0.113]$, multiplicity-adjusted $q=0.003$); a mean-score sensitivity estimate is $+0.204$ points ($[0.111,0.297]$). These are associations between jointly generated text and answers, not evidence of mediation. In Corbacho, positive associations of some private-interest and means--ends categories with \emph{True} do not survive multiplicity adjustment, and refusals remain a distinct nominal outcome. Low within-cell variation, uneven semantic validation, and the two annotation versions constrain these estimates.
 
 \subsection{Exploratory hidden-state results}
 
 The local Qwen3-8B analysis covers 98 runs (56 Hassner and 42 Savary) under a different stimulus inventory from the API study. In matched comparisons, the reported cumulative hidden-state trajectory is shorter under stimulus conditions than without a stimulus (3{,}370 versus 3{,}444 distance units; paired Wilcoxon $p<0.001$). This is a geometric difference across layer representations, not a direct measure of computational effort or deliberation.
 
-The between-/within-condition separation statistic peaks near layers 20--21 in the reported comparisons. Linear CKA remains above 0.94 across layers (reported L20 CKA $=0.994$), indicating broadly similar representational geometry despite detectable condition differences. These summaries do not uniquely identify a translation mechanism or a semantic processing stage.
+The between-/within-condition separation peaks near layers 20--21. Linear centered kernel alignment (CKA) remains above 0.94 across layers (reported L20 CKA $=0.994$), indicating broadly similar representational geometry despite detectable condition differences. These summaries do not uniquely identify a translation mechanism or a semantic processing stage.
 
 The local model also exhibits a representational--behavioral dissociation: stimulus-related hidden-state differences are detectable even where its Hassner responses are near-saturated (reported $P(\mathrm{Yes})\approx0.998$). A treatment-status probe performs poorly under leave-one-group-out validation despite higher standard cross-validation performance, cautioning against scenario-specific leakage. For Savary, a condition-residualized ridge probe reaches a reported leave-one-out $R^2=0.665$ at layer 27. The distinct layer peaks are descriptive: they do not establish when a decision is causally formed. Small samples, high-dimensional activations, and the separate model architecture constrain generalization.
 
@@ -400,7 +410,7 @@ The local model also exhibits a representational--behavioral dissociation: stimu
 
 Three results are most robust as a descriptive account of the historical corpus. First, model responses vary substantially across model families and between the two social domains; the Savary public-recognition contrast reverses the human benchmark. Second, system-prompt stimuli consistently accompany shifts away from the normatively approved response direction in the reported descriptive comparisons, while their apparent magnitude depends on prompt condition and model coverage. Third, stimuli are associated with changes in verbalized reasoning and with measurable hidden-state differences in a separate local model, but neither track alone identifies the mechanism producing final answers.
 
-The historical findings support the study of system prompts as consequential experimental inputs, not as neutral wrappers. They do \emph{not} establish that steering responses away from social approval makes LLMs more human-like, that the observed attribute associations isolate framing valence, or that verbalized and representational measures constitute a causal chain. The additional Bolsen and Corbacho results above reveal further model- and domain-specific heterogeneity.
+System prompts are experimentally consequential inputs, not neutral wrappers. They do \emph{not} establish that steering responses away from social approval makes LLMs more human-like, that the observed attribute associations isolate framing valence, or that verbalized and representational measures constitute a causal chain. The additional Bolsen and Corbacho results above reveal further model- and domain-specific heterogeneity.
 
 
 \section{Selected Results Tables}
@@ -541,7 +551,7 @@ self\_enhancement & $-0.06$ & noise level \\
 
 Across four adapted vignette experiments, LLM treatment sensitivity varies by domain, model, and surrounding system instructions. Under the historical no-stimulus condition, Hassner treatment contrasts have the same direction as in the human study, whereas the Savary public-recognition contrast has the opposite sign. Bolsen shows partial directional correspondence but often different magnitudes. Corbacho produces uniformly negative answers under the neutral-realism reference N0; the corresponding human direct-response contrast is small and imprecisely estimated, limiting claims about replication failure.
 
-The original A/C stimuli move Hassner and Savary answers away from the normatively approved response direction. This pattern is not general across the additional cases: relative to N0, A raises Bolsen energy-conservation willingness in GLM but lowers it in Kimi. In Corbacho, A/C change Kimi's affirmative and refusal shares substantially, and the institutional-inefficiency placebo elicits more affirmative answers than the corruption-information treatment. The N$-$/N$+$ shifts are generally modest on average, but Savary shows opposite directions in GLM and Kimi, and Hassner exhibits a substantial local control-cell change despite a small pooled shift. These patterns establish prompt sensitivity, not human fidelity; N0 is not historical no stimulus.
+Historically, A/C shift Hassner and Savary answers away from the normatively approved direction. This pattern is not general across the additional cases: relative to N0, A raises Bolsen energy-conservation willingness in GLM but lowers it in Kimi. In Corbacho, A/C change Kimi's affirmative and refusal shares substantially, and the institutional-inefficiency placebo elicits more affirmative answers than the corruption-information treatment. The N$-$/N$+$ shifts are generally modest on average, but Savary shows opposite directions in GLM and Kimi, and Hassner exhibits a substantial local control-cell change despite a small pooled shift. These patterns establish prompt sensitivity, not human fidelity; N0 is not historical no stimulus.
 
 Classical gain--loss framing effects therefore do not imply that consequence framing in a system prompt must shift synthetic answers. Small N$-$/N$+$ contrasts do not prove equivalence; saturated Corbacho N0 responses limit observable shifts. Historical H--M comparisons suggest a valence association, but their incomplete prompt factorial cannot isolate valence causally. In the new cases, A/C produce large changes in annotated category prevalence and strongly heterogeneous GLM/Kimi patterns. Bolsen payback arguments are associated with higher investment ratings within matched cells, whereas new direction contrasts do not survive multiplicity adjustment. Category presence, argumentative sign, and response association measure different features; none establishes mediation. Exploratory hidden-state differences in a separate local Qwen3-8B likewise cannot explain the API models' responses. LLM simulations may help stress-test experimental wording, but comparisons against human treatment benchmarks remain necessary.
 
