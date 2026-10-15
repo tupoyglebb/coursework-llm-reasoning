@@ -128,21 +128,15 @@ The authors used AI to assist with code development, data analysis workflows, da
 
 \section{Introduction}
 
-Large language models (LLMs) are increasingly used to simulate survey respondents and to pilot experimental designs before human data collection \cite{argyle2023,horton2023,dillion2023}. Yet a model's ability to produce plausible answers does not establish that it reproduces the effects of an experimental manipulation. For research design, the more relevant question is whether a synthetic sample responds to treatment conditions in the same direction as human participants, and whether that correspondence survives changes in the instructions given to the model.
+Large language models (LLMs) are used to simulate survey respondents and pilot experimental designs \cite{argyle2023,horton2023,dillion2023}. Plausible answers, however, do not establish replication of human treatment effects. Socially sensitive vignettes sharpen this problem: human responses may reflect social desirability, while LLM outputs also depend on safety alignment and instructions \cite{tourangeau2007,krumpal2013,salecha2024,sharma2023}. Moving an answer away from a socially approved position does not necessarily make it more human-like.
 
-Socially sensitive vignette experiments provide a demanding test. Human answers can be shaped by social desirability pressures, while LLM outputs may also reflect safety alignment, preference optimization, and instruction-following \cite{tourangeau2007,krumpal2013,salecha2024,sharma2023}. These processes are not equivalent. In particular, a prompt that shifts an LLM answer away from a socially approved position does not necessarily make that answer more representative of human behavior. The distinction between \emph{behavioral steering} and \emph{human-effect replication} is therefore central to this study.
+We study four adapted experiments: Hassner's coercive interrogation, Savary and Goldsmith's charitable giving, Bolsen et al.'s energy conservation, and Corbacho et al.'s corruption information. We compare synthetic treatment contrasts with published human benchmarks and estimate the effects of additional system prompts. Prompts are treated as experimental inputs, not validated corrections for social desirability bias.
 
-We examine LLM responses to four published experimental cases: Hassner's vignette on coercive interrogation, Savary and Goldsmith's study of charitable donation and public recognition, Bolsen and colleagues' energy-conservation framing experiment, and Corbacho and colleagues' corruption-information experiment. The last two cases extend the behavioral analysis across additional socially sensitive domains and outcome types. We compare treatment contrasts in synthetic responses with those reported for human respondents, and investigate how additional system-prompt stimuli affect model answers. The stimuli are treated as experimental interventions, not as validated corrections for social desirability bias.
+\textbf{Research question.} How do system-prompt stimuli affect LLM answers, verbalized reasoning, and internal representations in socially sensitive vignette experiments?
 
-\textbf{Research question.} How do system-prompt stimuli intended to alter the conditions of socially desirable responding affect LLM behavior in socially sensitive vignette experiments, as observed in final answers, verbalized reasoning, and internal representations?
+\textbf{Goal and objectives.} We (i) compare original treatment contrasts with human benchmarks; (ii) estimate stimulus shifts and treatment-by-stimulus differences; (iii) analyze annotated arguments and their associations with answers; and (iv) explore stimulus and answer information in a separate local model's hidden states. These levels are distinct: textual associations and representational decodability do not establish causal mechanisms.
 
-\textbf{Goal.} To characterize the effects of system-prompt stimuli across three complementary observational levels: (1) final survey answers and their sensitivity to original vignette treatments; (2) the argumentative structure of verbalized reasoning; and (3) hidden-state representations in a separate local-model analysis.
-
-\textbf{Objectives.} First, establish the behavioral baseline by comparing LLM treatment contrasts with published human benchmarks in the four experimental cases, where a comparable benchmark is available. Second, estimate how stimulus conditions and their design attributes affect answers and interact with vignette treatments. Third, analyze stimulus-associated differences in annotated reasoning and their relationship to answers. Fourth, explore the representation of stimulus, treatment, and answer information in hidden states. Human benchmarks provide an external reference for interpreting synthetic responses, not a universal success criterion for every analysis.
-
-The three levels of observation are analytically distinct. Changes in verbalized reasoning do not by themselves identify causal cognitive mechanisms; local-model hidden-state findings cannot automatically be generalized to API models. Likewise, movement away from a socially approved answer does not establish reduced social desirability bias or greater human realism.
-
-The behavioral evidence covers four cases, whereas the reasoning-annotation and local hidden-state findings reported here remain limited to the original studies. We analyze behavioral and reasoning evidence across all four cases. The paper first reviews the relevant literature and experimental designs, then presents the generation and analysis protocols, behavioral results, supplementary reasoning and representation analyses, and the limits of using LLMs for experimental pretesting.
+Behavioral responses and verbalized reasoning are analyzed across all four cases; hidden-state analysis concerns only the two initial cases and a separate local model.
 
 
 \section{Literature Review}
@@ -192,7 +186,7 @@ Published human treatment contrasts provide an external benchmark. They are not 
 
 \subsection{Prompt structure and unit of observation}
 
-The original vignette treatment enters through the user-facing question and response options. The system message specifies the survey-response task; experimental system-prompt stimuli are added to this instruction layer. No demographic persona is assigned in the principal behavioral design. The exact template and verbatim stimulus strings must be preserved from the generation configurations before the final manuscript is frozen.
+The original vignette treatment enters through the user-facing question and response options. The system message specifies the survey-response task; experimental system-prompt stimuli are added to this instruction layer. No demographic persona is assigned in the principal behavioral design. Stimulus wording is identified from available generation configurations; unverified historical H--M wording is not quoted.
 
 Each generation produces a final answer and, where available, a model-generated reasoning trace associated with the same response event. These are separate analytical outputs, not independent observations. Repeated generations under a fixed model--experiment--treatment--stimulus configuration measure response variation within that configuration; they do not represent independent human respondents. We distinguish the \emph{run} (one generation) from the \emph{design cell} (a specified combination of model, vignette treatment, stimulus, and relevant generation settings). Statistical uncertainty must account for this nested structure rather than treating all completions as exchangeable people.
 
@@ -202,7 +196,7 @@ The behavioral corpus uses four API-accessed reasoning-capable models: \texttt{m
 
 The principal generation regime uses temperature $T=0.01$, with a separate no-stimulus comparison at $T=1.0$. Low temperature improves repeatability but may compress within-cell variation; the temperature comparison is a decoding sensitivity check rather than an independent human benchmark.
 
-The existing manuscript reports 15{,}680 raw runs, 12{,}434 retained rows after preprocessing, and 11{,}040 observations in the main $T=0.01$ analysis. These are \emph{reported historical totals}, not figures independently recomputed for this editorial draft. Final counts, exclusion rules, rerun handling, and cell-level coverage must be reconciled against raw data and analysis scripts before submission. In particular, the extended H--M stimulus family is not covered by all four API models; analyses of these conditions must identify the actual model subset and avoid unqualified cross-model generalization.
+The historical corpus reports 15{,}680 raw runs, 12{,}434 retained rows, and 11{,}040 main $T=0.01$ observations. Historical totals follow the available reconciled master-table copy; the H--M family was collected only for GLM and Kimi.
 
 \section{System-Prompt Stimuli}
 
@@ -231,7 +225,7 @@ L--M & Positive benefit framing with different stated recipients or beneficiarie
 \end{tabularx}
 \end{table}
 
-The existing coverage matrix contains H--M records for \emph{both} Hassner and Savary. However, the available project reconstruction provides semantic descriptions rather than verified verbatim H--M prompt strings. Accordingly, this draft does not reproduce invented quotations or claim that the historical conditions constitute a complete orthogonal factorial design. Exact prompt text, model snapshots, and an experiment--treatment--stimulus--model coverage table are prerequisites for strong comparisons among stimulus attributes.
+The existing coverage matrix contains H--M records for \emph{both} Hassner and Savary. However, the available project reconstruction provides semantic descriptions rather than verified verbatim H--M prompt strings. We therefore avoid verbatim claims about H--M wording and do not treat this family as an orthogonal factorial design.
 
 The later N0, N$-$, and N$+$ conditions are implemented in Bolsen and Corbacho; they remain distinct from the historical prompt inventory. The extension does not establish a true no-prompt baseline for these cases.
 
@@ -244,7 +238,7 @@ The behavioral analysis distinguishes three comparisons: (i) original vignette-t
 
 
 % Editorial draft: replaces Reasoning-Trace Annotation and Analytical Strategy.
-% Historical methods plus completed new-case behavioral extension; new reasoning annotations pending.
+% Historical and new-case behavioral and reasoning analyses.
 \section{Analytical Strategy}
 
 The unit is one model generation within an experiment--treatment--stimulus cell. Repeated low-temperature completions are not independent human respondents; all uncertainty estimates are interpreted conditionally on the generation and sampling protocols.
