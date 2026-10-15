@@ -10,6 +10,10 @@ Social desirability bias (SDB) is response distortion associated with perceived 
 
 LLM behavior introduces additional explanations. Models may favor socially approved answers, conform to perceived user expectations, or respond to safety-related training and instructions \cite{salecha2024,sharma2023}. Survey prompts and response formats can also change their outputs \cite{tjuatja2024}. A shift away from a socially approved answer therefore need not represent reduced human-like SDB. This motivates studying system-prompt stimuli as experimentally consequential inputs and distinguishing behavioral steering from correspondence with human treatment effects.
 
+\subsection{Consequence framing versus gain--loss framing}
+
+Human studies establish that framing can affect decisions, but the magnitude varies substantially across problem designs \cite{kuhberger1998}. Reviews of persuasive messages likewise do not find a general advantage of loss over gain framing \cite{okeefeJensen2006}. Importantly, those studies manipulate how a choice or message is presented to human respondents. Our N$-$/N$+$ conditions instead frame consequences in \emph{system-level instructions} to a synthetic respondent, rather than presenting matched gains and losses within the vignette. Their effects need not replicate classic gain--loss framing.
+
 \subsection{Reasoning and internal representations}
 
 Chain-of-thought prompting can alter generated outputs \cite{wei2022,kojima2022}, but verbalized reasoning is not a validated record of a model's internal causal process. We distinguish final answers, coded argumentative content, and hidden-state measurements. Annotation can identify associations between expressed arguments and responses, conditional on its reliability. Hidden-state probes offer a separate representational diagnostic; in our design, they concern a different local model and cannot be treated as a direct explanation of API-model behavior.
