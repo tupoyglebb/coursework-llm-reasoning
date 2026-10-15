@@ -184,15 +184,15 @@ Because original elicitation procedures and outcomes differ, we compare treatmen
 
 \subsection{Prompt structure and unit of observation}
 
-The original vignette treatment enters through the user-facing question and response options. The system message specifies the survey-response task; experimental system-prompt stimuli are added to this instruction layer. No demographic persona is assigned in the principal behavioral design. Stimulus wording is identified from available generation configurations; unverified historical H--M wording is not quoted.
+Original treatments vary user-facing vignettes; stimuli modify survey-task system instructions. No demographic persona is assigned in the principal behavioral design. Stimulus wording is identified from available generation configurations; unverified historical H--M wording is not quoted.
 
 Each run generates an answer and, where available, a linked reasoning trace. Repeated completions in the same model--experiment--treatment--stimulus cell measure within-cell variation, not independent human respondents; inference must respect that grouping.
 
 \subsection{Models, decoding, and analytical samples}
 
-The behavioral corpus uses four API-accessed reasoning-capable models: \texttt{moonshotai/kimi-k2-thinking}, \texttt{z-ai/glm-4.6}, \texttt{qwen/qwen3.5-9b}, and \texttt{minimax/minimax-m2.5}. These models were selected pragmatically for the availability of final answers and reasoning traces; they do not constitute a representative sample of all LLMs. A separate local \texttt{Qwen3-8B} is used for hidden-state analysis and is not pooled with the API behavioral sample.
+The behavioral corpus uses four API-accessed reasoning-capable models: \texttt{moonshotai/kimi-k2-thinking}, \texttt{z-ai/glm-4.6}, \texttt{qwen/qwen3.5-9b}, and \texttt{minimax/minimax-m2.5}. These models were selected pragmatically for the availability of final answers and reasoning traces; they do not constitute a representative sample of all LLMs. Local \texttt{Qwen3-8B} hidden states are analyzed separately.
 
-The principal generation regime uses temperature $T=0.01$, with a separate no-stimulus comparison at $T=1.0$. Low temperature improves repeatability but may compress within-cell variation; the temperature comparison is a decoding sensitivity check rather than an independent human benchmark.
+The principal generation regime uses temperature $T=0.01$, with a separate no-stimulus comparison at $T=1.0$. Low temperature may compress within-cell variation; temperature contrasts are not human benchmarks.
 
 The historical corpus reports 15{,}680 raw runs, 12{,}434 retained rows, and 11{,}040 main $T=0.01$ observations. Historical totals follow the available reconciled master-table copy; the H--M family was collected only for GLM and Kimi.
 
@@ -202,7 +202,7 @@ The historical corpus reports 15{,}680 raw runs, 12{,}434 retained rows, and 11{
 
 System-prompt stimuli modify the instructions surrounding a fixed vignette. They are intended to discourage normatively polished or sanitized answers, but their observed effects are described here as \emph{stimulus-induced response shifts}, not as established reductions in social desirability bias. The direction of a shift is evaluated relative to the \emph{normatively approved response direction} in each case. A shift away from that direction does not, on its own, establish greater correspondence with human responses.
 
-The historically implemented stimulus set includes the no-stimulus baseline, two core conditions (A and C), and the extended H--M family. A emphasizes the costs of sanitized answers; C includes an explicit anti-overcorrection qualification. The H--M family varies the stated target of consequences or benefits (science versus a company; personal or institutional benefit versus public good) and the valence of the framing (negative consequences versus positive benefits). These labels describe intended prompt functions, not independently identified causal mechanisms.
+The historically implemented stimulus set includes the no-stimulus baseline, two core conditions (A and C), and the extended H--M family. A emphasizes the costs of sanitized answers; C includes an explicit anti-overcorrection qualification. The H--M family varies the stated target of consequences or benefits (science versus a company; personal or institutional benefit versus public good) and the valence of the framing (negative consequences versus positive benefits). Labels describe intended functions, not mechanisms.
 
 \subsection{Historical stimulus conditions and coverage}
 
@@ -232,7 +232,7 @@ Bolsen and Corbacho each use A, C, N0, N$-$, and N$+$ prompts. N0 explicitly ins
 
 \subsection{Analytical contrasts}
 
-The behavioral analysis distinguishes three comparisons: (i) original vignette-treatment contrasts within a fixed prompt condition; (ii) stimulus-induced shifts relative to a no-stimulus or explicitly specified reference condition; and (iii) changes in original treatment contrasts across stimulus conditions. Attribute-level comparisons are interpreted as conditional associations unless the compared prompts isolate the attribute of interest and have sufficient balanced coverage. Reasoning annotations and hidden-state measures are examined as complementary outcomes, with their separate validity and generalizability limitations stated in the relevant methods sections.
+The behavioral analysis distinguishes three comparisons: (i) original vignette-treatment contrasts within a fixed prompt condition; (ii) stimulus-induced shifts relative to a no-stimulus or explicitly specified reference condition; and (iii) changes in original treatment contrasts across stimulus conditions. Attribute-level comparisons are interpreted as conditional associations unless the compared prompts isolate the attribute of interest and have sufficient balanced coverage. Reasoning and hidden states remain complementary diagnostics.
 
 
 % Editorial draft: replaces Reasoning-Trace Annotation and Analytical Strategy.
