@@ -1,9 +1,9 @@
-Количество символов с пробелами: 58567
+Количество символов с пробелами: 58096
 Лимит 60000 соблюдён: да
-Превышение: 0; запас: 1433
+Превышение: 0; запас: 1904
 
 PDF: COMPETITION_MANUSCRIPT_ASSEMBLED.pdf
-SHA256: 64642f005cf4c92272dfeb0e5408700804a45faedab79ea40a811bcf5d964a2e
+SHA256: cdb3153b895b6bec3d848223b35ee13675682a4cb3df00d67c67674098307a8d
 pdftotext version 26.06.0
 Reproduce: python3 text_tex/editorial/count_pdf_characters.py
 Extraction: pdftotext -enc UTF-8 COMPETITION_MANUSCRIPT_ASSEMBLED.pdf -
@@ -18,20 +18,20 @@ No dehyphenation in primary count; alternate removes only literal hyphen at line
 Raw linebreaks/indentation are layout controls, so raw count is reported separately.
 These are reproducible PDF extraction counts, not a guarantee of a contest portal counter.
 
-PRIMARY: reading order, NFKC, whitespace collapsed: 58567
-Alternative: reading order, NFC (ligatures remain single code points): 58463
-Alternative: layout order, NFKC, whitespace collapsed: 58834
-Alternative: layout order, NFC, whitespace collapsed: 58730
-Raw extraction code points (includes line/page breaks; not visible-text count): 58850
-Alternative: NFKC with literal hyphen + linebreak removed between letters: 58567
+PRIMARY: reading order, NFKC, whitespace collapsed: 58096
+Alternative: reading order, NFC (ligatures remain single code points): 57994
+Alternative: layout order, NFKC, whitespace collapsed: 58353
+Alternative: layout order, NFC, whitespace collapsed: 58251
+Raw extraction code points (includes line/page breaks; not visible-text count): 58382
+Alternative: NFKC with literal hyphen + linebreak removed between letters: 58096
 
 Per physical PDF page (NFKC, whitespace collapsed; total adds one space between pages):
 1: 257
 2: 1766
 3: 369
-4: 2564
-5: 1992
-6: 2058
+4: 2406
+5: 2052
+6: 1685
 7: 2312
 8: 2252
 9: 1855
