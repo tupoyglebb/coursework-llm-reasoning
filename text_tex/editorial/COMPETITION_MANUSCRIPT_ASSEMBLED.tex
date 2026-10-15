@@ -180,15 +180,13 @@ The third experiment adapts the energy-conservation framing design of \textcite{
 \paragraph{Corbacho et al.: bribery and institutional information.}
 The fourth experiment adapts \textcite{corbacho2016}, comparing a control with information about corruption prevalence and an institutional-inefficiency placebo. Respondents indicate whether they would offer a bribe to avoid a fine, selecting True, False, or Prefer not to respond. These are three nominal outcomes; refusal is not interchangeable with unwillingness. The source paper reports direct-response and privacy-adjusted comparisons with different estimands. Our prompt adaptation does not reproduce its original crosswise-response procedure.
 
-Across all four experiments, human source outcomes, stakes, and elicitation procedures differ, so directional comparisons are more defensible than pooling numerical effects across studies.
-
-Published human treatment contrasts provide an external benchmark. They are not assumed to be reproduced by every model, and matching a treatment direction does not imply that the full human response distribution or the underlying psychological mechanism has been reproduced.
+Because original elicitation procedures and outcomes differ, we compare treatment directions without pooling numerical effect sizes. Matching a direction does not establish matching response distributions or mechanisms.
 
 \subsection{Prompt structure and unit of observation}
 
 The original vignette treatment enters through the user-facing question and response options. The system message specifies the survey-response task; experimental system-prompt stimuli are added to this instruction layer. No demographic persona is assigned in the principal behavioral design. Stimulus wording is identified from available generation configurations; unverified historical H--M wording is not quoted.
 
-Each generation produces a final answer and, where available, a model-generated reasoning trace associated with the same response event. These are separate analytical outputs, not independent observations. Repeated generations under a fixed model--experiment--treatment--stimulus configuration measure response variation within that configuration; they do not represent independent human respondents. We distinguish the \emph{run} (one generation) from the \emph{design cell} (a specified combination of model, vignette treatment, stimulus, and relevant generation settings). Statistical uncertainty must account for this nested structure rather than treating all completions as exchangeable people.
+Each run generates an answer and, where available, a linked reasoning trace. Repeated completions in the same model--experiment--treatment--stimulus cell measure within-cell variation, not independent human respondents; inference must respect that grouping.
 
 \subsection{Models, decoding, and analytical samples}
 
@@ -227,7 +225,7 @@ L--M & Positive benefit framing with different stated recipients or beneficiarie
 
 The existing coverage matrix contains H--M records for \emph{both} Hassner and Savary. However, the available project reconstruction provides semantic descriptions rather than verified verbatim H--M prompt strings. We therefore avoid verbatim claims about H--M wording and do not treat this family as an orthogonal factorial design.
 
-The later N0, N$-$, and N$+$ conditions are implemented in Bolsen and Corbacho; they remain distinct from the historical prompt inventory. The extension does not establish a true no-prompt baseline for these cases.
+N0, N$-$, and N$+$ are also used in the new experiments and the Hassner/Savary extension; N0 is distinct from historical no stimulus.
 
 \subsection{Implemented stimulus conditions in the new experiments}
 Bolsen and Corbacho each use A, C, N0, N$-$, and N$+$ prompts. N0 explicitly instructs the model to respond with neutral realism; it is \emph{not} the historical no-incentive condition. Similarly labeled prompts should be compared using the actual message text rather than their short identifiers alone. Therefore the new N0-referenced comparisons and the older unstimulated-baseline comparisons have different reference conditions, and are not treated as a fully matched four-experiment factorial experiment.
@@ -501,9 +499,9 @@ Classical gain--loss framing effects therefore do not imply that consequence fra
 
 \section{Scope and Limitations}
 
-The four cases cover selected socially sensitive vignettes, not representative human survey populations. Model coverage is unequal: the historical H--M family is limited to GLM and Kimi, and the principal new-experiment comparisons likewise use those two models. Repeated low-temperature generations are not independent human respondents. Corbacho's three nominal answers require separate treatment of refusal; its human privacy-adjusted estimate is not directly equivalent to our direct-response outcome. The N0 reference and historical no-stimulus baseline differ, as do some original vignette procedures. New \texttt{none} and N-series runs were executed sequentially with mixed API-provider routing, and 27 transport errors cluster in one GLM/Hassner/N$-$ cell; neither cross-run wording effects nor local interactions are fully isolated.
+The cases are not representative of human survey populations. Model coverage is unequal (historical H--M and new cases primarily GLM/Kimi), and low-temperature repetitions are not independent respondents. Corbacho's three nominal answers require separate treatment of refusal; its human privacy-adjusted estimate is not directly equivalent to our direct-response outcome. The N0 reference and historical no-stimulus baseline differ, as do some original vignette procedures. New \texttt{none} and N-series runs were executed sequentially with mixed API-provider routing, and 27 transport errors cluster in one GLM/Hassner/N$-$ cell; neither cross-run wording effects nor local interactions are fully isolated.
 
-The historical reasoning codebook was checked against only 27 expert-coded traces, with highly uneven agreement across categories. The new binary presence annotations lack equivalent human-gold validation, and the Bolsen annotations cover only selected original treatments. Reasoning-answer associations are predictive, not causal. Hidden-state measurements concern 98 runs of a different, local Qwen3-8B checkpoint; layer-wise geometry and probing are diagnostic rather than mechanistic proof. Historical H--M prompt wording has not been independently authenticated verbatim. Finally, the historical numerical reconciliation uses an available master-table copy and does not establish identity with the original notebook input.
+The historical reasoning codebook was checked against only 27 expert-coded traces, with highly uneven agreement across categories. The new binary presence annotations lack equivalent human-gold validation, and the Bolsen annotations cover only selected original treatments. Reasoning-answer associations are predictive, not causal. Hidden-state measurements concern 98 runs of a different, local Qwen3-8B checkpoint; layer-wise geometry and probing are diagnostic rather than mechanistic proof. Historical H--M prompt wording remains unauthenticated verbatim; historical counts use a reconciled master-table copy.
 
 \section{Conclusion}
 
