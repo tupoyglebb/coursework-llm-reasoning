@@ -30,7 +30,17 @@ For Hassner, GLM's control endorsement rate is 1.000 ($n=50$), versus 0.673 for 
 
 For Savary, GLM's mean giving willingness is 3.480 ($n=50$) in private, 3.920 ($n=50$) with public recognition, and 4.420 ($n=50$) with added social benefit. Kimi's means are 3.340, 3.660, and 4.000 (all $n=50$). Thus public recognition increases willingness by 0.440 points in GLM and 0.320 points in Kimi relative to private giving; this again runs opposite to the reported original human public-recognition direction.
 
-The additional none run has mixed inference-provider routing across models, and its reported ordinary bootstrap intervals describe variation among API completions, not population uncertainty. It does not establish the effects of N0, N$-$, or N$+$: the accompanying report does not contain the corresponding runs. No none-versus-N-stimulus contrasts are computed from this file, and historical observations are not pooled with the new run without verifying the generation protocols.
+The additional \texttt{none} run and the later N-series have matching recorded task templates and decoding parameters but differ in execution time and inference-provider routing. Their cross-run contrasts are therefore descriptive rather than isolated causal effects of prompt wording. Neither run is pooled with the historical sample.
+
+\subsection{N-series behavioral extension in Hassner and Savary}
+
+The completed N0/N$-$/N$+$ runs yield 2,065 valid answers out of 2,100 requests (Kimi 1,043; GLM 1,022), analyzed separately from 698 \texttt{none} answers. Comparisons below weight original vignette treatments equally within each model; intervals are pointwise 95\%, with multiplicity assessed by Holm adjustment over 16 primary level contrasts.
+
+In Savary, N0 versus \texttt{none} lowers average willingness by 0.15 scale points for Kimi (95\% CI $[-0.23,-0.06]$; Holm $p=0.013$) and 0.12 for GLM ($[-0.23,-0.01]$; Holm $p=0.339$). Relative to N0, N$-$ and N$+$ each raise Kimi's mean by about 0.09 points, whereas GLM decreases by 0.14 and 0.21, respectively. The GLM N$+$ contrast is $-0.213$ ($[-0.320,-0.107]$; Holm $p=0.00117$); its provider-adjusted estimate remains negative ($-0.187$). The GLM-minus-Kimi differential N$+$ shift is $-0.307$ ($[-0.447,-0.167]$). Thus even near-symmetric consequence framings do not have a consistent model-independent direction.
+
+In Hassner, average N$+$--N0 differences are $-6.0$ percentage points (pp) for Kimi (95\% CI $[-11.65,0.18]$; Holm $p=0.335$) and $+4.0$ pp for GLM ($[-2.88,10.72]$; Holm $p=1$). For Kimi's control vignette, endorsement changes from 72\% at N0 to 46\% at N$+$, a $-26$ pp local contrast that affects treatment-versus-control gaps despite a modest mean shift. This interaction is exploratory. In addition, only 23 of 50 GLM responses are valid for the prolonged-duration vignette under N$-$ because of 27 transport errors; complete-case estimates for that condition are particularly fragile.
+
+Taken together with the smaller average N-series contrasts in Bolsen and Corbacho, these findings do not support a universal valence effect or a general improvement in correspondence with human treatment effects. They also do not establish zero effects: uncertainty, response saturation, concentration of missingness, sequential stimulus execution, and uneven provider routing constrain interpretation. For example, the Hassner/Kimi mean N$+$--N0 shift attenuates from $-6.0$ to approximately $-2.0$ pp after additive provider adjustment. Original treatment contrasts and human benchmarks remain separate from comparisons of system-stimulus response levels.
 
 \subsection{Additional experiments: Bolsen and Corbacho}
 
