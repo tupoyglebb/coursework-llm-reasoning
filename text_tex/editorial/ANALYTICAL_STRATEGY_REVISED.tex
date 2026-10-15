@@ -1,5 +1,5 @@
 % Editorial draft: replaces Reasoning-Trace Annotation and Analytical Strategy.
-% Historical analyses only; planned follow-up experiments are excluded.
+% Historical methods plus completed new-case behavioral extension; new reasoning annotations pending.
 \section{Analytical Strategy}
 
 We analyze three distinct levels of model response: final answers, verbalized reasoning, and hidden-state representations. The first two concern the four API models; the third is an exploratory analysis of a separate local model. The unit of recorded data is one generation, but repeated generations within a model--vignette-treatment--stimulus cell are not independent synthetic respondents.
@@ -19,7 +19,7 @@ The original analysis reports heteroskedasticity-robust HC3 estimates and cluste
 
 \subsection{Stimulus attributes}
 
-An exploratory regression encodes the historically fielded stimulus conditions using indicators for framing valence, company versus scientific context, public versus personal beneficiary, and stimulus family, on the Kimi/GLM subsample where H--M were collected. These coefficients summarize conditional differences among \emph{observed prompt packages}. Since the H--M conditions are incomplete and not a fully crossed factorial, attribute coefficients should not be interpreted as isolated causal effects of valence, beneficiary, or recipient. The prospective N0/N-negative/N-positive experiment is separate and is not incorporated into the historical estimates.
+An exploratory regression encodes the historically fielded stimulus conditions using indicators for framing valence, company versus scientific context, public versus personal beneficiary, and stimulus family, on the Kimi/GLM subsample where H--M were collected. These coefficients summarize conditional differences among \emph{observed prompt packages}. Since the H--M conditions are incomplete and not a fully crossed factorial, attribute coefficients should not be interpreted as isolated causal effects of valence, beneficiary, or recipient. The implemented N0/N$-$/N$+$ comparisons are reported separately for Bolsen and Corbacho and are not pooled into the historical H--M attribute regressions.
 
 \subsection{Behavioral analysis of the additional experiments}
 For Bolsen, model-specific treatment-cell means and complete ordinal distributions on the seven-point scale are reported alongside the original treatment contrasts and attribution-by-consequence interactions. Mean contrasts are checked against ordinal response distributions rather than interpreted as a universal location shift. For Corbacho, the primary outcome is the three-part distribution over True, False, and Prefer not to respond; refusal is preserved as its own response category. Binary True-versus-False comparisons conditional on supplying a substantive answer are sensitivity estimates, not substitutes for the full outcome.
