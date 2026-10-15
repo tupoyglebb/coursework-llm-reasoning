@@ -1,9 +1,9 @@
-Количество символов с пробелами: 59038
+Количество символов с пробелами: 58567
 Лимит 60000 соблюдён: да
-Превышение: 0; запас: 962
+Превышение: 0; запас: 1433
 
 PDF: COMPETITION_MANUSCRIPT_ASSEMBLED.pdf
-SHA256: e7136798b9de495606dbb69d42ad7e4cbbf46b24215d714c0b489b23c6cf0e99
+SHA256: 64642f005cf4c92272dfeb0e5408700804a45faedab79ea40a811bcf5d964a2e
 pdftotext version 26.06.0
 Reproduce: python3 text_tex/editorial/count_pdf_characters.py
 Extraction: pdftotext -enc UTF-8 COMPETITION_MANUSCRIPT_ASSEMBLED.pdf -
@@ -18,12 +18,12 @@ No dehyphenation in primary count; alternate removes only literal hyphen at line
 Raw linebreaks/indentation are layout controls, so raw count is reported separately.
 These are reproducible PDF extraction counts, not a guarantee of a contest portal counter.
 
-PRIMARY: reading order, NFKC, whitespace collapsed: 59038
-Alternative: reading order, NFC (ligatures remain single code points): 58932
-Alternative: layout order, NFKC, whitespace collapsed: 59313
-Alternative: layout order, NFC, whitespace collapsed: 59207
-Raw extraction code points (includes line/page breaks; not visible-text count): 59322
-Alternative: NFKC with literal hyphen + linebreak removed between letters: 59038
+PRIMARY: reading order, NFKC, whitespace collapsed: 58567
+Alternative: reading order, NFC (ligatures remain single code points): 58463
+Alternative: layout order, NFKC, whitespace collapsed: 58834
+Alternative: layout order, NFC, whitespace collapsed: 58730
+Raw extraction code points (includes line/page breaks; not visible-text count): 58850
+Alternative: NFKC with literal hyphen + linebreak removed between letters: 58567
 
 Per physical PDF page (NFKC, whitespace collapsed; total adds one space between pages):
 1: 257
@@ -32,33 +32,33 @@ Per physical PDF page (NFKC, whitespace collapsed; total adds one space between 
 4: 2564
 5: 1992
 6: 2058
-7: 2266
-8: 2236
+7: 2312
+8: 2252
 9: 1855
 10: 2157
-11: 2211
-12: 2105
-13: 2377
-14: 2197
-15: 1727
+11: 2190
+12: 2094
+13: 2379
+14: 2280
+15: 1464
 16: 601
 17: 1056
 18: 532
 19: 401
-20: 802
+20: 801
 21: 2332
-22: 2324
-23: 1921
+22: 2356
+23: 1937
 24: 723
 25: 2419
-26: 2337
+26: 2311
 27: 1457
 28: 992
 29: 1042
 30: 983
 31: 2385
-32: 1970
-33: 1620
-34: 2077
-35: 2143
-36: 749
+32: 1878
+33: 1871
+34: 2165
+35: 2199
+36: 102
