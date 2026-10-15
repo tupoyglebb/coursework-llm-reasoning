@@ -1,15 +1,15 @@
 [0] Config.pm:307> INFO - This is Biber 2.17
 [0] Config.pm:310> INFO - Logfile is 'COMPETITION_MANUSCRIPT_ASSEMBLED.blg'
-[119] biber-darwin:340> INFO - === Thu Oct 15, 2026, 22:24:49
-[144] Biber.pm:418> INFO - Reading 'COMPETITION_MANUSCRIPT_ASSEMBLED.bcf'
-[312] Biber.pm:972> INFO - Found 25 citekeys in bib section 0
-[334] Biber.pm:4383> INFO - Processing section 0
-[349] Biber.pm:4574> INFO - Looking for bibtex file 'Bib additions.bib' for section 0
-[353] bibtex.pm:1713> INFO - LaTeX decoding ...
-[429] bibtex.pm:1518> INFO - Found BibTeX data source 'Bib additions.bib'
-[771] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[771] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[771] Biber.pm:4203> INFO - Sorting list 'apa/global//global/global' of type 'entry' with template 'apa' and locale 'en-US'
-[771] Biber.pm:4209> INFO - No sort tailoring available for locale 'en-US'
-[816] bbl.pm:654> INFO - Writing 'COMPETITION_MANUSCRIPT_ASSEMBLED.bbl' with encoding 'UTF-8'
-[850] bbl.pm:757> INFO - Output to COMPETITION_MANUSCRIPT_ASSEMBLED.bbl
+[133] biber-darwin:340> INFO - === Thu Oct 15, 2026, 22:52:30
+[160] Biber.pm:418> INFO - Reading 'COMPETITION_MANUSCRIPT_ASSEMBLED.bcf'
+[344] Biber.pm:972> INFO - Found 25 citekeys in bib section 0
+[371] Biber.pm:4383> INFO - Processing section 0
+[388] Biber.pm:4574> INFO - Looking for bibtex file 'Bib additions.bib' for section 0
+[392] bibtex.pm:1713> INFO - LaTeX decoding ...
+[482] bibtex.pm:1518> INFO - Found BibTeX data source 'Bib additions.bib'
+[877] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[877] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[877] Biber.pm:4203> INFO - Sorting list 'apa/global//global/global' of type 'entry' with template 'apa' and locale 'en-US'
+[877] Biber.pm:4209> INFO - No sort tailoring available for locale 'en-US'
+[925] bbl.pm:654> INFO - Writing 'COMPETITION_MANUSCRIPT_ASSEMBLED.bbl' with encoding 'UTF-8'
+[962] bbl.pm:757> INFO - Output to COMPETITION_MANUSCRIPT_ASSEMBLED.bbl

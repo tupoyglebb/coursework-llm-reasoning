@@ -1,9 +1,9 @@
-Количество символов с пробелами: 61866
+Количество символов с пробелами: 60395
 Лимит 60000 соблюдён: нет
-Превышение: 1866; запас: 0
+Превышение: 395; запас: 0
 
 PDF: COMPETITION_MANUSCRIPT_ASSEMBLED.pdf
-SHA256: ce8207791638ef2b5ce0ce453393980a664ff3e421acbfd8c406ad04ac4a0a1f
+SHA256: acfe48d14fb5bfac3ac01325c4536959b21657e78819d4d8fb57f13a1e7b0180
 pdftotext version 26.06.0
 Reproduce: python3 text_tex/editorial/count_pdf_characters.py
 Extraction: pdftotext -enc UTF-8 COMPETITION_MANUSCRIPT_ASSEMBLED.pdf -
@@ -13,47 +13,53 @@ Unit: Unicode code points including spaces. NFKC expands fi/fl ligatures.
 All runs of spaces/tabs/newlines/form feeds become one space; trim edges.
 Includes title, TOC (including visible leader dots), abstract, prose, tables,
 captions if any, AI declaration, references, visible page numbers and punctuation.
+Includes embedded figure titles, axis labels, tick labels, legends and sample sizes.
 No dehyphenation in primary count; alternate removes only literal hyphen at line end.
 Raw linebreaks/indentation are layout controls, so raw count is reported separately.
 These are reproducible PDF extraction counts, not a guarantee of a contest portal counter.
 
-PRIMARY: reading order, NFKC, whitespace collapsed: 61866
-Alternative: reading order, NFC (ligatures remain single code points): 61746
-Alternative: layout order, NFKC, whitespace collapsed: 62162
-Alternative: layout order, NFC, whitespace collapsed: 62042
-Raw extraction code points (includes line/page breaks; not visible-text count): 61933
-Alternative: NFKC with literal hyphen + linebreak removed between letters: 61866
+PRIMARY: reading order, NFKC, whitespace collapsed: 60395
+Alternative: reading order, NFC (ligatures remain single code points): 60286
+Alternative: layout order, NFKC, whitespace collapsed: 60664
+Alternative: layout order, NFC, whitespace collapsed: 60555
+Raw extraction code points (includes line/page breaks; not visible-text count): 60679
+Alternative: NFKC with literal hyphen + linebreak removed between letters: 60395
 
 Per physical PDF page (NFKC, whitespace collapsed; total adds one space between pages):
 1: 257
-2: 1766
+2: 1763
 3: 369
-4: 2595
-5: 2483
-6: 2116
-7: 2100
-8: 2206
-9: 2276
-10: 2060
-11: 1939
-12: 1962
-13: 2342
-14: 2246
-15: 2427
-16: 2153
-17: 2416
-18: 2337
-19: 2277
-20: 2329
-21: 2472
-22: 2363
-23: 1828
-24: 992
-25: 1042
-26: 983
-27: 2498
-28: 2085
-29: 1492
-30: 2158
-31: 2126
-32: 1140
+4: 2564
+5: 2029
+6: 1994
+7: 2167
+8: 2160
+9: 2120
+10: 1897
+11: 2213
+12: 2099
+13: 2537
+14: 2141
+15: 2322
+16: 250
+17: 601
+18: 1056
+19: 532
+20: 401
+21: 802
+22: 2332
+23: 2393
+24: 2122
+25: 723
+26: 2419
+27: 2326
+28: 1502
+29: 992
+30: 1042
+31: 983
+32: 2498
+33: 2068
+34: 1489
+35: 2121
+36: 2180
+37: 895

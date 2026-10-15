@@ -965,88 +965,97 @@ Package microtype Info: Loading generic protrusion settings for font family
  [2]
 [3
 
-]
-Underfull \hbox (badness 2644) in paragraph at lines 145--146
-[]\T1/ptm/m/n/14.4 The be-hav-ioral ev-i-dence cov-ers four cases, whereas the 
-reasoning-
- []
-
-[4] [5] [6] [7]
-Underfull \hbox (badness 2990) in paragraph at lines 197--198
-\T1/ptm/m/n/14.4 un-der a fixed model--experiment--treatment--stimulus con-fig-
-u-ra-tion mea-sure
- []
-
-[8]
-Underfull \hbox (badness 3679) in paragraph at lines 201--202
+] [4] [5] [6]
+Underfull \hbox (badness 3679) in paragraph at lines 193--194
 \T1/lmtt/m/n/14.4 moonshotai/kimi-k2-thinking\T1/ptm/m/n/14.4 , \T1/lmtt/m/n/14
 .4 z-ai/glm-4.6\T1/ptm/m/n/14.4 , \T1/lmtt/m/n/14.4 qwen/qwen3.5-9b\T1/ptm/m/n/
 14.4 , and
  []
 
-[9] [10]
-Underfull \hbox (badness 1178) in paragraph at lines 243--244
+[7] [8]
+Underfull \hbox (badness 1178) in paragraph at lines 235--236
 []\T1/ptm/m/n/14.4 The be-hav-ioral anal-y-sis dis-tin-guishes three com-par-is
 ons: (i) orig-i-nal
  []
 
 
-Underfull \hbox (badness 1342) in paragraph at lines 243--244
+Underfull \hbox (badness 1342) in paragraph at lines 235--236
 \T1/ptm/m/n/14.4 vignette-treatment con-trasts within a fixed prompt con-di-tio
 n; (ii) stimulus-
  []
 
 
-Underfull \hbox (badness 1077) in paragraph at lines 243--244
+Underfull \hbox (badness 1077) in paragraph at lines 235--236
 \T1/ptm/m/n/14.4 cov-er-age. Rea-son-ing an-no-ta-tions and hidden-state mea-su
 res are ex-am-ined
  []
 
-[11] [12] [13]
-Underfull \hbox (badness 1831) in paragraph at lines 281--282
+[9] [10] [11] [12]
+Underfull \hbox (badness 1831) in paragraph at lines 273--274
 [] []\T1/ptm/b/n/14.4 His-tor-i-cal--data rec-on-cil-i-a-tion.[] \T1/ptm/m/n/14
 .4 Reap-ply-ing Note-book 05 pre-pro-cess-ing to
  []
 
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 283.
-[14] [15]
-Underfull \hbox (badness 1400) in paragraph at lines 301--302
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 275.
+[13]
+Underfull \hbox (badness 1400) in paragraph at lines 293--294
 \T1/ptm/m/n/14.4 environment in-ter-ac-tion is 0.000 for GLM and $\OMS/ztmcm/m/
 n/14.4 ^^@\OT1/ztmcm/m/n/14.4 0\OML/ztmcm/m/it/14.4 :\OT1/ztmcm/m/n/14.4 180$ \
 T1/ptm/m/n/14.4 for Kimi, against
  []
 
-[16]
-Underfull \hbox (badness 1596) in paragraph at lines 314--315
+[14]
+File: figures/05_bolsen_panel.pdf Graphic file (type pdf)
+<use figures/05_bolsen_panel.pdf>
+File: figures/05_corbacho_panel.pdf Graphic file (type pdf)
+<use figures/05_corbacho_panel.pdf>
+ [15] [16]
+File: figures/04_corbacho_N0_A.pdf Graphic file (type pdf)
+<use figures/04_corbacho_N0_A.pdf>
+File: figures/04_corbacho_C_Nminus.pdf Graphic file (type pdf)
+<use figures/04_corbacho_C_Nminus.pdf>
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 326.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 326.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 326.
+ [17]
+File: figures/04_corbacho_Nplus.pdf Graphic file (type pdf)
+<use figures/04_corbacho_Nplus.pdf>
+ [18] [19] [20]
+Underfull \hbox (badness 1596) in paragraph at lines 343--344
 \T1/ptm/m/n/14.4 Savary showed move-ments away from the nor-ma-tively ap-proved
  re-sponse
  []
 
-[17] [18]
-Underfull \hbox (badness 1762) in paragraph at lines 338--339
+[21] [22]
+Underfull \hbox (badness 1762) in paragraph at lines 367--368
 []\T1/ptm/m/n/14.4 Compared with N0, A and C markedly in-crease the preva-lence
  of
  []
 
-[19] [20]
-Underfull \hbox (badness 4001) in paragraph at lines 349--350
+File: figures/02_bolsen_stimulus_contrasts.pdf Graphic file (type pdf)
+<use figures/02_bolsen_stimulus_contrasts.pdf>
+[23] [24]
+Underfull \hbox (badness 4001) in paragraph at lines 389--390
 [] []\T1/ptm/b/n/14.4 As-so-ci-a-tions in the new ex-per-i-ments.[] \T1/ptm/m/n
 /14.4 Within matched model--original-
  []
 
 
-Underfull \hbox (badness 1210) in paragraph at lines 349--350
+Underfull \hbox (badness 1210) in paragraph at lines 389--390
 \T1/ptm/m/n/14.4 treatment--stimulus cells, the pres-ence of \T1/lmtt/m/n/14.4 
 economic_payback \T1/ptm/m/n/14.4 in Bolsen is
  []
 
-[21] [22] [23] [24] [25] [26] [27]
+[25] [26] [27] [28] [29] [30] [31] [32]
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 5
-24.
+64.
  (ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-) [28] [29] [30] [31]
+) [33] [34] [35] [36]
 (COMPETITION_MANUSCRIPT_ASSEMBLED.aux)
 Package rerunfilecheck Info: File `COMPETITION_MANUSCRIPT_ASSEMBLED.out' has no
 t changed.
@@ -1056,5 +1065,5 @@ xml'.
 \openout1 = `COMPETITION_MANUSCRIPT_ASSEMBLED.run.xml'.
 
  )
-Output written on COMPETITION_MANUSCRIPT_ASSEMBLED.xdv (32 pages, 127036 bytes)
+Output written on COMPETITION_MANUSCRIPT_ASSEMBLED.xdv (37 pages, 127256 bytes)
 .
