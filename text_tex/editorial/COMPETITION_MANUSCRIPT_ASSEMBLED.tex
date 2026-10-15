@@ -163,7 +163,7 @@ Chain-of-thought prompting can alter generated outputs \cite{wei2022,kojima2022}
 
 \subsection*{Research contribution}
 
-This study compares original treatment effects and system-prompt effects across four adapted experimental domains, with published human contrasts as benchmarks. For the two original cases it also examines reasoning annotation and exploratory hidden-state evidence. The extension tests whether prompt sensitivity generalizes across models, normative contexts, and response formats without assuming that movement away from socially desirable answers improves human validity.
+This study compares original treatment effects and system-prompt effects across four adapted experimental domains, with published human contrasts as benchmarks. It examines verbalized reasoning across all four cases and exploratory hidden-state representations for the two initial cases. The extension tests whether prompt sensitivity generalizes across models, normative contexts, and response formats without assuming that movement away from socially desirable answers improves human validity.
 
 
 \section{Research Design and Data}
@@ -505,7 +505,7 @@ Classical gain--loss framing effects therefore do not imply that consequence fra
 
 The four cases cover selected socially sensitive vignettes, not representative human survey populations. Model coverage is unequal: the historical H--M family is limited to GLM and Kimi, and the principal new-experiment comparisons likewise use those two models. Repeated low-temperature generations are not independent human respondents. Corbacho's three nominal answers require separate treatment of refusal; its human privacy-adjusted estimate is not directly equivalent to our direct-response outcome. The N0 reference and historical no-stimulus baseline differ, as do some original vignette procedures. New \texttt{none} and N-series runs were executed sequentially with mixed API-provider routing, and 27 transport errors cluster in one GLM/Hassner/N$-$ cell; neither cross-run wording effects nor local interactions are fully isolated.
 
-The historical reasoning codebook was checked against only 27 expert-coded traces, with highly uneven agreement across categories. The new binary presence annotations lack equivalent human-gold validation, contain two annotation versions, and cover only selected Bolsen treatments. Reasoning-answer associations are predictive, not causal. Hidden-state measurements concern 98 runs of a different, local Qwen3-8B checkpoint; layer-wise geometry and probing are diagnostic rather than mechanistic proof. Historical H--M prompt wording has not been independently authenticated verbatim. Finally, the historical numerical reconciliation uses an available master-table copy and does not establish identity with the original notebook input.
+The historical reasoning codebook was checked against only 27 expert-coded traces, with highly uneven agreement across categories. The new binary presence annotations lack equivalent human-gold validation, and the Bolsen annotations cover only selected original treatments. Reasoning-answer associations are predictive, not causal. Hidden-state measurements concern 98 runs of a different, local Qwen3-8B checkpoint; layer-wise geometry and probing are diagnostic rather than mechanistic proof. Historical H--M prompt wording has not been independently authenticated verbatim. Finally, the historical numerical reconciliation uses an available master-table copy and does not establish identity with the original notebook input.
 
 \section{Conclusion}
 
