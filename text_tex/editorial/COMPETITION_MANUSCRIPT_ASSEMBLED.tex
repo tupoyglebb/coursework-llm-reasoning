@@ -143,13 +143,13 @@ Behavioral responses and verbalized reasoning are analyzed across all four cases
 
 \subsection{LLMs as synthetic respondents}
 
-LLMs offer inexpensive ways to pilot surveys and experimental vignettes. Early work explored demographic conditioning and \emph{algorithmic fidelity} \cite{argyle2023}, classical experimental replication \cite{aher2023}, and simulated economic agents \cite{horton2023}. Their usefulness depends not only on plausible answers but on reproducing human treatment contrasts. Replication studies find some directional agreement alongside exaggerated magnitudes, compressed variation, and weaker correspondence in socially sensitive domains \cite{cui2025,bisbee2024,santurkar2023,rottger2024}. We therefore benchmark LLM treatment contrasts against published human studies rather than assuming that synthetic samples are representative.
+LLMs offer inexpensive ways to pilot surveys and experimental vignettes. Early work explored demographic conditioning and \emph{algorithmic fidelity} \cite{argyle2023}, classical experimental replication \cite{aher2023}, and simulated economic agents \cite{horton2023}. Their value depends on replicating human treatment contrasts. Replication studies find some directional agreement alongside exaggerated magnitudes, compressed variation, and weaker correspondence in socially sensitive domains \cite{cui2025,bisbee2024,santurkar2023,rottger2024}. We benchmark synthetic treatment contrasts against human studies.
 
 \subsection{Social desirability and instruction sensitivity}
 
 Social desirability bias (SDB) is response distortion associated with perceived acceptability. Survey theory distinguishes impression management from self-deceptive enhancement and emphasizes question sensitivity, privacy, and administration mode \cite{crowne1960,paulhus1984,tourangeau2007,krumpal2013}. Indirect elicitation and anonymity can reduce some human response pressures \cite{nederhof1985,horiuchi2022}; system prompts are not established equivalents of these survey methods.
 
-LLM behavior introduces additional explanations. Models may favor socially approved answers, conform to perceived user expectations, or respond to safety-related training and instructions \cite{salecha2024,sharma2023}. Survey prompts and response formats can also change their outputs \cite{tjuatja2024}. A shift away from a socially approved answer therefore need not represent reduced human-like SDB. This motivates studying system-prompt stimuli as experimentally consequential inputs and distinguishing behavioral steering from correspondence with human treatment effects.
+LLM behavior introduces additional explanations. Models may favor socially approved answers, conform to perceived user expectations, or respond to safety-related training and instructions \cite{salecha2024,sharma2023}. Survey prompts and response formats can also change their outputs \cite{tjuatja2024}. A shift away from a socially approved answer therefore need not represent reduced human-like SDB. We distinguish behavioral steering from human-effect replication.
 
 \subsection{Consequence framing versus gain--loss framing}
 
@@ -161,7 +161,7 @@ Chain-of-thought prompting can alter generated outputs \cite{wei2022,kojima2022}
 
 \subsection*{Research contribution}
 
-This study compares original treatment effects and system-prompt effects across four adapted experimental domains, with published human contrasts as benchmarks. It examines verbalized reasoning across all four cases and exploratory hidden-state representations for the two initial cases. The extension tests whether prompt sensitivity generalizes across models, normative contexts, and response formats without assuming that movement away from socially desirable answers improves human validity.
+We compare human treatment benchmarks and prompt effects in four domains, including verbalized reasoning, and explore hidden states in the two initial cases. Differences across models and formats do not establish human validity.
 
 
 \section{Research Design and Data}
@@ -239,7 +239,7 @@ The behavioral analysis distinguishes three comparisons: (i) original vignette-t
 % Historical and new-case behavioral and reasoning analyses.
 \section{Analytical Strategy}
 
-The unit is one model generation within an experiment--treatment--stimulus cell. Repeated low-temperature completions are not independent human respondents; all uncertainty estimates are interpreted conditionally on the generation and sampling protocols.
+Each generation belongs to a design cell; repeated low-temperature completions are not independent human respondents.
 
 \subsection{Behavioral outcomes}
 
@@ -253,7 +253,7 @@ The historical annotation pipeline retained 8,638 records; its categories encode
 
 \subsection{Local hidden-state exploration}
 
-A separate Qwen3-8B study records 37-layer, 4,096-dimensional last-token representations for 98 runs under a different prompt inventory. Layer-wise distances, centered kernel alignment, matched trajectory contrasts, and predictive probes are descriptive diagnostics, not direct evidence of a mechanism in the API models. The study distinguishes observable shifts, recovery of published human treatment effects, and broader human validity throughout.
+A separate Qwen3-8B study records 37-layer, 4,096-dimensional last-token representations for 98 runs under a different prompt inventory. Layer-wise distances, centered kernel alignment, matched trajectory contrasts, and predictive probes are descriptive diagnostics, not direct evidence of a mechanism in the API models. Observable shifts do not imply human validity.
 
 \section{Results}
 
@@ -541,15 +541,15 @@ self\_enhancement & $-0.06$ & noise level \\
 
 Across four adapted vignette experiments, LLM treatment sensitivity varies by domain, model, and surrounding system instructions. Under the historical no-stimulus condition, Hassner treatment contrasts have the same direction as in the human study, whereas the Savary public-recognition contrast has the opposite sign. Bolsen shows partial directional correspondence but often different magnitudes. Corbacho produces uniformly negative answers under the neutral-realism reference N0; the corresponding human direct-response contrast is small and imprecisely estimated, limiting claims about replication failure.
 
-The original A/C stimuli move Hassner and Savary answers away from the normatively approved response direction. This pattern is not general across the additional cases: relative to N0, A raises Bolsen energy-conservation willingness in GLM but lowers it in Kimi. In Corbacho, A/C change Kimi's affirmative and refusal shares substantially, and the institutional-inefficiency placebo elicits more affirmative answers than the corruption-information treatment. The N$-$/N$+$ shifts are generally modest on average, but Savary shows opposite directions in GLM and Kimi, and Hassner exhibits a substantial local control-cell change despite a small pooled shift. These patterns establish prompt sensitivity, not greater fidelity to humans or a uniform reduction in social desirability bias. N0 includes a realism instruction and is not equivalent to historical no stimulus.
+The original A/C stimuli move Hassner and Savary answers away from the normatively approved response direction. This pattern is not general across the additional cases: relative to N0, A raises Bolsen energy-conservation willingness in GLM but lowers it in Kimi. In Corbacho, A/C change Kimi's affirmative and refusal shares substantially, and the institutional-inefficiency placebo elicits more affirmative answers than the corruption-information treatment. The N$-$/N$+$ shifts are generally modest on average, but Savary shows opposite directions in GLM and Kimi, and Hassner exhibits a substantial local control-cell change despite a small pooled shift. These patterns establish prompt sensitivity, not human fidelity; N0 is not historical no stimulus.
 
-Classical gain--loss framing effects therefore do not imply that consequence framing in a system prompt must shift synthetic answers. The generally small N$-$/N$+$ contrasts are compatible with context-dependent framing effects, but do not establish equivalence or prove a zero effect. Saturated N0 responses in Corbacho also limit observable shifts, while N0 itself contains a realism instruction. Historical H--M comparisons suggest a valence association, but their incomplete prompt factorial cannot isolate valence causally. In the new cases, A/C produce large changes in annotated category prevalence and strongly heterogeneous GLM/Kimi patterns. Bolsen payback arguments are associated with higher investment ratings within matched cells, whereas new direction contrasts do not survive multiplicity adjustment. Category presence, argumentative sign, and response association measure different features; none establishes mediation. Exploratory hidden-state differences in a separate local Qwen3-8B likewise cannot explain the API models' responses. LLM simulations may help stress-test experimental wording, but comparisons against human treatment benchmarks remain necessary.
+Classical gain--loss framing effects therefore do not imply that consequence framing in a system prompt must shift synthetic answers. Small N$-$/N$+$ contrasts do not prove equivalence; saturated Corbacho N0 responses limit observable shifts. Historical H--M comparisons suggest a valence association, but their incomplete prompt factorial cannot isolate valence causally. In the new cases, A/C produce large changes in annotated category prevalence and strongly heterogeneous GLM/Kimi patterns. Bolsen payback arguments are associated with higher investment ratings within matched cells, whereas new direction contrasts do not survive multiplicity adjustment. Category presence, argumentative sign, and response association measure different features; none establishes mediation. Exploratory hidden-state differences in a separate local Qwen3-8B likewise cannot explain the API models' responses. LLM simulations may help stress-test experimental wording, but comparisons against human treatment benchmarks remain necessary.
 
 \section{Scope and Limitations}
 
 The cases are not representative of human survey populations. Model coverage is unequal (historical H--M and new cases primarily GLM/Kimi), and low-temperature repetitions are not independent respondents. Corbacho's three nominal answers require separate treatment of refusal; its human privacy-adjusted estimate is not directly equivalent to our direct-response outcome. The N0 reference and historical no-stimulus baseline differ, as do some original vignette procedures. New \texttt{none} and N-series runs were executed sequentially with mixed API-provider routing, and 27 transport errors cluster in one GLM/Hassner/N$-$ cell; neither cross-run wording effects nor local interactions are fully isolated.
 
-The historical reasoning codebook was checked against only 27 expert-coded traces, with highly uneven agreement across categories. The new binary presence annotations lack equivalent human-gold validation, and the Bolsen annotations cover only selected original treatments. Reasoning-answer associations are predictive, not causal. Hidden-state measurements concern 98 runs of a different, local Qwen3-8B checkpoint; layer-wise geometry and probing are diagnostic rather than mechanistic proof. Historical H--M prompt wording remains unauthenticated verbatim; historical counts use a reconciled master-table copy.
+The historical reasoning codebook was checked against only 27 expert-coded traces, with highly uneven agreement across categories. The new binary presence annotations lack equivalent human-gold validation, and the Bolsen annotations cover only selected original treatments. Reasoning-answer associations are predictive, not causal. Hidden-state measurements concern 98 runs of a different, local Qwen3-8B checkpoint; layer-wise geometry and probing are diagnostic rather than mechanistic proof. Historical H--M wording is not verbatim authenticated; counts use a reconciled master table.
 
 \section{Conclusion}
 
