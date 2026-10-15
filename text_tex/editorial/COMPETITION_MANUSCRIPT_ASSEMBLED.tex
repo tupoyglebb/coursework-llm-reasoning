@@ -54,6 +54,8 @@
 \DeclareMultiCiteCommand{\squarecites}[\mkbibbrackets]{\squarecite}
   {\setunit{\multicitedelim}}
 \let\cite\squarecite
+% Apply the required bracket format to narrative citation commands as well.
+\let\textcite\squarecite
 
 \newcommand{\safeincludegraphics}[2][]{%
   \IfFileExists{#2}{%
@@ -98,6 +100,7 @@
 \snakebreak
 
 % Anonymous title page: no author, affiliation, or city.
+\hypersetup{pageanchor=false}
 \begin{titlepage}
 \begin{center}
 \vspace*{3.0cm}
@@ -112,6 +115,7 @@ social desirability; vignette experiments; system prompts\par}
 {\normalsize 2026\par}
 \end{center}
 \end{titlepage}
+\hypersetup{pageanchor=true}
 
 \tableofcontents
 \clearpage
