@@ -1,0 +1,14 @@
+{
+  "05_balanced_stimulus_levels.pdf": {
+    "source": "analysis/new_experiments_behavioral_20261015/figures/05_balanced_stimulus_levels.pdf",
+    "sha256": "7a6e5041012aea7343c2f7be6414e1ed74b2ea616ab7e7efd7ca5b6ede4d3d5c"
+  },
+  "04_corbacho_distributions.pdf": {
+    "source": "analysis/new_experiments_behavioral_20261015/figures/04_corbacho_distributions.pdf",
+    "sha256": "014ae3df7fc79adfdc3a1c9fa8c161e0104289a4ded846ea1c159603d7b1dfab"
+  },
+  "02_bolsen_stimulus_contrasts.pdf": {
+    "source": "analysis/reasoning_2new_p1_20261015/figures/02_bolsen_stimulus_contrasts.pdf",
+    "sha256": "0457ab3c6984ac3eb574ee1452775318aa0392f98cac79e5d242da88bb4253b7"
+  }
+}

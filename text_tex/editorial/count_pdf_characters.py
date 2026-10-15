@@ -50,6 +50,7 @@ lines = [
     'All runs of spaces/tabs/newlines/form feeds become one space; trim edges.',
     'Includes title, TOC (including visible leader dots), abstract, prose, tables,',
     'captions if any, AI declaration, references, visible page numbers and punctuation.',
+    'Includes embedded figure titles, axis labels, tick labels, legends and sample sizes.',
     'No dehyphenation in primary count; alternate removes only literal hyphen at line end.',
     'Raw linebreaks/indentation are layout controls, so raw count is reported separately.',
     'These are reproducible PDF extraction counts, not a guarantee of a contest portal counter.',

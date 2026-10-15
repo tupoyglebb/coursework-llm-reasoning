@@ -292,10 +292,47 @@ Under N0, both models' control means are 5.000 on the seven-point investment sca
 
 The factorial pattern is also heterogeneous. At N0, the individual-by-environment interaction is 0.000 for GLM and $-0.180$ for Kimi, against approximately $+0.120$ in the reported human means. Averaging equally across the nine treatments, A changes GLM's mean by $+0.168$ relative to N0 but Kimi's by $-0.665$; the corresponding C shifts are $+0.257$ and $-0.097$. The prompt-induced shift therefore has opposite signs across models, including a rise in pro-conservation responses for GLM. In Kimi, the cost-minus-control contrast changes from $-0.600$ under N0 to $+0.080$ under A. These shifts neither guarantee greater human correspondence nor support a uniform de-sanitization claim.
 
+% BEGIN APPROVED FIGURE INSERTION: balanced levels
+\noindent Figure~\ref{fig:balanced-stimulus-levels}.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\linewidth]{figures/05_bolsen_panel.pdf}\\[0.3em]
+\includegraphics[width=0.92\linewidth]{figures/05_corbacho_panel.pdf}
+\captionsetup{font=small}
+\caption{Treatment-balanced response levels by model and prompt. Equal treatment weights; pointwise block-10 conditional reference intervals. N0 is neutral realism. Bolsen: mean on the 1--7 scale; Corbacho: True probability.}
+\label{fig:balanced-stimulus-levels}
+\end{figure}
+% END APPROVED FIGURE INSERTION
+
 \paragraph{Corbacho: three response outcomes and placebo sensitivity.}
 Under N0, every valid GLM and Kimi answer in all three treatment groups is \emph{False}; the observed treatment differences are zero. The closest-format published human direct-response contrast for corruption exposure is approximately $+0.030$, with a reported confidence interval reaching approximately zero. A larger published privacy-adjusted joint contrast ($+0.080$) measures a different quantity and cannot be substituted. Human and synthetic elicitation procedures differ.
 
 For Kimi under A, the proportions choosing True are 0.560 in control, 0.694 under corruption information, and 0.840 under the institutional-inefficiency placebo; the corresponding refusals are 0.380, 0.306, and 0.160. Under C, True proportions are 0.100, 0.300, and 0.447, with refusals of 0.440, 0.220, and 0.234. Thus the corruption-minus-placebo True contrast is approximately $-0.146$ under A and $-0.147$ under C, with the placebo producing more affirmative answers than the corruption treatment. The treatment-balanced True proportion under A is 0.054 for GLM but 0.698 for Kimi; no GLM refusals appear under A. Refusals are retained as a separate nominal response outcome, not coded as opposition or as an ordinal midpoint (Table~\ref{tab:corbacho-new-outcomes}).
+
+% BEGIN APPROVED FIGURE INSERTION: Corbacho distributions
+\noindent Figure~\ref{fig:corbacho-distributions}.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{figures/04_corbacho_N0_A.pdf}
+\captionsetup{font=small}
+\caption{Corbacho response shares by treatment and model: N0 and A. Red: True; blue: False; gray: refusal. Labels show valid n; N0 is neutral realism. All three outcomes remain distinct.}
+\label{fig:corbacho-distributions}
+\end{figure}
+\begin{figure}[H]
+\ContinuedFloat
+\centering
+\includegraphics[width=0.95\linewidth]{figures/04_corbacho_C_Nminus.pdf}
+\captionsetup{font=small}
+\caption[]{Corbacho response shares, continued: C and N$-$. Same outcomes and colors; vertical scale 0--1.}
+\end{figure}
+\begin{figure}[H]
+\ContinuedFloat
+\centering
+\includegraphics[width=0.475\linewidth]{figures/04_corbacho_Nplus.pdf}
+\captionsetup{font=small}
+\caption[]{Corbacho response shares, continued: N$+$. Same outcomes and colors; vertical scale 0--1.}
+\end{figure}
+% END APPROVED FIGURE INSERTION
 
 \paragraph{The new negative- and positive-consequence stimuli.}
 The N$-$ and N$+$ comparisons against N0 are much smaller than A/C effects in these two new cases. In Bolsen, treatment-balanced mean shifts under N$-$ are $+0.038$ (GLM) and $+0.104$ (Kimi) scale points, compared with $-0.014$ and $-0.011$ under N$+$. Thus the N$+$ minus N$-$ contrasts are $-0.051$ and $-0.115$, respectively. Under conditional block-of-ten resampling, the latter contrast has a reference interval of $[-0.186,-0.045]$ for Kimi but $[-0.112,0.008]$ for GLM; these are not human-population confidence intervals. The result does not establish a generic positive-versus-negative framing effect independently of the actual prompt packages.
@@ -328,6 +365,17 @@ In Savary, \texttt{incentive\_awareness} increases by 23.33 pp under N$+$ relati
 The analyzed sample covers 1,398 eligible traces (799 Bolsen; 599 Corbacho), two models, all five system stimuli, and only four of Bolsen's nine original treatments. The new codebook records category presence as binary (0/1), not the historical three-level centrality scale; findings from the two annotation pipelines are therefore reported separately. Regression estimates adjust for original treatment, model, and annotation version.
 
 Compared with N0, A and C markedly increase the prevalence of \texttt{overcorrection\_concern}: by 50.7 and 51.3 percentage points (pp) in Bolsen, and 70.8 and 57.9 pp in Corbacho, respectively (all BH-adjusted $q\leq0.006$). This category closely reflects the A/C instructions, so greater prevalence need not represent deeper or more human-like deliberation. Domain-specific differences are also visible: C increases \texttt{economic\_payback} in Bolsen by 25.6 pp (95\% CI $[12.2,39.0]$, $q=0.006$), whereas A increases \texttt{corruption\_normalization} in Corbacho by 49.1 pp ($[36.6,61.6]$; $q<0.001$). The corresponding N$-$/N$+$ prevalence contrasts are generally smaller and less precise. There is pronounced model heterogeneity: the Bolsen A--N0 increase in \texttt{overcorrection\_concern} is 2.6 pp for GLM and 98.7 pp for Kimi. These contrasts measure annotated textual features, not causal mechanisms.
+
+% BEGIN APPROVED FIGURE INSERTION: reasoning contrasts
+\noindent Figure~\ref{fig:bolsen-reasoning-contrasts}.
+\begin{figure}[H]
+\centering
+\rotatebox{90}{\includegraphics[width=0.90\textheight]{figures/02_bolsen_stimulus_contrasts.pdf}}
+\captionsetup{font=small}
+\caption{Bolsen category-presence differences from N0, adjusted for treatment, model and annotation version. Nine categories selected by effect magnitude; pointwise 95\% cell-cluster t intervals, not simultaneous intervals. Only four of nine treatments are covered.}
+\label{fig:bolsen-reasoning-contrasts}
+\end{figure}
+% END APPROVED FIGURE INSERTION
 
 The direction analysis separates category occurrence from the sign of an argument among traces where it occurs. Signs refer to support for investing (Bolsen) or bribery (Corbacho), never automatically to the final answer. Of 14 signed Bolsen and 12 signed Corbacho categories, none has a newly estimated pooled direction effect or model interaction surviving Benjamini--Hochberg adjustment ($q<0.05$). For example, in Bolsen A raises \texttt{majority\_reliance} prevalence by 20.1 pp, while the conditional share of positively signed instances is estimated to fall by 35.6 pp (95\% CI $[-70.3,-1.0]$; $q=0.728$). This exploratory contrast illustrates why increased occurrence cannot be equated with more positive argumentative direction. Many categories have nearly invariant signs or insufficient comparable N0 occurrences; neither a zero effect nor a historical signed-importance score is imputed. Annotation validity, restricted treatment coverage, and conditioning on category presence further limit inference.
 
