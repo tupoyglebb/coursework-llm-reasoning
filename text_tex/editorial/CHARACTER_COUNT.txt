@@ -1,9 +1,9 @@
-Количество символов с пробелами: 58954
+Количество символов с пробелами: 59038
 Лимит 60000 соблюдён: да
-Превышение: 0; запас: 1046
+Превышение: 0; запас: 962
 
 PDF: COMPETITION_MANUSCRIPT_ASSEMBLED.pdf
-SHA256: 752ea80e756b1a055818953a25fc1052458010360b4e1ac7088e11c6b2fea681
+SHA256: e7136798b9de495606dbb69d42ad7e4cbbf46b24215d714c0b489b23c6cf0e99
 pdftotext version 26.06.0
 Reproduce: python3 text_tex/editorial/count_pdf_characters.py
 Extraction: pdftotext -enc UTF-8 COMPETITION_MANUSCRIPT_ASSEMBLED.pdf -
@@ -18,27 +18,27 @@ No dehyphenation in primary count; alternate removes only literal hyphen at line
 Raw linebreaks/indentation are layout controls, so raw count is reported separately.
 These are reproducible PDF extraction counts, not a guarantee of a contest portal counter.
 
-PRIMARY: reading order, NFKC, whitespace collapsed: 58954
-Alternative: reading order, NFC (ligatures remain single code points): 58847
-Alternative: layout order, NFKC, whitespace collapsed: 59225
-Alternative: layout order, NFC, whitespace collapsed: 59118
-Raw extraction code points (includes line/page breaks; not visible-text count): 59238
-Alternative: NFKC with literal hyphen + linebreak removed between letters: 58954
+PRIMARY: reading order, NFKC, whitespace collapsed: 59038
+Alternative: reading order, NFC (ligatures remain single code points): 58932
+Alternative: layout order, NFKC, whitespace collapsed: 59313
+Alternative: layout order, NFC, whitespace collapsed: 59207
+Raw extraction code points (includes line/page breaks; not visible-text count): 59322
+Alternative: NFKC with literal hyphen + linebreak removed between letters: 59038
 
 Per physical PDF page (NFKC, whitespace collapsed; total adds one space between pages):
 1: 257
-2: 1762
+2: 1766
 3: 369
 4: 2564
 5: 1992
 6: 2058
 7: 2266
-8: 2198
-9: 1871
-10: 1723
-11: 2341
-12: 2192
-13: 2217
+8: 2236
+9: 1855
+10: 2157
+11: 2211
+12: 2105
+13: 2377
 14: 2197
 15: 1727
 16: 601
@@ -47,16 +47,16 @@ Per physical PDF page (NFKC, whitespace collapsed; total adds one space between 
 19: 401
 20: 802
 21: 2332
-22: 2393
-23: 2122
+22: 2324
+23: 1921
 24: 723
 25: 2419
-26: 2326
-27: 1502
+26: 2337
+27: 1457
 28: 992
 29: 1042
 30: 983
-31: 2400
+31: 2385
 32: 1970
 33: 1620
 34: 2077
