@@ -15,6 +15,16 @@ The comparisons require a coverage qualification: H--M were fielded only on Kimi
 
 Treatment-by-stimulus contrasts also vary: the original analysis reports moderation in some conditions, without reversal of the sign of the original Hassner treatment contrasts. In Savary, the private-to-public contrast remains positive across the eight historical stimuli (reported range $+0.05$ to $+0.26$), so none reproduces the human reversal under the tested settings. This result identifies a limitation of the \emph{observed prompts}, not a general impossibility of eliciting self-signaling-related reasoning.
 
+\subsection{Fresh no-additional-stimulus replication for Hassner and Savary}
+
+An additional October 2026 run evaluates both historical vignettes under \texttt{none}, i.e., no appended Incentive section while retaining the baseline system instruction to respond as a plausible survey participant. Of 700 planned generations, 698 yield strictly valid parsed responses at $T=0.01$. The only exclusions are one malformed Kimi Hassner control response (\texttt{1. Yes}) and one empty GLM Hassner duration response that terminated at the length limit. These results are a distinct run, rather than rows silently pooled into the original historical summary.
+
+For Hassner, GLM's control endorsement rate is 1.000 ($n=50$), versus 0.673 for prolonged duration ($n=49$), 0.360 for modest intelligence value ($n=50$), and 0.040 for both changes ($n=50$). Kimi's corresponding rates are 0.571 ($n=49$), 0.140 ($n=50$), 0.000 ($n=50$), and 0.000 ($n=50$). All original treatments therefore reduce endorsement relative to control in both models, corroborating the directional pattern from the earlier corpus but not its exact response levels. Restoring the malformed Kimi control answer as Yes changes that control estimate only from 0.571 to 0.580.
+
+For Savary, GLM's mean giving willingness is 3.480 ($n=50$) in private, 3.920 ($n=50$) with public recognition, and 4.420 ($n=50$) with added social benefit. Kimi's means are 3.340, 3.660, and 4.000 (all $n=50$). Thus public recognition increases willingness by 0.440 points in GLM and 0.320 points in Kimi relative to private giving; this again runs opposite to the reported original human public-recognition direction.
+
+The additional none run has mixed inference-provider routing across models, and its reported ordinary bootstrap intervals describe variation among API completions, not population uncertainty. It does not establish the effects of N0, N$-$, or N$+$: the accompanying report does not contain the corresponding runs. No none-versus-N-stimulus contrasts are computed from this file, and historical observations are not pooled with the new run without verifying the generation protocols.
+
 \subsection{Additional experiments: Bolsen and Corbacho}
 
 \paragraph{Sample and comparability.}
